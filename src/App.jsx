@@ -33,8 +33,8 @@ function App() {
   return (
     <React.Fragment>
       <Helmet
-        titleTemplate="%s · AllAccessChess"
-        defaultTitle="AllAccessChess"
+        titleTemplate="%s | All Access Chess"
+        defaultTitle="All Access Chess"
       />
       <StylesProvider injectFirst>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>

@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { createGlobalStyle } from "styled-components/macro";
 import { CssBaseline } from "@material-ui/core";
+import TopBar from "components/TopBar";
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -27,6 +28,7 @@ const Auth = ({ children }) => {
     <Root>
       <CssBaseline />
       <GlobalStyle />
+      <TopBar />
       {children}
     </Root>
   );

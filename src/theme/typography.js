@@ -1,5 +1,6 @@
 const typography = {
   fontFamily: [
+    "'Rubik',sans-serif",
     "Inter",
     "-apple-system",
     "BlinkMacSystemFont",

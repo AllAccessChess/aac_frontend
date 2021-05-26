@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled, { createGlobalStyle } from "styled-components/macro";
 import { CssBaseline, withWidth } from "@material-ui/core";
 import ScreenLoader from "components/ScreenLoader";
+import TopBar from "components/TopBar";
 
 import { signInWithCookie } from "redux/reducers/authReducer";
 
@@ -47,6 +48,7 @@ const Main = ({ children, routes, width }) => {
     <Root>
       <CssBaseline />
       <GlobalStyle />
+      <TopBar />
       {authLoading ? <ScreenLoader /> : children}
     </Root>
   );

@@ -1,18 +1,11 @@
 import merge from "deepmerge";
-import { green, grey, indigo, red } from "@material-ui/core/colors";
+import { green, grey, indigo, red, blue } from "@material-ui/core/colors";
 import { THEMES } from "constant";
 
 const customBlue = {
-  50: "#e9f0fb",
-  100: "#c8daf4",
-  200: "#a3c1ed",
-  300: "#7ea8e5",
-  400: "#6395e0",
-  500: "#4782da",
-  600: "#407ad6",
-  700: "#376fd0",
-  800: "#2f65cb",
-  900: "#2052c2 ",
+  primary: "#0366d0",
+  light: "#5e93ff",
+  dark: "#003d9e",
 };
 
 const defaultVariant = {
@@ -20,7 +13,7 @@ const defaultVariant = {
   palette: {
     type: "light",
     primary: {
-      main: customBlue[700],
+      main: customBlue["primary"],
       contrastText: "#FFF",
     },
     secondary: {
@@ -28,7 +21,7 @@ const defaultVariant = {
       contrastText: "#FFF",
     },
     background: {
-      default: "#F7F9FC",
+      default: "#E7EBEE",
       paper: "#FFF",
     },
     text: {
@@ -43,7 +36,7 @@ const defaultVariant = {
       color: grey[800],
     },
     indicator: {
-      background: customBlue[600],
+      background: blue[600],
     },
   },
   footer: {
@@ -57,7 +50,7 @@ const defaultVariant = {
       color: grey[200],
       background: "#233044",
       brand: {
-        color: customBlue[500],
+        color: blue[500],
       },
     },
     footer: {
@@ -69,7 +62,7 @@ const defaultVariant = {
     },
     badge: {
       color: "#FFF",
-      background: customBlue[500],
+      background: blue[500],
     },
   },
 };
@@ -115,7 +108,7 @@ const lightVariant = merge(defaultVariant, {
   },
   header: {
     color: grey[200],
-    background: customBlue[800],
+    background: blue[800],
     search: {
       color: grey[100],
     },
@@ -128,7 +121,7 @@ const lightVariant = merge(defaultVariant, {
     background: "#FFF",
     header: {
       color: "#FFF",
-      background: customBlue[800],
+      background: blue[800],
       brand: {
         color: "#FFFFFF",
       },
@@ -149,20 +142,20 @@ const blueVariant = merge(defaultVariant, {
     type: "light",
   },
   sidebar: {
-    color: "#FFF",
-    background: customBlue[700],
+    color: "#000",
+    background: "#000",
     header: {
-      color: "#FFF",
-      background: customBlue[800],
+      color: "#000",
+      background: "#FFF",
       brand: {
-        color: "#FFFFFF",
+        color: "#000",
       },
     },
     footer: {
-      color: "#FFF",
-      background: customBlue[800],
+      color: "#000",
+      background: "#FFF",
       online: {
-        background: "#FFF",
+        background: "#000",
       },
     },
     badge: {
