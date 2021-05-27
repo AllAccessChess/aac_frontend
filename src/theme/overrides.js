@@ -112,6 +112,11 @@ const overrides = {
       borderRadius: "6px",
     },
   },
+  MuiLink: {
+    root: {
+      cursor: "pointer",
+    },
+  },
 };
 
 export default overrides;

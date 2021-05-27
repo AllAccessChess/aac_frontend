@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import AuthService from "services/authService";
-import CookieService from "services/cookieService";
+// import AuthService from "services/authService";
 import { setMessage } from "./messageReducer";
 
 const initialState = {
@@ -21,29 +20,41 @@ export const slice = createSlice({
   },
 });
 
-const { setUser, setLoading } = slice.actions;
+export const { setUser, setLoading } = slice.actions;
 
-export const signInWithCookie = () => async (dispatch) => {
+export const signIn = (credentials) => async (dispatch) => {
   dispatch(setLoading(true));
-
   try {
-    // const response = await AuthService.signIn(CookieService.getSiteLogin());
+    // const response = await AuthService.login(credentials);
     const response = {
       id: "12345",
-      email: "demo@bootlab.io",
+      email: credentials.email,
       name: "Railson Sousa",
     };
-    dispatch(
-      setUser({
-        id: response.id,
-        email: response.email,
-        name: response.name,
-      })
-    );
+    dispatch(setUser(response));
   } catch (error) {
     console.log(error);
     dispatch(setMessage({ message: error.message }));
   }
+  dispatch(setLoading(false));
+};
+
+export const signUp = (payload) => async (dispatch) => {
+  dispatch(setLoading(true));
+
+  try {
+    // const response = await AuthService.register(payload);
+    const response = {
+      id: "12345",
+      email: payload.email,
+      name: "Railson Sousa",
+    };
+    dispatch(setUser(response));
+  } catch (error) {
+    console.log(error);
+    dispatch(setMessage({ message: error.message }));
+  }
+
   dispatch(setLoading(false));
 };
 

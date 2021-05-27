@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link as RouterLink } from "react-router-dom";
 import { spacing } from "@material-ui/system";
 
 import { AppBar, Box, Link as MuiLink } from "@material-ui/core";
@@ -8,6 +9,9 @@ import AccountMenu from "components/AccountMenu";
 
 import logoImg from "assets/images/logo.png";
 import headerImg from "assets/images/header_background.svg";
+
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "redux/reducers/authReducer";
 
 const Link = styled(MuiLink)(spacing);
 const Wrapper = styled(AppBar)`
@@ -22,47 +26,44 @@ const Logo = styled.img`
 
 const menus = [
   {
-    label: "Home",
-    url: "https://allaccesschess.com/",
+    label: "Tournaments",
+    url: "/tournaments",
   },
   {
-    label: "Carrers",
-    url: "https://allaccesschess.com/hiring/",
-  },
-  {
-    label: "About",
-    url: "https://allaccesschess.com/about/",
-  },
-  {
-    label: "Events",
-    url: "https://allaccesschess.com/events/",
-  },
-  {
-    label: "Members",
-    url: "https://allaccesschess.com/membership-account/your-profile/",
+    label: "FAQ",
+    url: "/faq",
   },
 ];
 
-const TopBar = ({ user }) => {
+const TopBar = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.authReducer.user);
+
+  const handleLogout = () => {
+    dispatch(setUser(null));
+  };
+
   return (
     <Wrapper position="static" background={headerImg}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Logo src={logoImg} />
+        <Link component={RouterLink} to="/">
+          <Logo src={logoImg} />
+        </Link>
         <Box display="flex" justifyContent="space-around" alignItems="center">
           {menus.map((menu, index) => (
             <Link
-              href={menu.url}
+              component={RouterLink}
+              to={menu.url}
               color="inherit"
               variant="h4"
               mr={10}
               key={index}
-              target="_blank"
             >
               {menu.label}
             </Link>
           ))}
           <Notification />
-          <AccountMenu user={user} />
+          <AccountMenu user={user} onLogOut={handleLogout} />
         </Box>
       </Box>
     </Wrapper>

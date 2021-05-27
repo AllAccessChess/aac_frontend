@@ -148,7 +148,7 @@ const blueVariant = merge(defaultVariant, {
     },
     secondary: {
       main: "#FFF",
-      contrastText: "#FFF",
+      contrastText: "#000",
     },
     background: {
       default: "#15375C",

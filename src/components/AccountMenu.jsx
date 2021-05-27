@@ -11,11 +11,16 @@ const LargeButton = styled(Button)`
   }
 `;
 
-const AccountMenu = ({ user }) => {
+const AccountMenu = ({ user, onLogOut }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleLogout = () => {
+    setAnchorEl(null);
+    onLogOut();
   };
 
   const handleClose = () => {
@@ -52,7 +57,7 @@ const AccountMenu = ({ user }) => {
         onClose={handleClose}
       >
         <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>
   );

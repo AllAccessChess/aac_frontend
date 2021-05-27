@@ -4,12 +4,14 @@ import async from "../components/Async";
 // const AuthGuard = async(() => import("../components/AuthGuard"));
 
 // Auth components
-const Page404 = async(() => import("../pages/auth/Page404"));
-const Page500 = async(() => import("../pages/auth/Page500"));
+const SignIn = async(() => import("../pages/auth/SignIn"));
+const SignUp = async(() => import("../pages/auth/SignUp"));
+const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 
 // Main components
 const Account = async(() => import("../pages/account"));
 const Tournaments = async(() => import("../pages/tournaments"));
+const Dashboard = async(() => import("../pages/dashboard"));
 
 const authRoutes = {
   id: "Auth",
@@ -17,14 +19,19 @@ const authRoutes = {
   //   icon: <Users />,
   children: [
     {
-      path: "/auth/404",
-      name: "404 Page",
-      component: Page404,
+      path: "/auth/sign-in",
+      name: "Sign In",
+      component: SignIn,
     },
     {
-      path: "/auth/500",
-      name: "500 Page",
-      component: Page500,
+      path: "/auth/sign-up",
+      name: "Sign Up",
+      component: SignUp,
+    },
+    {
+      path: "/auth/reset-password",
+      name: "Reset Password",
+      component: ResetPassword,
     },
   ],
   component: null,
@@ -39,15 +46,23 @@ const accountRoute = {
 };
 
 const tournamentRoute = {
-  id: "Tournament",
-  path: "/",
-  name: "Tournament",
+  id: "Tournaments",
+  path: "/tournaments",
+  name: "Tournaments",
   component: Tournaments,
   //   guard: AuthGuard,
 };
 
+const dashboardRoute = {
+  id: "Dashboard",
+  path: "/",
+  name: "dashboard",
+  component: Dashboard,
+  //   guard: AuthGuard,
+};
+
 // Routes using the Dashboard layout
-export const mainLayoutRoutes = [accountRoute, tournamentRoute];
+export const mainLayoutRoutes = [accountRoute, tournamentRoute, dashboardRoute];
 
 // Routes using the Auth layout
 export const authLayoutRoutes = [authRoutes];
