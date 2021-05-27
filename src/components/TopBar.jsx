@@ -49,12 +49,13 @@ const TopBar = ({ user }) => {
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Logo src={logoImg} />
         <Box display="flex" justifyContent="space-around" alignItems="center">
-          {menus.map((menu) => (
+          {menus.map((menu, index) => (
             <Link
               href={menu.url}
               color="inherit"
               variant="h4"
               mr={10}
+              key={index}
               target="_blank"
             >
               {menu.label}

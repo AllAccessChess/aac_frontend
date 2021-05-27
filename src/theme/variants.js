@@ -156,7 +156,7 @@ const blueVariant = merge(defaultVariant, {
     },
     text: {
       primary: "#FFF",
-      secondary: "#8A8A8A",
+      secondary: "#B8C6D6",
     },
   },
   sidebar: {

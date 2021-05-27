@@ -34,7 +34,7 @@ const Tournament = () => {
     <Paper square>
       <Tabs
         value={value}
-        indicatorColor="secondary"
+        indicatorColor="primary"
         textColor="secondary"
         onChange={handleChange}
         aria-label="tournaments"
