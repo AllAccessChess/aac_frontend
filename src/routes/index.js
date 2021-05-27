@@ -9,6 +9,7 @@ const Page500 = async(() => import("../pages/auth/Page500"));
 
 // Main components
 const Account = async(() => import("../pages/account"));
+const Tournaments = async(() => import("../pages/tournaments"));
 
 const authRoutes = {
   id: "Auth",
@@ -31,14 +32,22 @@ const authRoutes = {
 
 const accountRoute = {
   id: "Account",
-  path: "/",
+  path: "/account",
   name: "Account",
   component: Account,
   //   guard: AuthGuard,
 };
 
+const tournamentRoute = {
+  id: "Tournament",
+  path: "/",
+  name: "Tournament",
+  component: Tournaments,
+  //   guard: AuthGuard,
+};
+
 // Routes using the Dashboard layout
-export const mainLayoutRoutes = [accountRoute];
+export const mainLayoutRoutes = [accountRoute, tournamentRoute];
 
 // Routes using the Auth layout
 export const authLayoutRoutes = [authRoutes];

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import styled, { createGlobalStyle } from "styled-components/macro";
-import { CssBaseline, withWidth } from "@material-ui/core";
+import { CssBaseline, withWidth, Box } from "@material-ui/core";
 import ScreenLoader from "components/ScreenLoader";
 import TopBar from "components/TopBar";
 
@@ -32,6 +32,9 @@ const Root = styled.div`
   height: 100%;
   width: 100%;
 `;
+const Wrapper = styled(Box)`
+  background-color: ${(props) => props.theme.palette.background.paper};
+`;
 
 const Main = ({ children, routes, width }) => {
   const dispatch = useDispatch();
@@ -48,8 +51,15 @@ const Main = ({ children, routes, width }) => {
     <Root>
       <CssBaseline />
       <GlobalStyle />
-      <TopBar />
-      {authLoading ? <ScreenLoader /> : children}
+      <TopBar user={user} />
+      <Wrapper
+        display="flex"
+        justifyContent="center"
+        mx="calc(5% + 15px)"
+        height="100%"
+      >
+        {authLoading ? <ScreenLoader /> : children}
+      </Wrapper>
     </Root>
   );
 };

@@ -31,7 +31,7 @@ export const signInWithCookie = () => async (dispatch) => {
     const response = {
       id: "12345",
       email: "demo@bootlab.io",
-      name: "Lucy Lavender",
+      name: "Railson Sousa",
     };
     dispatch(
       setUser({

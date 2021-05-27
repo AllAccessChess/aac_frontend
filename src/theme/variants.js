@@ -140,6 +140,24 @@ const blueVariant = merge(defaultVariant, {
   name: THEMES.BLUE,
   palette: {
     type: "light",
+    primary: {
+      light: customBlue["light"],
+      main: customBlue["primary"],
+      dark: customBlue["dark"],
+      contrastText: "#FFF",
+    },
+    secondary: {
+      main: "#FFF",
+      contrastText: "#FFF",
+    },
+    background: {
+      default: "#15375C",
+      paper: "#134378",
+    },
+    text: {
+      primary: "#FFF",
+      secondary: "#8A8A8A",
+    },
   },
   sidebar: {
     color: "#000",

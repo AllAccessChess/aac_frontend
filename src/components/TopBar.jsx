@@ -2,7 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import { spacing } from "@material-ui/system";
 
-import { AppBar, Toolbar, Box, Link as MuiLink } from "@material-ui/core";
+import { AppBar, Box, Link as MuiLink } from "@material-ui/core";
+import Notification from "components/Notification";
+import AccountMenu from "components/AccountMenu";
+
 import logoImg from "assets/images/logo.png";
 import headerImg from "assets/images/header_background.svg";
 
@@ -40,7 +43,7 @@ const menus = [
   },
 ];
 
-const TopBar = () => {
+const TopBar = ({ user }) => {
   return (
     <Wrapper position="static" background={headerImg}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -57,6 +60,8 @@ const TopBar = () => {
               {menu.label}
             </Link>
           ))}
+          <Notification />
+          <AccountMenu user={user} />
         </Box>
       </Box>
     </Wrapper>
