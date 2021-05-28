@@ -1,6 +1,16 @@
 import React from "react";
 import styled, { createGlobalStyle } from "styled-components/macro";
-import { CssBaseline } from "@material-ui/core";
+
+import { Link as RouterLink } from "react-router-dom";
+import { CssBaseline, Box } from "@material-ui/core";
+import { Link } from "components/SpacedMui";
+
+import logoImg from "assets/images/logo.png";
+import backgroundImg from "assets/images/background.svg";
+
+const Logo = styled.img`
+  width: 290px;
+`;
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -13,22 +23,37 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Root = styled.div`
-  max-width: 520px;
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  min-height: 100%;
+const Wrapper = styled(Box)`
+  background: url(${(props) => props.background});
+  background-size: cover;
+  background-repeat: no-repeat;
 `;
 
 const Auth = ({ children }) => {
   return (
-    <Root>
+    <Wrapper
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      width="100%"
+      height="100%"
+      background={backgroundImg}
+    >
       <CssBaseline />
       <GlobalStyle />
-      {children}
-    </Root>
+      <Box
+        position="absolute"
+        left="5%"
+        top="20px"
+        display="flex"
+        flexDirection="column"
+      >
+        <Link component={RouterLink} to="/">
+          <Logo src={logoImg} />
+        </Link>
+        {children}
+      </Box>
+    </Wrapper>
   );
 };
 

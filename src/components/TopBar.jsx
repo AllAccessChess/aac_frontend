@@ -1,19 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import { Link as RouterLink } from "react-router-dom";
-import { spacing } from "@material-ui/system";
 
-import { AppBar, Box, Link as MuiLink } from "@material-ui/core";
+import { AppBar, Box } from "@material-ui/core";
+import { Link } from "components/SpacedMui";
 import Notification from "components/Notification";
 import AccountMenu from "components/AccountMenu";
 
 import logoImg from "assets/images/logo.png";
-import headerImg from "assets/images/header_background.svg";
+import backgroundImg from "assets/images/background.svg";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "redux/reducers/authReducer";
 
-const Link = styled(MuiLink)(spacing);
 const Wrapper = styled(AppBar)`
   background: url(${(props) => props.background});
   background-size: cover;
@@ -44,7 +43,7 @@ const TopBar = () => {
   };
 
   return (
-    <Wrapper position="static" background={headerImg}>
+    <Wrapper position="static" background={backgroundImg}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Link component={RouterLink} to="/">
           <Logo src={logoImg} />

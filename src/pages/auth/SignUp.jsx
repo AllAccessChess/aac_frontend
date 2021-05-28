@@ -2,14 +2,12 @@ import React from "react";
 import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, Link as RouterLink } from "react-router-dom";
-import styled from "styled-components/macro";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  Paper,
   Box,
   InputAdornment,
   IconButton,
@@ -29,15 +27,6 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 
 import { signUp } from "redux/reducers/authReducer";
 
-const Wrapper = styled(Paper)`
-  padding: ${(props) => props.theme.spacing(6)}px;
-
-  ${(props) => props.theme.breakpoints.up("md")} {
-    padding: ${(props) => props.theme.spacing(10)}px;
-  }
-  width: 700px;
-`;
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -49,9 +38,6 @@ const useStyles = makeStyles((theme) => ({
   },
   withoutLabel: {
     marginTop: theme.spacing(3),
-  },
-  textField: {
-    width: "48%",
   },
 }));
 
@@ -83,19 +69,6 @@ const InnerForm = (props) => {
         </Alert>
       )}
       <TextField
-        type="text"
-        name="uscfId"
-        label="Your USCF ID"
-        variant="outlined"
-        value={values.uscfId}
-        error={Boolean(touched.uscfId && errors.uscfId)}
-        fullWidth
-        helperText={touched.uscfId && errors.uscfId}
-        onBlur={handleBlur}
-        onChange={handleChange}
-        my={3}
-      />
-      <TextField
         type="email"
         name="email"
         label="Email Address"
@@ -108,75 +81,90 @@ const InnerForm = (props) => {
         onChange={handleChange}
         my={3}
       />
-      <Box display="flex" justifyContent="space-between">
-        <FormControl
-          className={clsx(classes.margin, classes.textField)}
-          variant="outlined"
-          error={Boolean(touched.password && errors.password)}
-        >
-          <InputLabel htmlFor="password">Password</InputLabel>
-          <OutlinedInput
-            id="password"
-            name="password"
-            type={showPassword ? "text" : "password"}
-            value={values.password}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            }
-            labelWidth={70}
-          />
-          <FormHelperText id="password-helper-text">
-            {errors.password}
-          </FormHelperText>
-        </FormControl>
+      <TextField
+        type="text"
+        name="uscfId"
+        label="Your USCF ID"
+        variant="outlined"
+        value={values.uscfId}
+        error={Boolean(touched.uscfId && errors.uscfId)}
+        fullWidth
+        helperText={touched.uscfId && errors.uscfId}
+        onBlur={handleBlur}
+        onChange={handleChange}
+        my={3}
+      />
+      <FormControl
+        className={clsx(classes.margin, classes.textField)}
+        variant="outlined"
+        fullWidth
+        error={Boolean(touched.password && errors.password)}
+      >
+        <InputLabel htmlFor="password">Password</InputLabel>
+        <OutlinedInput
+          id="password"
+          name="password"
+          type={showPassword ? "text" : "password"}
+          value={values.password}
+          onBlur={handleBlur}
+          onChange={handleChange}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+                color="secondary"
+              >
+                {showPassword ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </InputAdornment>
+          }
+          labelWidth={70}
+        />
+        <FormHelperText id="password-helper-text">
+          {errors.password}
+        </FormHelperText>
+      </FormControl>
 
-        <FormControl
-          className={clsx(classes.margin, classes.textField)}
-          variant="outlined"
-          error={Boolean(
-            touched.password_confirmation && errors.password_confirmation
-          )}
-        >
-          <InputLabel htmlFor="password_confirmation">
-            Re-enter password
-          </InputLabel>
-          <OutlinedInput
-            id="password_confirmation"
-            name="password_confirmation"
-            type={showPassword ? "text" : "password"}
-            value={values.password_confirmation}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            }
-            labelWidth={120}
-          />
-          <FormHelperText id="confirm-password-helper-text">
-            {errors.password_confirmation}
-          </FormHelperText>
-        </FormControl>
-      </Box>
+      <FormControl
+        className={clsx(classes.margin, classes.textField)}
+        variant="outlined"
+        fullWidth
+        error={Boolean(
+          touched.password_confirmation && errors.password_confirmation
+        )}
+      >
+        <InputLabel htmlFor="password_confirmation">
+          Re-enter password
+        </InputLabel>
+        <OutlinedInput
+          id="password_confirmation"
+          name="password_confirmation"
+          type={showPassword ? "text" : "password"}
+          value={values.password_confirmation}
+          onBlur={handleBlur}
+          onChange={handleChange}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+                color="secondary"
+              >
+                {showPassword ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </InputAdornment>
+          }
+          labelWidth={120}
+        />
+        <FormHelperText id="confirm-password-helper-text">
+          {errors.password_confirmation}
+        </FormHelperText>
+      </FormControl>
 
       <Button
         type="submit"
@@ -184,9 +172,10 @@ const InnerForm = (props) => {
         variant="contained"
         color="primary"
         disabled={isSubmitting}
+        size="large"
         my={5}
       >
-        Sign up
+        Sign Up
       </Button>
     </form>
   );
@@ -225,22 +214,11 @@ const SignUp = () => {
   }, [user]);
 
   return (
-    <Wrapper>
+    <Box width="500px" padding={4}>
       <Helmet title="Sign Up" />
 
       <Typography component="h1" variant="h3" gutterBottom>
         Create an account
-      </Typography>
-      <Typography component="h2" variant="body1">
-        Already have an account?
-        <Link
-          component={RouterLink}
-          to="/auth/sign-in"
-          color="secondary"
-          ml={2}
-        >
-          Sign in
-        </Link>
       </Typography>
 
       <Formik
@@ -274,7 +252,13 @@ const SignUp = () => {
       >
         {(formProps) => <InnerForm {...formProps} />}
       </Formik>
-    </Wrapper>
+      <Typography variant="h6" align="center">
+        Already a member?
+        <Link component={RouterLink} to="/auth/sign-in" color="primary" ml={2}>
+          Login
+        </Link>
+      </Typography>
+    </Box>
   );
 };
 

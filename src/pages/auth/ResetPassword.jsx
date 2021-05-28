@@ -1,12 +1,11 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, Link as RouterLink } from "react-router-dom";
-import styled from "styled-components/macro";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import { Box, Paper } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import {
   Alert,
   TextField,
@@ -16,18 +15,6 @@ import {
 } from "components/SpacedMui";
 
 import { setMessage } from "redux/reducers/messageReducer";
-
-const Wrapper = styled(Paper)`
-  padding: ${(props) => props.theme.spacing(6)}px;
-
-  ${(props) => props.theme.breakpoints.up("md")} {
-    padding: ${(props) => props.theme.spacing(10)}px;
-  }
-  width: 300px;
-  ${(props) => props.theme.breakpoints.up("md")} {
-    width: 500px;
-  }
-`;
 
 const InnerForm = (props) => {
   const {
@@ -102,21 +89,12 @@ const ResetPassword = () => {
   };
 
   return (
-    <Wrapper>
+    <Box width="500px" padding={4}>
       <Helmet title="Reset Password | AAC" />
 
       <Typography component="h1" variant="h3" gutterBottom>
         Reset your password
       </Typography>
-
-      <Link
-        component={RouterLink}
-        to="/auth/sign-in"
-        color="secondary"
-        variant="h6"
-      >
-        Sign in Instead
-      </Link>
 
       <Typography component="h2" variant="body2" mt={2}>
         Enter your email address and we'll send you a link to reset your
@@ -138,7 +116,13 @@ const ResetPassword = () => {
       >
         {(formProps) => <InnerForm {...formProps} />}
       </Formik>
-    </Wrapper>
+      <Typography variant="h6" align="center">
+        Already a member?
+        <Link component={RouterLink} to="/auth/sign-in" color="primary" ml={2}>
+          Login
+        </Link>
+      </Typography>
+    </Box>
   );
 };
 

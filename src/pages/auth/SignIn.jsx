@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 
 import {
-  Paper,
+  Box,
   InputAdornment,
   IconButton,
   FormControl,
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Wrapper = styled(Paper)`
+const Wrapper = styled(Box)`
   padding: ${(props) => props.theme.spacing(6)}px;
   ${(props) => props.theme.breakpoints.up("md")} {
     padding: ${(props) => props.theme.spacing(10)}px;
@@ -119,6 +119,7 @@ const InnerForm = (props) => {
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
                 edge="end"
+                color="secondary"
               >
                 {showPassword ? <Visibility /> : <VisibilityOff />}
               </IconButton>
@@ -138,10 +139,11 @@ const InnerForm = (props) => {
         fullWidth
         variant="contained"
         color="primary"
+        size="large"
         disabled={isSubmitting}
         my={5}
       >
-        Sign in
+        Log in
       </Button>
     </form>
   );
@@ -174,23 +176,11 @@ const SignIn = () => {
   };
 
   return (
-    <Wrapper>
+    <Box width="500px" padding={4}>
       <Helmet title="Sign In" />
 
       <Typography component="h1" variant="h3" gutterBottom>
         Sign in
-      </Typography>
-
-      <Typography component="h2" variant="body1">
-        Create an account?
-        <Link
-          component={RouterLink}
-          to="/auth/sign-up"
-          color="secondary"
-          ml={2}
-        >
-          Sign up
-        </Link>
       </Typography>
 
       <Formik
@@ -210,7 +200,14 @@ const SignIn = () => {
       >
         {(formProps) => <InnerForm {...formProps} />}
       </Formik>
-    </Wrapper>
+
+      <Typography variant="h6" align="center">
+        Create an account?
+        <Link component={RouterLink} to="/auth/sign-up" color="primary" ml={2}>
+          Signup
+        </Link>
+      </Typography>
+    </Box>
   );
 };
 
