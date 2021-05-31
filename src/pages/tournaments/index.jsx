@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { Link as RouterLink } from "react-router-dom";
+import { Link } from "components/SpacedMui";
 
 import { Paper as MuiPaper, Tabs, Tab, Box } from "@material-ui/core";
 
@@ -44,7 +46,10 @@ const Tournament = () => {
         <Tab label="Past tournaments" />
       </Tabs>
       <TabPanel value={value} index={0}>
-        Registered Tournaments
+        <h2>Registered Tournaments</h2>
+        <Link component={RouterLink} to="/tournaments/1">
+          Tournament 1
+        </Link>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Upcoming tournaments

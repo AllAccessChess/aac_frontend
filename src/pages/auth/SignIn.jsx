@@ -2,7 +2,7 @@ import React from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import clsx from "clsx";
-import styled from "styled-components/macro";
+
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -45,17 +45,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
 }));
-
-const Wrapper = styled(Box)`
-  padding: ${(props) => props.theme.spacing(6)}px;
-  ${(props) => props.theme.breakpoints.up("md")} {
-    padding: ${(props) => props.theme.spacing(10)}px;
-  }
-  width: 300px;
-  ${(props) => props.theme.breakpoints.up("md")} {
-    width: 500px;
-  }
-`;
 
 const InnerForm = (props) => {
   const {
@@ -158,7 +147,7 @@ const SignIn = () => {
     if (user) {
       history.push("/");
     }
-  }, [user]);
+  }, [user, history]);
 
   const handleSubmit = async (
     values,

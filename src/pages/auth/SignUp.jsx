@@ -211,7 +211,7 @@ const SignUp = () => {
     if (user) {
       history.push("/");
     }
-  }, [user]);
+  }, [user, history]);
 
   return (
     <Box width="500px" padding={4}>

@@ -28,10 +28,6 @@ const menus = [
     label: "Tournaments",
     url: "/tournaments",
   },
-  {
-    label: "FAQ",
-    url: "/faq",
-  },
 ];
 
 const TopBar = () => {
