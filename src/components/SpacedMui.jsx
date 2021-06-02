@@ -3,6 +3,7 @@ import { spacing } from "@material-ui/system";
 
 import {
   Button as MuiButton,
+  IconButton as MuiIconButton,
   TextField as MuiTextField,
   Typography as MuiTypography,
   Link as MuiLink,
@@ -13,5 +14,6 @@ import { Alert as MuiAlert } from "@material-ui/lab";
 export const Alert = styled(MuiAlert)(spacing);
 export const TextField = styled(MuiTextField)(spacing);
 export const Button = styled(MuiButton)(spacing);
+export const IconButton = styled(MuiIconButton)(spacing);
 export const Link = styled(MuiLink)(spacing);
 export const Typography = styled(MuiTypography)(spacing);

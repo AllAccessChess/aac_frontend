@@ -139,16 +139,14 @@ const lightVariant = merge(defaultVariant, {
 const blueVariant = merge(defaultVariant, {
   name: THEMES.BLUE,
   palette: {
-    type: "light",
+    type: "dark",
     primary: {
-      light: customBlue["light"],
       main: customBlue["primary"],
-      dark: customBlue["dark"],
       contrastText: "#FFF",
     },
     secondary: {
-      main: "#FFF",
-      contrastText: "#000",
+      main: "#F7B500",
+      contrastText: "#15375C",
     },
     background: {
       default: "#15375C",

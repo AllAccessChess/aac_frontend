@@ -2,14 +2,14 @@ import React from "react";
 import styled, { createGlobalStyle } from "styled-components/macro";
 
 import { Link as RouterLink } from "react-router-dom";
-import { CssBaseline, Box } from "@material-ui/core";
+import { CssBaseline, Box, Grid, Button } from "@material-ui/core";
 import { Link } from "components/SpacedMui";
 
 import logoImg from "assets/images/logo.png";
-import backgroundImg from "assets/images/background.svg";
+import backgroundImg from "assets/images/auth_background.png";
 
 const Logo = styled.img`
-  width: 290px;
+  width: 113px;
 `;
 
 const GlobalStyle = createGlobalStyle`
@@ -23,37 +23,48 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Wrapper = styled(Box)`
+const Wrapper = styled(Grid)`
+  height: 100%;
+`;
+const BackgroundWrapper = styled(Grid)`
   background: url(${(props) => props.background});
-  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
+  background-size: cover;
 `;
 
 const Auth = ({ children }) => {
   return (
-    <Wrapper
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      width="100%"
-      height="100%"
-      background={backgroundImg}
-    >
+    <>
       <CssBaseline />
       <GlobalStyle />
-      <Box
-        position="absolute"
-        left="5%"
-        top="20px"
-        display="flex"
-        flexDirection="column"
-      >
-        <Link component={RouterLink} to="/">
-          <Logo src={logoImg} />
-        </Link>
-        {children}
-      </Box>
-    </Wrapper>
+      <Wrapper container>
+        <Grid item xs={12} sm={6}>
+          <Box display="flex" flexDirection="column" px={10} py={8}>
+            <Box display="flex" justifyContent="space-between" mb={5}>
+              <Link component={RouterLink} to="/">
+                <Logo src={logoImg} />
+              </Link>
+              <Button
+                component={RouterLink}
+                to="/"
+                color="secondary"
+                size="large"
+              >
+                Continue as a guest
+              </Button>
+            </Box>
+            {children}
+          </Box>
+        </Grid>
+        <BackgroundWrapper
+          item
+          xs={12}
+          sm={6}
+          background={backgroundImg}
+        ></BackgroundWrapper>
+      </Wrapper>
+    </>
   );
 };
 

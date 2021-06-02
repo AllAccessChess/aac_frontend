@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link as RouterLink } from "react-router-dom";
 
-import { AppBar, Box } from "@material-ui/core";
+import { AppBar, Box, Button } from "@material-ui/core";
 import { Link } from "components/SpacedMui";
 import Notification from "components/Notification";
 import AccountMenu from "components/AccountMenu";
@@ -58,7 +58,19 @@ const TopBar = () => {
             </Link>
           ))}
           <Notification />
-          <AccountMenu user={user} onLogOut={handleLogout} />
+          {user ? (
+            <AccountMenu user={user} onLogOut={handleLogout} />
+          ) : (
+            <Button
+              component={RouterLink}
+              to="/auth/sign-in"
+              color="secondary"
+              size="large"
+              variant="contained"
+            >
+              Login
+            </Button>
+          )}
         </Box>
       </Box>
     </Wrapper>

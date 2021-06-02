@@ -117,6 +117,22 @@ const overrides = {
       cursor: "pointer",
     },
   },
+  MuiButton: {
+    containedSizeLarge: {
+      fontSize: "1.0625rem",
+      fontWeight: 700,
+    },
+    textSizeLarge: {
+      fontSize: "1.0625rem",
+      fontWeight: 700,
+    },
+  },
+  MuiFormHelperText: {
+    root: {
+      textTransform: "none",
+      fontSize: "0.9rem",
+    },
+  },
 };
 
 export default overrides;

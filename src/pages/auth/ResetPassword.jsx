@@ -36,8 +36,9 @@ const InnerForm = (props) => {
       <TextField
         type="email"
         name="email"
-        label="Email Address"
+        label="Email"
         variant="outlined"
+        color="secondary"
         value={values.email}
         error={Boolean(touched.email && errors.email)}
         fullWidth
@@ -46,13 +47,14 @@ const InnerForm = (props) => {
         onChange={handleChange}
         my={3}
       />
-      <Box my={3}>
+      <Box my={5}>
         <Button
           type="submit"
           fullWidth
           variant="contained"
-          color="primary"
+          color="secondary"
           disabled={isSubmitting}
+          size="large"
         >
           Continue
         </Button>
@@ -89,7 +91,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <Box width="500px" padding={4}>
+    <Box padding={1}>
       <Helmet title="Reset Password | AAC" />
 
       <Typography component="h1" variant="h3" gutterBottom>
@@ -108,7 +110,7 @@ const ResetPassword = () => {
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string()
-            .email("Must be a valid email")
+            .email("Please enter a valid email")
             .max(255)
             .required("Email is required"),
         })}
@@ -116,9 +118,14 @@ const ResetPassword = () => {
       >
         {(formProps) => <InnerForm {...formProps} />}
       </Formik>
-      <Typography variant="h6" align="center">
+      <Typography variant="h4" align="center">
         Already a member?
-        <Link component={RouterLink} to="/auth/sign-in" color="primary" ml={2}>
+        <Link
+          component={RouterLink}
+          to="/auth/sign-in"
+          color="secondary"
+          ml={2}
+        >
           Login
         </Link>
       </Typography>

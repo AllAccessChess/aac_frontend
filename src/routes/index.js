@@ -52,7 +52,7 @@ const tournamentRoute = {
   path: "/tournaments",
   name: "Tournaments",
   component: null,
-  guard: AuthGuard,
+  // guard: AuthGuard,
   children: [
     {
       path: "/tournaments",
@@ -77,7 +77,7 @@ const dashboardRoute = {
   path: "/",
   name: "dashboard",
   component: Dashboard,
-  guard: AuthGuard,
+  // guard: AuthGuard,
 };
 
 // Routes using the Dashboard layout

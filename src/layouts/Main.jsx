@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
 
 import styled, { createGlobalStyle } from "styled-components/macro";
 import { CssBaseline, withWidth, Box } from "@material-ui/core";
@@ -37,17 +36,8 @@ const Wrapper = styled(Box)`
 
 const Main = ({ children, routes, width }) => {
   // const dispatch = useDispatch();
-  const history = useHistory();
   const user = useSelector((state) => state.authReducer.user);
   const authLoading = useSelector((state) => state.authReducer.loading);
-
-  useEffect(() => {
-    if (!user) {
-      // dispatch(signInWithCookie());
-      history.push("/auth/sign-in");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
 
   return (
     <Root>

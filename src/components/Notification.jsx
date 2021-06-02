@@ -1,12 +1,12 @@
 import React from "react";
 
-import { IconButton } from "@material-ui/core";
+import { IconButton } from "components/SpacedMui";
 import { Notifications as AlarmIcon } from "@material-ui/icons";
 
 const Notification = () => {
   return (
     <>
-      <IconButton aria-label="notification" color="secondary">
+      <IconButton aria-label="notification" color="default" mr={2}>
         <AlarmIcon />
       </IconButton>
     </>

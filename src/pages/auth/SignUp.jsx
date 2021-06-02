@@ -24,6 +24,7 @@ import {
   Link,
 } from "components/SpacedMui";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
+import LichessButton from "components/LichessButton";
 
 import { signUp } from "redux/reducers/authReducer";
 
@@ -69,10 +70,25 @@ const InnerForm = (props) => {
         </Alert>
       )}
       <TextField
+        type="text"
+        name="name"
+        label="Name"
+        variant="outlined"
+        color="secondary"
+        value={values.name}
+        error={Boolean(touched.name && errors.name)}
+        fullWidth
+        helperText={touched.name && errors.name}
+        onBlur={handleBlur}
+        onChange={handleChange}
+        my={3}
+      />
+      <TextField
         type="email"
         name="email"
-        label="Email Address"
+        label="Email"
         variant="outlined"
+        color="secondary"
         value={values.email}
         error={Boolean(touched.email && errors.email)}
         fullWidth
@@ -81,22 +97,10 @@ const InnerForm = (props) => {
         onChange={handleChange}
         my={3}
       />
-      <TextField
-        type="text"
-        name="uscfId"
-        label="Your USCF ID"
-        variant="outlined"
-        value={values.uscfId}
-        error={Boolean(touched.uscfId && errors.uscfId)}
-        fullWidth
-        helperText={touched.uscfId && errors.uscfId}
-        onBlur={handleBlur}
-        onChange={handleChange}
-        my={3}
-      />
       <FormControl
         className={clsx(classes.margin, classes.textField)}
         variant="outlined"
+        color="secondary"
         fullWidth
         error={Boolean(touched.password && errors.password)}
       >
@@ -115,7 +119,6 @@ const InnerForm = (props) => {
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
                 edge="end"
-                color="secondary"
               >
                 {showPassword ? <Visibility /> : <VisibilityOff />}
               </IconButton>
@@ -131,13 +134,14 @@ const InnerForm = (props) => {
       <FormControl
         className={clsx(classes.margin, classes.textField)}
         variant="outlined"
+        color="secondary"
         fullWidth
         error={Boolean(
           touched.password_confirmation && errors.password_confirmation
         )}
       >
         <InputLabel htmlFor="password_confirmation">
-          Re-enter password
+          Confirm Password
         </InputLabel>
         <OutlinedInput
           id="password_confirmation"
@@ -153,7 +157,6 @@ const InnerForm = (props) => {
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
                 edge="end"
-                color="secondary"
               >
                 {showPassword ? <Visibility /> : <VisibilityOff />}
               </IconButton>
@@ -170,7 +173,7 @@ const InnerForm = (props) => {
         type="submit"
         fullWidth
         variant="contained"
-        color="primary"
+        color="secondary"
         disabled={isSubmitting}
         size="large"
         my={5}
@@ -214,12 +217,8 @@ const SignUp = () => {
   }, [user, history]);
 
   return (
-    <Box width="500px" padding={4}>
+    <Box padding={1}>
       <Helmet title="Sign Up" />
-
-      <Typography component="h1" variant="h3" gutterBottom>
-        Create an account
-      </Typography>
 
       <Formik
         enableReinitialize
@@ -227,15 +226,15 @@ const SignUp = () => {
           email: "",
           password: "",
           password_confirmation: "",
-          uscfId: "",
+          name: "",
           submit: false,
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string()
-            .email("Must be a valid email")
+            .email("Please enter a valid email")
             .max(255)
             .required("Email is required"),
-          uscfId: Yup.string().max(255).required("USCF ID is required"),
+          name: Yup.string().max(255).required("Name is required"),
           password: Yup.string()
             .min(8, "Must be at least 8 characters")
             .max(255)
@@ -252,10 +251,21 @@ const SignUp = () => {
       >
         {(formProps) => <InnerForm {...formProps} />}
       </Formik>
-      <Typography variant="h6" align="center">
+      <Typography variant="h4" align="center" color="textSecondary">
+        or
+      </Typography>
+      <LichessButton color="default" size="large" fullWidth my={5}>
+        Signup with Lichess
+      </LichessButton>
+      <Typography variant="h4" align="center">
         Already a member?
-        <Link component={RouterLink} to="/auth/sign-in" color="primary" ml={2}>
-          Login
+        <Link
+          component={RouterLink}
+          to="/auth/sign-in"
+          color="secondary"
+          ml={2}
+        >
+          Sign in
         </Link>
       </Typography>
     </Box>

@@ -28,6 +28,7 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { signIn } from "redux/reducers/authReducer";
+import LichessButton from "components/LichessButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,8 +79,9 @@ const InnerForm = (props) => {
         autoComplete="off"
         type="email"
         name="email"
-        label="Email Address"
+        label="Email"
         variant="outlined"
+        color="secondary"
         value={values.email}
         error={Boolean(touched.email && errors.email)}
         fullWidth
@@ -91,6 +93,7 @@ const InnerForm = (props) => {
       <FormControl
         className={clsx(classes.margin, classes.textField)}
         variant="outlined"
+        color="secondary"
         error={Boolean(touched.password && errors.password)}
       >
         <InputLabel htmlFor="password">Password</InputLabel>
@@ -108,7 +111,7 @@ const InnerForm = (props) => {
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
                 edge="end"
-                color="secondary"
+                color="default"
               >
                 {showPassword ? <Visibility /> : <VisibilityOff />}
               </IconButton>
@@ -127,7 +130,7 @@ const InnerForm = (props) => {
         type="submit"
         fullWidth
         variant="contained"
-        color="primary"
+        color="secondary"
         size="large"
         disabled={isSubmitting}
         my={5}
@@ -165,12 +168,8 @@ const SignIn = () => {
   };
 
   return (
-    <Box width="500px" padding={4}>
+    <Box width="100%" padding={1}>
       <Helmet title="Sign In" />
-
-      <Typography component="h1" variant="h3" gutterBottom>
-        Sign in
-      </Typography>
 
       <Formik
         initialValues={{
@@ -180,7 +179,7 @@ const SignIn = () => {
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string()
-            .email("Must be a valid email")
+            .email("Please enter a valid email")
             .max(255)
             .required("Email is required"),
           password: Yup.string().max(255).required("Password is required"),
@@ -190,9 +189,22 @@ const SignIn = () => {
         {(formProps) => <InnerForm {...formProps} />}
       </Formik>
 
-      <Typography variant="h6" align="center">
-        Create an account?
-        <Link component={RouterLink} to="/auth/sign-up" color="primary" ml={2}>
+      <Typography variant="h4" align="center" color="textSecondary">
+        or
+      </Typography>
+
+      <LichessButton color="default" size="large" fullWidth my={5}>
+        Login with Lichess
+      </LichessButton>
+
+      <Typography variant="h4" align="center">
+        Not a member?
+        <Link
+          component={RouterLink}
+          to="/auth/sign-up"
+          color="secondary"
+          ml={2}
+        >
           Signup
         </Link>
       </Typography>
