@@ -58,7 +58,7 @@ const Main = ({ children, routes, width }) => {
         display="flex"
         justifyContent="center"
         mx="calc(5% + 15px)"
-        height="100%"
+        height="calc(100% - 142px)"
       >
         {authLoading ? <ScreenLoader /> : children}
       </Wrapper>
