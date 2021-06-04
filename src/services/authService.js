@@ -1,13 +1,13 @@
 import BaseAPIService from "./baseAPIService";
 
 export default class AuthService extends BaseAPIService {
-  login = (payload) => {
-    return this.request("/auth/token", "POST", payload);
+  static login = (payload) => {
+    return this.request("/login", "POST", payload);
   };
-  register = (payload) => {
-    return this.request("/auth/register", "POST", payload);
+  static register = (payload) => {
+    return this.request("/register", "POST", payload);
   };
-  resetPassword = (payload) => {
-    return this.request("/auth/reset-password", "POST", payload);
+  static resetPassword = (payload) => {
+    return this.request("/reset-password", "POST", payload);
   };
 }

@@ -20,7 +20,7 @@ const Wrapper = styled(AppBar)`
 `;
 
 const Logo = styled.img`
-  width: 290px;
+  width: 113px;
 `;
 
 const menus = [

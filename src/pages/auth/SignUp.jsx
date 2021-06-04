@@ -189,25 +189,19 @@ const SignUp = () => {
   const history = useHistory();
   const user = useSelector((state) => state.authReducer.user);
 
-  const handleSubmit = async (
-    values,
-    { setErrors, setStatus, setSubmitting }
-  ) => {
-    try {
-      await dispatch(
-        signUp({
-          id: values._id,
+  const handleSubmit = async (values) => {
+    dispatch(
+      signUp(
+        {
           name: values.name,
+          email: values.email,
           password: values.password,
-        })
-      );
-    } catch (error) {
-      const message = "Invalid email or password";
-
-      setStatus({ success: false });
-      setErrors({ submit: message });
-      setSubmitting(false);
-    }
+        },
+        () => {
+          history.push("/auth/sign-in");
+        }
+      )
+    );
   };
 
   React.useEffect(() => {
@@ -227,7 +221,6 @@ const SignUp = () => {
           password: "",
           password_confirmation: "",
           name: "",
-          submit: false,
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string()

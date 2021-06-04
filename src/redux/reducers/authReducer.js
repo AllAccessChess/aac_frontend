@@ -27,11 +27,13 @@ export const signIn = (credentials) => async (dispatch) => {
   try {
     // const response = await AuthService.login(credentials);
     const response = {
-      id: "12345",
-      email: credentials.email,
-      name: "Railson Sousa",
+      user: {
+        id: "12345",
+        email: credentials.email,
+        name: "Railson Sousa",
+      },
     };
-    dispatch(setUser(response));
+    dispatch(setUser(response.user));
   } catch (error) {
     console.log(error);
     dispatch(setMessage({ message: error.message }));
@@ -39,17 +41,15 @@ export const signIn = (credentials) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
-export const signUp = (payload) => async (dispatch) => {
+export const signUp = (payload, callback) => async (dispatch) => {
   dispatch(setLoading(true));
 
   try {
-    // const response = await AuthService.register(payload);
-    const response = {
-      id: "12345",
-      email: payload.email,
-      name: "Railson Sousa",
-    };
-    dispatch(setUser(response));
+    // await AuthService.register(payload);
+    dispatch(
+      setMessage({ message: "Successfully registered!", type: "success" })
+    );
+    if (callback) callback();
   } catch (error) {
     console.log(error);
     dispatch(setMessage({ message: error.message }));

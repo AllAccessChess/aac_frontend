@@ -1,4 +1,14 @@
+import React from "react";
 import async from "../components/Async";
+
+// Icons
+import {
+  Dashboard as DashboardIcon,
+  AccountCircle as AccountIcon,
+  SupervisorAccount as TournamentIcon,
+  AttachMoney as PrizeIcon,
+  Settings as SettingsIcon,
+} from "@material-ui/icons";
 
 // Guards
 const AuthGuard = async(() => import("../components/AuthGuard"));
@@ -10,6 +20,8 @@ const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 
 // Main components
 const Account = async(() => import("../pages/account"));
+const Prizes = async(() => import("../pages/prizes"));
+const Settings = async(() => import("../pages/settings"));
 const Tournaments = async(() => import("../pages/tournaments"));
 const TournamentDetail = async(() => import("../pages/tournaments/Detail"));
 const TournamentPlay = async(() => import("../pages/tournaments/Play"));
@@ -39,19 +51,12 @@ const authRoutes = {
   component: null,
 };
 
-const accountRoute = {
-  id: "Account",
-  path: "/account",
-  name: "Account",
-  component: Account,
-  guard: AuthGuard,
-};
-
 const tournamentRoute = {
   id: "Tournaments",
   path: "/tournaments",
-  name: "Tournaments",
+  name: "My Tournaments",
   component: null,
+  icon: <TournamentIcon />,
   // guard: AuthGuard,
   children: [
     {
@@ -75,13 +80,50 @@ const tournamentRoute = {
 const dashboardRoute = {
   id: "Dashboard",
   path: "/",
-  name: "dashboard",
+  name: "Dashboard",
   component: Dashboard,
+  icon: <DashboardIcon />,
   // guard: AuthGuard,
 };
 
+const accountRoute = {
+  id: "Account",
+  path: "/account",
+  name: "Account",
+  component: Account,
+  guard: AuthGuard,
+  guarded: true,
+  icon: <AccountIcon />,
+};
+
+const prizesRoute = {
+  id: "Prizes",
+  path: "/prizes",
+  name: "My Prizes",
+  component: Prizes,
+  icon: <PrizeIcon />,
+  guarded: true,
+  guard: AuthGuard,
+};
+
+const settingsRoute = {
+  id: "Settings",
+  path: "/settings",
+  name: "Settings",
+  icon: <SettingsIcon />,
+  component: Settings,
+  guarded: true,
+  guard: AuthGuard,
+};
+
 // Routes using the Dashboard layout
-export const mainLayoutRoutes = [accountRoute, tournamentRoute, dashboardRoute];
+export const mainLayoutRoutes = [
+  accountRoute,
+  dashboardRoute,
+  tournamentRoute,
+  prizesRoute,
+  settingsRoute,
+];
 
 // Routes using the Auth layout
 export const authLayoutRoutes = [authRoutes];
