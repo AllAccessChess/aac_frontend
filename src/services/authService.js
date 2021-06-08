@@ -7,6 +7,9 @@ export default class AuthService extends BaseAPIService {
   static register = (payload) => {
     return this.request("/register", "POST", payload);
   };
+  static renew = () => {
+    return this.requestWithAuth("/renew", "GET");
+  };
   static resetPassword = (payload) => {
     return this.request("/reset-password", "POST", payload);
   };

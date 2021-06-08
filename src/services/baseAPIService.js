@@ -2,7 +2,7 @@ import axios from "utils/axios";
 import https from "https";
 import config from "config";
 
-import CookieService from "./cookieService";
+import StorageService from "./storageService";
 const baseURL = config.apiURL || "";
 
 export default class BaseAPIService {
@@ -40,7 +40,7 @@ export default class BaseAPIService {
       .request({
         url: baseURL + url,
         headers: {
-          Authorization: JSON.stringify(CookieService.getSiteLogin()),
+          Authorization: StorageService.getAuthToken(),
           "Content-Type": contentType,
         },
         method,

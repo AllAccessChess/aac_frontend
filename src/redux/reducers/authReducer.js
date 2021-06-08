@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-// import AuthService from "services/authService";
+import AuthService from "services/authService";
+import StorageService from "services/storageService";
 import { setMessage } from "./messageReducer";
 
 const initialState = {
@@ -25,14 +26,9 @@ export const { setUser, setLoading } = slice.actions;
 export const signIn = (credentials) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    // const response = await AuthService.login(credentials);
-    const response = {
-      user: {
-        id: "12345",
-        email: credentials.email,
-        name: "Railson Sousa",
-      },
-    };
+    const response = await AuthService.login(credentials);
+    StorageService.setAuthToken(response.token);
+    StorageService.setUserID(response.user.id);
     dispatch(setUser(response.user));
   } catch (error) {
     console.log(error);
@@ -41,15 +37,15 @@ export const signIn = (credentials) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
-export const signUp = (payload, callback) => async (dispatch) => {
+export const signUp = (payload) => async (dispatch) => {
   dispatch(setLoading(true));
 
   try {
-    // await AuthService.register(payload);
-    dispatch(
-      setMessage({ message: "Successfully registered!", type: "success" })
-    );
-    if (callback) callback();
+    const response = await AuthService.register(payload);
+    StorageService.setAuthToken(response.token);
+    StorageService.setUserID(response.user.id);
+    dispatch(setUser(response.user));
+    setMessage({ message: "Successfully registered!", type: "success" });
   } catch (error) {
     console.log(error);
     dispatch(setMessage({ message: error.message }));

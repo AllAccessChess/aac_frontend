@@ -191,16 +191,11 @@ const SignUp = () => {
 
   const handleSubmit = async (values) => {
     dispatch(
-      signUp(
-        {
-          name: values.name,
-          email: values.email,
-          password: values.password,
-        },
-        () => {
-          history.push("/auth/sign-in");
-        }
-      )
+      signUp({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      })
     );
   };
 

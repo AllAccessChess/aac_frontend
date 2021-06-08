@@ -1,13 +1,25 @@
 export default class StorageService {
   static getAuthToken = () => {
-    return JSON.parse(localStorage.getItem("auth-token"));
+    return localStorage.getItem("auth-token");
   };
 
   static setAuthToken = (tokenInfo) => {
-    localStorage.setItem("auth-token", JSON.stringify(tokenInfo));
+    localStorage.setItem("auth-token", tokenInfo);
   };
 
   static clearAuthToken = () => {
     localStorage.removeItem("auth-token");
+  };
+
+  static getUserID = () => {
+    return localStorage.getItem("userID");
+  };
+
+  static setUserID = (userID) => {
+    localStorage.setItem("userID", userID);
+  };
+
+  static clearUserID = () => {
+    localStorage.removeItem("userID");
   };
 }
