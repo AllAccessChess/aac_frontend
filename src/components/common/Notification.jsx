@@ -1,6 +1,6 @@
 import React from "react";
 
-import { IconButton } from "components/SpacedMui";
+import { IconButton } from "components/common/SpacedMui";
 import { Notifications as AlarmIcon } from "@material-ui/icons";
 
 const Notification = () => {

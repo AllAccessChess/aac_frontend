@@ -3,7 +3,7 @@ import styled, { createGlobalStyle } from "styled-components/macro";
 
 import { Link as RouterLink } from "react-router-dom";
 import { CssBaseline, Box, Grid, Button } from "@material-ui/core";
-import { Link } from "components/SpacedMui";
+import { Link } from "components/common/SpacedMui";
 
 import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/auth_background.png";

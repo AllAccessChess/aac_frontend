@@ -12,7 +12,7 @@ import {
   Button,
   Link,
   Typography,
-} from "components/SpacedMui";
+} from "components/common/SpacedMui";
 
 import { setMessage } from "redux/reducers/messageReducer";
 

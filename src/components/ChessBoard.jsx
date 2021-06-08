@@ -1,62 +1,96 @@
-import React, { useState } from "react";
-
-import Chess from "chess.js";
-
+import React, { useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import Chessground from "react-chessground";
 import "react-chessground/dist/styles/chessground.css";
 
-import { Box, Button } from "@material-ui/core";
+// import config from "config";
+// import GameClient from "utils/gameClient";
+// import GameClient, { GAME_EVENTS, GAME_ACTIONS } from "utils/gameClient";
+
 import TransformPawnDialog from "dialogs/TransformPawnDialog";
+import { addHistoryItem } from "redux/reducers/matchReducer";
 
-const ChessBoard = () => {
-  const [chess, setChess] = useState(new Chess());
-  const [pendingMove, setPendingMove] = useState();
+const ChessBoard = (props) => {
+  const dispatch = useDispatch();
+  const {
+    chess,
+    fen,
+    setFen,
+    lastMove,
+    setLastMove,
+    pendingMove,
+    setPendingMove,
+  } = props;
+
   const [showTransformPawn, setShowTransformPawn] = useState(false);
-  const [fen, setFen] = useState("");
-  const [lastMove, setLastMove] = useState();
 
-  const onMove = (from, to) => {
-    const moves = chess.moves({ verbose: true });
-    for (let i = 0, len = moves.length; i < len; i++) {
-      /* eslint-disable-line */
-      if (moves[i].flags.indexOf("p") !== -1 && moves[i].from === from) {
-        setPendingMove([from, to]);
-        setShowTransformPawn(true);
-        return;
-      }
-    }
-    if (chess.move({ from, to, promotion: "x" })) {
-      setFen(chess.fen());
-      setLastMove([from, to]);
-      setTimeout(randomMove, 500);
-    }
-  };
+  // const gameClientRef = useRef(new GameClient(config.socketURL));
 
-  const randomMove = () => {
+  const randomMove = useCallback(() => {
     const moves = chess.moves({ verbose: true });
     const move = moves[Math.floor(Math.random() * moves.length)];
+    console.log(move);
     if (moves.length > 0) {
-      chess.move(move.san);
+      chess.move(move);
+      dispatch(addHistoryItem(move));
       setFen(chess.fen());
       setLastMove([move.from, move.to]);
     }
-  };
+  }, [dispatch, chess, setFen, setLastMove]);
 
-  const promotion = (e) => {
-    const from = pendingMove[0];
-    const to = pendingMove[1];
-    chess.move({ from, to, promotion: e });
-    setFen(chess.fen());
-    setLastMove([from, to]);
-    setShowTransformPawn(false);
-    setTimeout(randomMove, 500);
-  };
+  const onMove = useCallback(
+    (from, to) => {
+      const moves = chess.moves({ verbose: true });
+      for (let i = 0, len = moves.length; i < len; i++) {
+        /* eslint-disable-line */
+        if (moves[i].flags.indexOf("p") !== -1 && moves[i].from === from) {
+          setPendingMove([from, to]);
+          setShowTransformPawn(true);
+          return;
+        }
+      }
+      const move = chess.move({ from, to, promotion: "x" });
+      if (move) {
+        console.log(move);
+        dispatch(addHistoryItem(move));
+        setFen(chess.fen());
+        setLastMove([from, to]);
+        setTimeout(randomMove, 500);
+        // gameClientRef.current.sendData({
+        //   action: GAME_ACTIONS.move,
+        //   message: from + to,
+        // });
+      }
+    },
+    [
+      dispatch,
+      chess,
+      setShowTransformPawn,
+      setFen,
+      setLastMove,
+      setPendingMove,
+      randomMove,
+    ]
+  );
 
-  const turnColor = () => {
+  const promotion = useCallback(
+    (e) => {
+      const from = pendingMove[0];
+      const to = pendingMove[1];
+      chess.move({ from, to, promotion: e });
+      setFen(chess.fen());
+      setLastMove([from, to]);
+      setShowTransformPawn(false);
+      setTimeout(randomMove, 500);
+    },
+    [chess, pendingMove, setFen, setShowTransformPawn, randomMove, setLastMove]
+  );
+
+  const turnColor = useCallback(() => {
     return chess.turn() === "w" ? "white" : "black";
-  };
+  }, [chess]);
 
-  const calcMovable = () => {
+  const calcMovable = useCallback(() => {
     const dests = new Map();
     chess.SQUARES.forEach((s) => {
       const ms = chess.moves({ square: s, verbose: true });
@@ -71,23 +105,48 @@ const ChessBoard = () => {
       dests,
       color: "white",
     };
-  };
+  }, [chess]);
 
-  const reset = () => {
-    chess.reset();
-    setFen(chess.fen());
-    setLastMove(null);
-  };
+  // const getResponse = useCallback(
+  //   (data) => {
+  //     console.log(data);
+  //     if (data.moves.length > 0) {
+  //       const move = data.moves[data.moves.length - 1];
+  //       const from = move.slice(0, 2);
+  //       const to = move.slice(2);
 
-  const undo = () => {
-    chess.undo();
-    chess.undo();
-    setFen(chess.fen());
-    setLastMove(null);
-  };
+  //       chess.move({ from, to, promotion: "x" });
+  //       setFen(data.fen);
+  //       setLastMove([from, to]);
+  //     }
+  //   },
+  //   [chess, setFen, setLastMove]
+  // );
+
+  // const setUpHandlers = useCallback(() => {
+  //   if (gameClientRef.current) {
+  //     gameClientRef.current.on(GAME_EVENTS.GET_RESPONSE, getResponse);
+  //   }
+  // }, [getResponse]);
+
+  // const endHandlers = useCallback(() => {
+  //   if (gameClientRef.current) {
+  //     gameClientRef.current.off(GAME_EVENTS.GET_RESPONSE, getResponse);
+  //   }
+  // }, [getResponse]);
+
+  // useEffect(() => {
+  //   gameClientRef.current.connect();
+  //   setUpHandlers();
+  //   return () => {
+  //     gameClientRef.current.disconnect();
+  //     endHandlers();
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
-    <Box display="flex" justifyContent="flex-start">
+    <>
       <Chessground
         width="38vw"
         height="38vw"
@@ -102,21 +161,8 @@ const ChessBoard = () => {
           marginBottom: "20px",
         }}
       />
-      <Box
-        display="flex"
-        justifyContent="space-around"
-        alignItems="flex-start"
-        width="150px"
-      >
-        <Button variant="outlined" color="secondary" onClick={reset}>
-          Reset
-        </Button>
-        <Button variant="outlined" color="secondary" onClick={undo}>
-          Undo
-        </Button>
-      </Box>
       <TransformPawnDialog open={showTransformPawn} onSubmit={promotion} />
-    </Box>
+    </>
   );
 };
 

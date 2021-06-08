@@ -3,9 +3,9 @@ import { useSelector } from "react-redux";
 
 import styled, { createGlobalStyle } from "styled-components/macro";
 import { CssBaseline, withWidth, Box } from "@material-ui/core";
-import ScreenLoader from "components/ScreenLoader";
-import TopBar from "components/TopBar";
-import SideBar from "components/SideBar";
+import ScreenLoader from "components/common/ScreenLoader";
+import TopBar from "components/common/TopBar";
+import SideBar from "components/common/SideBar";
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -36,7 +36,7 @@ const Main = ({ children, routes, width }) => {
       <CssBaseline />
       <GlobalStyle />
       <TopBar user={user} />
-      <Box display="flex" mx="5%" my="20px" height="calc(100% - 120px)">
+      <Box display="flex" mx="5%" my="20px">
         <SideBar user={user} />
         <Wrapper display="flex" p={5} width="100%">
           {authLoading ? <ScreenLoader /> : children}

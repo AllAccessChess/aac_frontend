@@ -23,12 +23,12 @@ import {
   Button,
   Link,
   Typography,
-} from "components/SpacedMui";
+} from "components/common/SpacedMui";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { signIn } from "redux/reducers/authReducer";
-import LichessButton from "components/LichessButton";
+import LichessButton from "components/common/LichessButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {

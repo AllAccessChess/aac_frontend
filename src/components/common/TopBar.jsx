@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { Link as RouterLink } from "react-router-dom";
 
 import { AppBar, Box, Button } from "@material-ui/core";
-import { Link } from "components/SpacedMui";
-import Notification from "components/Notification";
-import AccountMenu from "components/AccountMenu";
+import { Link } from "components/common/SpacedMui";
+import Notification from "components/common/Notification";
+import AccountMenu from "components/common/AccountMenu";
 
 import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/background.svg";

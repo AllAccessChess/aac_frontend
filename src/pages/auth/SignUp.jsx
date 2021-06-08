@@ -22,9 +22,9 @@ import {
   Button,
   Typography,
   Link,
-} from "components/SpacedMui";
+} from "components/common/SpacedMui";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
-import LichessButton from "components/LichessButton";
+import LichessButton from "components/common/LichessButton";
 
 import { signUp } from "redux/reducers/authReducer";
 

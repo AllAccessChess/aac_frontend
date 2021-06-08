@@ -1,61 +1,78 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link as RouterLink } from "react-router-dom";
-import { Link } from "components/SpacedMui";
+import { useSelector, useDispatch } from "react-redux";
 
-import { Paper as MuiPaper, Tabs, Tab, Box } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
+import { Link } from "components/common/SpacedMui";
+import TabPanel from "components/common/TabPanel";
+import { Paper as MuiPaper, Tabs, Tab } from "@material-ui/core";
+
+import { getTournamentList } from "redux/reducers/tournamentReducer";
 
 const Paper = styled(MuiPaper)`
   width: 100%;
 `;
 
-const TabPanel = (props) => {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tournament-tabpanel-${index}`}
-      aria-labelledby={`tournament-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </div>
-  );
-};
-
 const Tournament = () => {
-  const [value, setValue] = React.useState(0);
+  const dispatch = useDispatch();
+  const [tabValue, setTabValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const tournamentList = useSelector((state) => state.tournamentReducer.list);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
   };
+
+  useEffect(() => {
+    if (!tournamentList.length) dispatch(getTournamentList());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Paper square>
       <Tabs
-        value={value}
+        value={tabValue}
         indicatorColor="primary"
         textColor="secondary"
-        onChange={handleChange}
+        onChange={handleTabChange}
         aria-label="tournaments"
       >
         <Tab label="Registered tournaments" />
         <Tab label="Upcoming tournaments" />
         <Tab label="Past tournaments" />
       </Tabs>
-      <TabPanel value={value} index={0}>
-        <h2>Registered Tournaments</h2>
-        <Link component={RouterLink} to="/tournaments/1">
-          Tournament 1
-        </Link>
+      <TabPanel value={tabValue} index={0}>
+        {tournamentList.map((tournament) => (
+          <Link
+            key={tournament.id}
+            component={RouterLink}
+            to={`/tournament/${tournament.id}`}
+          >
+            {tournament.name}
+          </Link>
+        ))}
       </TabPanel>
-      <TabPanel value={value} index={1}>
-        Upcoming tournaments
+      <TabPanel value={tabValue} index={1}>
+        {tournamentList.map((tournament) => (
+          <Link
+            key={tournament.id}
+            component={RouterLink}
+            to={`/tournament/${tournament.id}`}
+          >
+            {tournament.name}
+          </Link>
+        ))}
       </TabPanel>
-      <TabPanel value={value} index={2}>
-        Past tournaments
+      <TabPanel value={tabValue} index={2}>
+        {tournamentList.map((tournament) => (
+          <Link
+            key={tournament.id}
+            component={RouterLink}
+            to={`/tournament/${tournament.id}`}
+          >
+            {tournament.name}
+          </Link>
+        ))}
       </TabPanel>
     </Paper>
   );

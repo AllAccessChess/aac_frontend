@@ -1,5 +1,5 @@
 import React from "react";
-import async from "../components/Async";
+import async from "../components/common/Async";
 
 // Icons
 import {
@@ -24,7 +24,7 @@ const Prizes = async(() => import("../pages/prizes"));
 const Settings = async(() => import("../pages/settings"));
 const Tournaments = async(() => import("../pages/tournaments"));
 const TournamentDetail = async(() => import("../pages/tournaments/Detail"));
-const TournamentPlay = async(() => import("../pages/tournaments/Play"));
+const Match = async(() => import("../pages/match"));
 const Dashboard = async(() => import("../pages/dashboard"));
 
 const authRoutes = {
@@ -54,7 +54,7 @@ const authRoutes = {
 const tournamentRoute = {
   id: "Tournaments",
   path: "/tournaments",
-  name: "My Tournaments",
+  name: "Tournaments",
   component: null,
   icon: <TournamentIcon />,
   // guard: AuthGuard,
@@ -65,14 +65,14 @@ const tournamentRoute = {
       component: Tournaments,
     },
     {
-      path: "/tournaments/:id",
+      path: "/tournament/:id",
       name: "Tournament Detail",
       component: TournamentDetail,
     },
     {
-      path: "/tournaments/:id/play",
-      name: "Tournament Play",
-      component: TournamentPlay,
+      path: "/match/:id",
+      name: "Match",
+      component: Match,
     },
   ],
 };
