@@ -7,10 +7,6 @@ export default class StorageService {
     localStorage.setItem("auth-token", tokenInfo);
   };
 
-  static clearAuthToken = () => {
-    localStorage.removeItem("auth-token");
-  };
-
   static getUserID = () => {
     return localStorage.getItem("userID");
   };
@@ -19,7 +15,8 @@ export default class StorageService {
     localStorage.setItem("userID", userID);
   };
 
-  static clearUserID = () => {
+  static clearTokens = () => {
+    localStorage.removeItem("auth-token");
     localStorage.removeItem("userID");
   };
 }

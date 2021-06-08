@@ -40,7 +40,7 @@ export default class BaseAPIService {
       .request({
         url: baseURL + url,
         headers: {
-          Authorization: StorageService.getAuthToken(),
+          Authorization: `Bearer ${StorageService.getAuthToken()}`,
           "Content-Type": contentType,
         },
         method,

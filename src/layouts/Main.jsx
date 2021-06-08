@@ -1,11 +1,13 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import styled, { createGlobalStyle } from "styled-components/macro";
 import { CssBaseline, withWidth, Box } from "@material-ui/core";
 import ScreenLoader from "components/common/ScreenLoader";
 import TopBar from "components/common/TopBar";
 import SideBar from "components/common/SideBar";
+
+import { signInWithToken } from "redux/reducers/authReducer";
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -26,10 +28,17 @@ const Wrapper = styled(Box)`
   border-radius: 10px;
 `;
 
-const Main = ({ children, routes, width }) => {
-  // const dispatch = useDispatch();
+const Main = ({ children }) => {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
   const authLoading = useSelector((state) => state.authReducer.loading);
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(signInWithToken());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Root>

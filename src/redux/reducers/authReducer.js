@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import AuthService from "services/authService";
+import UserService from "services/userService";
 import StorageService from "services/storageService";
 import { setMessage } from "./messageReducer";
 
@@ -51,6 +52,21 @@ export const signUp = (payload) => async (dispatch) => {
     dispatch(setMessage({ message: error.message }));
   }
 
+  dispatch(setLoading(false));
+};
+
+export const signInWithToken = () => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const token = StorageService.getAuthToken();
+    const userID = StorageService.getUserID();
+    if (token && userID) {
+      const user = await UserService.getUser(userID);
+      dispatch(setUser(user));
+    }
+  } catch (error) {
+    console.log(error);
+  }
   dispatch(setLoading(false));
 };
 
