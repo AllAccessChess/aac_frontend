@@ -1,14 +1,4 @@
-export const GAME_ACTIONS = {
-  join: "join",
-  status: "status",
-  rm: "rm",
-  move: "move",
-  resign: "resign",
-};
-
-export const GAME_EVENTS = {
-  GET_RESPONSE: "GET_RESPONSE",
-};
+import { GameEvents } from "constant";
 
 export default class GameClient extends EventTarget {
   constructor(socketURL) {
@@ -29,11 +19,12 @@ export default class GameClient extends EventTarget {
       var msg = JSON.parse(event.data);
       console.log(JSON.stringify(msg));
       if (msg.id && !this.gameId) this.gameId = msg.id;
-      this.triggerEvent(GAME_EVENTS.GET_RESPONSE, msg);
+      this.triggerEvent(GameEvents.GET_RESPONSE, msg);
     };
 
     this.ws.onopen = (event) => {
-      console.log("OPEN SOCKET");
+      console.log("OPEN SOCKET: ", event);
+      this.triggerEvent(GameEvents.Initialized);
     };
 
     this.ws.onerror = (event) => {
@@ -52,7 +43,7 @@ export default class GameClient extends EventTarget {
   sendData = (data) => {
     if (this.ws) {
       // console.log(`-> SS: ${data}`);
-      this.ws.send(data);
+      this.ws.send(JSON.stringify(data));
     }
   };
 
@@ -62,7 +53,7 @@ export default class GameClient extends EventTarget {
   };
 
   disconnect = () => {
-    this.ws.close();
+    if (this.ws) this.ws.close();
   };
 
   /***************************

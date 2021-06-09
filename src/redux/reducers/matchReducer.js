@@ -4,9 +4,6 @@ import { setMessage } from "./messageReducer";
 const initialState = {
   loading: false,
   current: null,
-  fen: "",
-  pendingMove: null,
-  lastMove: null,
   history: [],
 };
 
@@ -19,15 +16,6 @@ export const slice = createSlice({
     },
     setCurrent: (state, action) => {
       state.current = action.payload;
-    },
-    setFen: (state, action) => {
-      state.fen = [...action.payload];
-    },
-    setPendingMove: (state, action) => {
-      state.pendingMove = action.payload;
-    },
-    setLastMove: (state, action) => {
-      state.lastMove = action.payload;
     },
     setHistory: (state, action) => {
       state.history = action.payload;
@@ -45,9 +33,6 @@ export const slice = createSlice({
 export const {
   setLoading,
   setCurrent,
-  setPendingMove,
-  setFen,
-  setLastMove,
   setHistory,
   addHistoryItem,
   popHistoryItem,

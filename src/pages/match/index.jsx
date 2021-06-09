@@ -7,6 +7,7 @@ import { Box, Button, Typography } from "@material-ui/core";
 import ScreenLoader from "components/common/ScreenLoader";
 import ChessBoard from "components/ChessBoard";
 
+import { GameStatus } from "constant";
 import {
   getMatch,
   setHistory,
@@ -21,6 +22,7 @@ const Match = () => {
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState();
   const [pendingMove, setPendingMove] = useState();
+  const [gameStatus, setGameStatus] = useState(GameStatus.Preparing);
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
   const moveHistory = useSelector((state) => state.matchReducer.history);
@@ -39,6 +41,9 @@ const Match = () => {
     setLastMove(null);
     dispatch(popHistoryItem(2));
   }, [dispatch, chess, setFen, setLastMove]);
+  const startGame = useCallback(() => {
+    setGameStatus(GameStatus.Started);
+  }, [setGameStatus]);
 
   useEffect(() => {
     if (params.id && !currentMatch) {
@@ -63,8 +68,16 @@ const Match = () => {
           display="flex"
           justifyContent="space-around"
           alignItems="flex-start"
-          width="150px"
+          width="200px"
         >
+          {gameStatus === GameStatus.Ready ? (
+            <Button variant="outlined" color="secondary" onClick={startGame}>
+              Start
+            </Button>
+          ) : (
+            <></>
+          )}
+
           <Button variant="outlined" color="secondary" onClick={reset}>
             Reset
           </Button>
@@ -81,9 +94,11 @@ const Match = () => {
             fen={fen}
             lastMove={lastMove}
             pendingMove={pendingMove}
+            gameStatus={gameStatus}
             setFen={setFen}
             setLastMove={setLastMove}
             setPendingMove={setPendingMove}
+            setGameStatus={setGameStatus}
           />
           <Typography variant="h6">{currentMatch.white}</Typography>
         </Box>

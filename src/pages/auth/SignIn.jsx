@@ -2,6 +2,7 @@ import React from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import clsx from "clsx";
+import styled from "styled-components/macro";
 
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +11,7 @@ import { Link as RouterLink } from "react-router-dom";
 
 import {
   Box,
+  Grid,
   InputAdornment,
   IconButton,
   FormControl,
@@ -29,6 +31,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { signIn } from "redux/reducers/authReducer";
 import LichessButton from "components/common/LichessButton";
+import logoImg from "assets/images/logo.png";
+import backgroundImg from "assets/images/auth_background.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +50,16 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
 }));
+
+const Logo = styled.img`
+  width: 113px;
+`;
+const BackgroundWrapper = styled(Grid)`
+  background: url(${(props) => props.background});
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+`;
 
 const InnerForm = (props) => {
   const {
@@ -166,46 +180,71 @@ const SignIn = () => {
       setSubmitting(false);
     }
   };
-
   return (
-    <Box width="100%" padding={1}>
+    <>
       <Helmet title="Sign In" />
+      <Grid item xs={12} sm={6}>
+        <Box display="flex" flexDirection="column" px={10} py={8}>
+          <Box display="flex" justifyContent="space-between" mb={5}>
+            <Link component={RouterLink} to="/">
+              <Logo src={logoImg} />
+            </Link>
+            <Button
+              component={RouterLink}
+              to="/"
+              color="secondary"
+              size="large"
+            >
+              Continue as a guest
+            </Button>
+          </Box>
+          <Box width="100%" padding={1}>
+            <Formik
+              initialValues={{
+                id: "",
+                password: "",
+                submit: false,
+              }}
+              validationSchema={Yup.object().shape({
+                id: Yup.string().max(255).required("Name or Email is required"),
+                password: Yup.string()
+                  .max(255)
+                  .required("Password is required"),
+              })}
+              onSubmit={handleSubmit}
+            >
+              {(formProps) => <InnerForm {...formProps} />}
+            </Formik>
 
-      <Formik
-        initialValues={{
-          id: "",
-          password: "",
-          submit: false,
-        }}
-        validationSchema={Yup.object().shape({
-          id: Yup.string().max(255).required("Name or Email is required"),
-          password: Yup.string().max(255).required("Password is required"),
-        })}
-        onSubmit={handleSubmit}
-      >
-        {(formProps) => <InnerForm {...formProps} />}
-      </Formik>
+            <Typography variant="h4" align="center" color="textSecondary">
+              or
+            </Typography>
 
-      <Typography variant="h4" align="center" color="textSecondary">
-        or
-      </Typography>
+            <LichessButton color="default" size="large" fullWidth my={5}>
+              Login with Lichess
+            </LichessButton>
 
-      <LichessButton color="default" size="large" fullWidth my={5}>
-        Login with Lichess
-      </LichessButton>
-
-      <Typography variant="h4" align="center">
-        Not a member?
-        <Link
-          component={RouterLink}
-          to="/auth/sign-up"
-          color="secondary"
-          ml={2}
-        >
-          Signup
-        </Link>
-      </Typography>
-    </Box>
+            <Typography variant="h4" align="center">
+              Not a member?
+              <Link
+                component={RouterLink}
+                to="/auth/sign-up"
+                color="secondary"
+                ml={2}
+              >
+                Signup
+              </Link>
+            </Typography>
+          </Box>
+        </Box>
+      </Grid>
+      <BackgroundWrapper
+        item
+        xs={12}
+        sm={6}
+        background={backgroundImg}
+      ></BackgroundWrapper>
+    </>
   );
 };
 
