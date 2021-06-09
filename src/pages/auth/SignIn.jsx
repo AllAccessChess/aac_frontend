@@ -78,14 +78,14 @@ const InnerForm = (props) => {
       <TextField
         autoComplete="off"
         type="email"
-        name="email"
-        label="Email"
+        name="id"
+        label="Name or Email"
         variant="outlined"
         color="secondary"
-        value={values.email}
-        error={Boolean(touched.email && errors.email)}
+        value={values.id}
+        error={Boolean(touched.id && errors.id)}
         fullWidth
-        helperText={touched.email && errors.email}
+        helperText={touched.id && errors.id}
         onBlur={handleBlur}
         onChange={handleChange}
         my={2}
@@ -157,9 +157,9 @@ const SignIn = () => {
     { setErrors, setStatus, setSubmitting }
   ) => {
     try {
-      dispatch(signIn({ email: values.email, password: values.password }));
+      dispatch(signIn({ id: values.id, password: values.password }));
     } catch (error) {
-      const message = "Invalid email or password";
+      const message = "Invalid Data";
 
       setStatus({ success: false });
       setErrors({ submit: message });
@@ -173,15 +173,12 @@ const SignIn = () => {
 
       <Formik
         initialValues={{
-          email: "",
+          id: "",
           password: "",
           submit: false,
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string()
-            .email("Please enter a valid email")
-            .max(255)
-            .required("Email is required"),
+          id: Yup.string().max(255).required("Name or Email is required"),
           password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={handleSubmit}

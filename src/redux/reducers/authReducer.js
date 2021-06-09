@@ -3,6 +3,7 @@ import AuthService from "services/authService";
 import UserService from "services/userService";
 import StorageService from "services/storageService";
 import { setMessage } from "./messageReducer";
+import { RENEW_DIFF, TokenVerificationResult } from "constant";
 
 const initialState = {
   user: undefined,
@@ -28,9 +29,16 @@ export const signIn = (credentials) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const response = await AuthService.login(credentials);
-    StorageService.setAuthToken(response.token);
-    StorageService.setUserID(response.user.id);
-    dispatch(setUser(response.user));
+    if (response.error) {
+      dispatch(setMessage({ message: response.error }));
+    } else {
+      StorageService.setAuthToken({
+        token: response.token,
+        expiry: response.expiry,
+      });
+      StorageService.setUserID(response.user.id);
+      dispatch(setUser(response.user));
+    }
   } catch (error) {
     console.log(error);
     dispatch(setMessage({ message: error.message }));
@@ -43,10 +51,17 @@ export const signUp = (payload) => async (dispatch) => {
 
   try {
     const response = await AuthService.register(payload);
-    StorageService.setAuthToken(response.token);
-    StorageService.setUserID(response.user.id);
-    dispatch(setUser(response.user));
-    setMessage({ message: "Successfully registered!", type: "success" });
+    if (response.error) {
+      dispatch(setMessage({ message: response.error }));
+    } else {
+      StorageService.setAuthToken({
+        token: response.token,
+        expiry: response.expiry,
+      });
+      StorageService.setUserID(response.user.id);
+      dispatch(setUser(response.user));
+      setMessage({ message: "Successfully registered!", type: "success" });
+    }
   } catch (error) {
     console.log(error);
     dispatch(setMessage({ message: error.message }));
@@ -58,16 +73,34 @@ export const signUp = (payload) => async (dispatch) => {
 export const signInWithToken = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const token = StorageService.getAuthToken();
+    const tokenData = StorageService.getAuthToken();
     const userID = StorageService.getUserID();
-    if (token && userID) {
-      const user = await UserService.getUser(userID);
-      dispatch(setUser(user));
+    const currentTime = new Date().getTime();
+    if (tokenData && tokenData.expiry > currentTime && userID) {
+      if (RENEW_DIFF > tokenData.expiry - currentTime) {
+        const response = await AuthService.renew();
+        if (response.result === TokenVerificationResult.Ok) {
+          StorageService.setAuthToken({
+            token: response.token,
+            expiry: response.expiry,
+          });
+          const user = await UserService.getUser(userID);
+          dispatch(setUser(user));
+        }
+      } else {
+        const user = await UserService.getUser(userID);
+        dispatch(setUser(user));
+      }
     }
   } catch (error) {
     console.log(error);
   }
   dispatch(setLoading(false));
+};
+
+export const logOut = () => (dispatch) => {
+  StorageService.clearTokens();
+  dispatch(setUser(null));
 };
 
 export default slice.reducer;

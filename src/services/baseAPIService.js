@@ -36,11 +36,12 @@ export default class BaseAPIService {
     timeout = 0,
     contentType = "application/json"
   ) => {
+    const tokenData = StorageService.getAuthToken();
     return axios
       .request({
         url: baseURL + url,
         headers: {
-          Authorization: `Bearer ${StorageService.getAuthToken()}`,
+          Authorization: `Bearer ${tokenData.token}`,
           "Content-Type": contentType,
         },
         method,

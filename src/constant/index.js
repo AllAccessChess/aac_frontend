@@ -8,3 +8,16 @@ export const THEMES = {
   GREEN: "GREEN",
   INDIGO: "INDIGO",
 };
+
+export const RENEW_DIFF = 1000 * 3600 * 24 * 2;
+
+export const TokenVerificationResult = {
+  Ok: "TokenVerificationResult.Ok",
+  Invalid: "TokenVerificationResult.Invalid",
+  Expired: "TokenVerificationResult.Expired",
+};
+
+export const AuthError = {
+  InvalidPassword: "AuthError.InvalidPassword",
+  InvalidUser: "AuthError.InvalidUser",
+};

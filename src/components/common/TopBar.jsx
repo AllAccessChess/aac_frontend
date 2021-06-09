@@ -11,7 +11,7 @@ import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/background.svg";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setUser } from "redux/reducers/authReducer";
+import { logOut } from "redux/reducers/authReducer";
 
 const Wrapper = styled(AppBar)`
   background: url(${(props) => props.background});
@@ -35,7 +35,7 @@ const TopBar = () => {
   const user = useSelector((state) => state.authReducer.user);
 
   const handleLogout = () => {
-    dispatch(setUser(null));
+    dispatch(logOut());
   };
 
   return (

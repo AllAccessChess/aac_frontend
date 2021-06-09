@@ -1,10 +1,10 @@
 export default class StorageService {
   static getAuthToken = () => {
-    return localStorage.getItem("auth-token");
+    return JSON.parse(localStorage.getItem("auth-token"));
   };
 
   static setAuthToken = (tokenInfo) => {
-    localStorage.setItem("auth-token", tokenInfo);
+    localStorage.setItem("auth-token", JSON.stringify(tokenInfo));
   };
 
   static getUserID = () => {
