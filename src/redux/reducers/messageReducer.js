@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { Errors, Warnings } from "constant";
 
 const initialState = {
   msg: null,
@@ -19,5 +20,19 @@ export const slice = createSlice({
 });
 
 export const { setMessage } = slice.actions;
+
+export const showSuccess = (msg) => (dispatch) => {
+  dispatch(setMessage({ message: msg, type: "success" }));
+};
+
+export const showError = (error) => (dispatch) => {
+  let msg = Errors[error] || error;
+  dispatch(setMessage({ message: msg }));
+};
+
+export const showWarning = (warning) => (dispatch) => {
+  let msg = Warnings[warning] || warning;
+  dispatch(setMessage({ message: msg, type: "warning" }));
+};
 
 export default slice.reducer;

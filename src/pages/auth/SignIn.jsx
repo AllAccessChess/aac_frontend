@@ -32,7 +32,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { signIn } from "redux/reducers/authReducer";
 import LichessButton from "components/common/LichessButton";
 import logoImg from "assets/images/logo.png";
-import backgroundImg from "assets/images/auth_background.png";
+import backgroundImg from "assets/images/login_background.jpg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,7 +58,9 @@ const BackgroundWrapper = styled(Grid)`
   background: url(${(props) => props.background});
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
+  background-position-x: 200px;
+  background-position-y: bottom;
 `;
 
 const InnerForm = (props) => {
@@ -93,7 +95,7 @@ const InnerForm = (props) => {
         autoComplete="off"
         type="email"
         name="id"
-        label="Name or Email"
+        label="Email"
         variant="outlined"
         color="secondary"
         value={values.id}
@@ -137,9 +139,9 @@ const InnerForm = (props) => {
           {errors.password}
         </FormHelperText>
       </FormControl>
-      <Link component={RouterLink} to="/auth/reset-password" color="secondary">
+      {/* <Link component={RouterLink} to="/auth/reset-password" color="secondary">
         Forgot password?
-      </Link>
+      </Link> */}
       <Button
         type="submit"
         fullWidth
@@ -184,7 +186,14 @@ const SignIn = () => {
     <>
       <Helmet title="Sign In" />
       <Grid item xs={12} sm={6}>
-        <Box display="flex" flexDirection="column" px={10} py={8}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          px={{ xs: 5, sm: 10, md: 20 }}
+          py={{ xs: 4, sm: 7, md: 10 }}
+          height="100%"
+          bgcolor="#134378"
+        >
           <Box display="flex" justifyContent="space-between" mb={5}>
             <Link component={RouterLink} to="/">
               <Logo src={logoImg} />
@@ -198,7 +207,26 @@ const SignIn = () => {
               Continue as a guest
             </Button>
           </Box>
-          <Box width="100%" padding={1}>
+          <Box
+            display="flex"
+            width="100%"
+            height="100%"
+            padding={1}
+            alignItems="center"
+            justifyContent="center"
+            flexDirection="column"
+          >
+            <LichessButton color="default" size="large" fullWidth>
+              Login with Lichess
+            </LichessButton>
+            <Typography
+              variant="h4"
+              align="center"
+              color="textSecondary"
+              my={7}
+            >
+              or
+            </Typography>
             <Formik
               initialValues={{
                 id: "",
@@ -206,7 +234,7 @@ const SignIn = () => {
                 submit: false,
               }}
               validationSchema={Yup.object().shape({
-                id: Yup.string().max(255).required("Name or Email is required"),
+                id: Yup.string().max(255).required("Email is required"),
                 password: Yup.string()
                   .max(255)
                   .required("Password is required"),
@@ -216,16 +244,13 @@ const SignIn = () => {
               {(formProps) => <InnerForm {...formProps} />}
             </Formik>
 
-            <Typography variant="h4" align="center" color="textSecondary">
-              or
-            </Typography>
-
-            <LichessButton color="default" size="large" fullWidth my={5}>
-              Login with Lichess
-            </LichessButton>
-
-            <Typography variant="h4" align="center">
-              Not a member?
+            <Typography
+              variant="h4"
+              align="center"
+              color="textSecondary"
+              mt={5}
+            >
+              Not a member yet?
               <Link
                 component={RouterLink}
                 to="/auth/sign-up"
@@ -242,6 +267,7 @@ const SignIn = () => {
         item
         xs={12}
         sm={6}
+        height="100%"
         background={backgroundImg}
       ></BackgroundWrapper>
     </>

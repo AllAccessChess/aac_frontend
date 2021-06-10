@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import AuthService from "services/authService";
 import UserService from "services/userService";
 import StorageService from "services/storageService";
-import { setMessage } from "./messageReducer";
+import { showSuccess, showError, showWarning } from "./messageReducer";
 import { RENEW_DIFF } from "constant";
 
 const initialState = {
@@ -30,7 +30,7 @@ export const signIn = (credentials) => async (dispatch) => {
   try {
     const response = await AuthService.login(credentials);
     if (response.status !== "ok") {
-      dispatch(setMessage({ message: response.error }));
+      dispatch(showError(response.error));
     } else {
       StorageService.setAuthToken({
         token: response.token,
@@ -41,7 +41,7 @@ export const signIn = (credentials) => async (dispatch) => {
     }
   } catch (error) {
     console.log(error);
-    dispatch(setMessage({ message: error.message }));
+    dispatch(showError(error.message));
   }
   dispatch(setLoading(false));
 };
@@ -52,7 +52,7 @@ export const signUp = (payload) => async (dispatch) => {
   try {
     const response = await AuthService.register(payload);
     if (response.status !== "ok") {
-      dispatch(setMessage({ message: response.error }));
+      dispatch(showError(response.error));
     } else {
       StorageService.setAuthToken({
         token: response.token,
@@ -60,14 +60,32 @@ export const signUp = (payload) => async (dispatch) => {
       });
       StorageService.setUserID(response.user.id);
       dispatch(setUser(response.user));
-      setMessage({ message: "Successfully registered!", type: "success" });
+      if (response.warnings) {
+        for (let warn of response.warnings) dispatch(showWarning(warn));
+      } else {
+        dispatch(showSuccess("Successfully registered!"));
+      }
     }
   } catch (error) {
     console.log(error);
-    dispatch(setMessage({ message: error.message }));
+    dispatch(showError(error.message));
   }
 
   dispatch(setLoading(false));
+};
+
+export const getUser = (userID) => async (dispatch) => {
+  try {
+    const response = await UserService.getUser(userID);
+    if (response.status !== "ok") {
+      dispatch(showError(response.error));
+    } else {
+      dispatch(setUser(response.user));
+    }
+  } catch (error) {
+    console.log(error);
+    dispatch(showError(error.message));
+  }
 };
 
 export const signInWithToken = () => async (dispatch) => {
@@ -84,12 +102,10 @@ export const signInWithToken = () => async (dispatch) => {
             token: response.token,
             expiry: response.expiry,
           });
-          const user = await UserService.getUser(userID);
-          dispatch(setUser(user));
+          dispatch(getUser(userID));
         }
       } else {
-        const user = await UserService.getUser(userID);
-        dispatch(setUser(user));
+        dispatch(getUser(userID));
       }
     }
   } catch (error) {

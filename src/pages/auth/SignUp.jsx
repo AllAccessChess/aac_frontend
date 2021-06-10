@@ -338,8 +338,8 @@ const SignUp = () => {
         <Box
           display="flex"
           flexDirection="column"
-          px={10}
-          py={8}
+          px={{ xs: 5, sm: 10, md: 20 }}
+          py={{ xs: 4, sm: 7, md: 10 }}
           bgcolor="#134378"
           height="100%"
         >
@@ -356,7 +356,26 @@ const SignUp = () => {
               Continue as a guest
             </Button>
           </Box>
-          <Box padding={1}>
+          <Box
+            display="flex"
+            width="100%"
+            height="100%"
+            padding={1}
+            alignItems="center"
+            justifyContent="center"
+            flexDirection="column"
+          >
+            <LichessButton color="default" size="large" fullWidth>
+              Signup with Lichess
+            </LichessButton>
+            <Typography
+              variant="h4"
+              align="center"
+              color="textSecondary"
+              my={{ xs: 3, sm: 4, md: 7 }}
+            >
+              or
+            </Typography>
             <Formik
               enableReinitialize
               initialValues={{
@@ -401,14 +420,14 @@ const SignUp = () => {
                 />
               )}
             </Formik>
-            <Typography variant="h4" align="center" color="textSecondary">
-              or
-            </Typography>
-            <LichessButton color="default" size="large" fullWidth my={5}>
-              Signup with Lichess
-            </LichessButton>
-            <Typography variant="h4" align="center">
-              Already a member?
+
+            <Typography
+              variant="h4"
+              align="center"
+              color="textSecondary"
+              mt={{ xs: 3, sm: 4, md: 5 }}
+            >
+              Already have an account?
               <Link
                 component={RouterLink}
                 to="/auth/sign-in"

@@ -22,6 +22,10 @@ export const Errors = {
   "Error.Auth.InvalidToken": "Invalid Token!",
 };
 
+export const Warnings = {
+  "Warning.UscfIdNotFound": "You've entered wrong USCF ID!",
+};
+
 // Game Constants
 
 export const GameActions = {
