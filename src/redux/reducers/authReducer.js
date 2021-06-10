@@ -3,7 +3,7 @@ import AuthService from "services/authService";
 import UserService from "services/userService";
 import StorageService from "services/storageService";
 import { setMessage } from "./messageReducer";
-import { RENEW_DIFF, TokenVerificationResult } from "constant";
+import { RENEW_DIFF } from "constant";
 
 const initialState = {
   user: undefined,
@@ -29,7 +29,7 @@ export const signIn = (credentials) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const response = await AuthService.login(credentials);
-    if (response.error) {
+    if (response.status !== "ok") {
       dispatch(setMessage({ message: response.error }));
     } else {
       StorageService.setAuthToken({
@@ -51,7 +51,7 @@ export const signUp = (payload) => async (dispatch) => {
 
   try {
     const response = await AuthService.register(payload);
-    if (response.error) {
+    if (response.status !== "ok") {
       dispatch(setMessage({ message: response.error }));
     } else {
       StorageService.setAuthToken({
@@ -79,7 +79,7 @@ export const signInWithToken = () => async (dispatch) => {
     if (tokenData && tokenData.expiry > currentTime && userID) {
       if (RENEW_DIFF > tokenData.expiry - currentTime) {
         const response = await AuthService.renew();
-        if (response.result === TokenVerificationResult.Ok) {
+        if (response.status === "ok") {
           StorageService.setAuthToken({
             token: response.token,
             expiry: response.expiry,

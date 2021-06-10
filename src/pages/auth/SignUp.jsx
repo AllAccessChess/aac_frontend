@@ -312,10 +312,10 @@ const SignUp = () => {
       setUscfSubmitting(true);
       try {
         const response = await UserService.getUSCFData(uscfID);
-        if (response.error) {
+        if (response.status !== "ok") {
           dispatch(setMessage({ message: response.error }));
         } else {
-          setUscfData(response);
+          setUscfData(response.ratings);
         }
       } catch (error) {
         dispatch(setMessage({ message: error.message }));
