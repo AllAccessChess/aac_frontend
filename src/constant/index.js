@@ -23,6 +23,8 @@ export const Errors = {
 };
 
 export const Warnings = {
+  "Warning.OldToken":
+    "You have old token, please refresh the page to get new token",
   "Warning.UscfIdNotFound": "You've entered wrong USCF ID!",
 };
 
@@ -45,4 +47,5 @@ export const GameStatus = {
   Preparing: "Preparing",
   Ready: "Ready",
   Started: "Started",
+  Exited: "Exited",
 };

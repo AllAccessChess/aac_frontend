@@ -1,11 +1,9 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Chessground from "react-chessground";
 import "react-chessground/dist/styles/chessground.css";
 
-import config from "config";
 import { GameEvents, GameActions, GameStatus } from "constant";
-import GameClient from "utils/gameClient";
 
 import TransformPawnDialog from "dialogs/TransformPawnDialog";
 import { addHistoryItem } from "redux/reducers/matchReducer";
@@ -15,6 +13,7 @@ const ChessBoard = (props) => {
   const {
     chess,
     fen,
+    gameClientRef,
     setFen,
     lastMove,
     gameStatus,
@@ -25,8 +24,6 @@ const ChessBoard = (props) => {
   } = props;
 
   const [showTransformPawn, setShowTransformPawn] = useState(false);
-
-  const gameClientRef = useRef(new GameClient(config.socketURL));
 
   // const randomMove = useCallback(() => {
   //   const moves = chess.moves({ verbose: true });
@@ -64,6 +61,7 @@ const ChessBoard = (props) => {
         });
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [dispatch, chess, setShowTransformPawn, setFen, setLastMove, setPendingMove]
   );
 
@@ -78,9 +76,10 @@ const ChessBoard = (props) => {
       // setTimeout(randomMove, 500);
       gameClientRef.current.sendData({
         action: GameActions.move,
-        message: from + to,
+        message: from + to + e,
       });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [chess, pendingMove, setFen, setShowTransformPawn, setLastMove]
   );
 
@@ -133,6 +132,7 @@ const ChessBoard = (props) => {
       gameClientRef.current.on(GameEvents.GET_RESPONSE, getResponse);
       gameClientRef.current.on(GameEvents.Initialized, initBoard);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getResponse, initBoard]);
 
   const endHandlers = useCallback(() => {
@@ -140,12 +140,14 @@ const ChessBoard = (props) => {
       gameClientRef.current.off(GameEvents.GET_RESPONSE, getResponse);
       gameClientRef.current.off(GameEvents.Initialized, initBoard);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getResponse, initBoard]);
 
   useEffect(() => {
     gameClientRef.current.connect();
     setUpHandlers();
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       gameClientRef.current.disconnect();
       endHandlers();
     };
@@ -158,6 +160,7 @@ const ChessBoard = (props) => {
         action: GameActions.join,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameStatus]);
 
   return (

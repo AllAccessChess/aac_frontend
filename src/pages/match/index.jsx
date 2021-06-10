@@ -1,22 +1,21 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "react-router";
+import config from "config";
 import Chess from "chess.js";
 import { useSelector, useDispatch } from "react-redux";
+import GameClient from "utils/gameClient";
 
 import { Box, Button, Typography } from "@material-ui/core";
 import ScreenLoader from "components/common/ScreenLoader";
 import ChessBoard from "components/ChessBoard";
 
-import { GameStatus } from "constant";
-import {
-  getMatch,
-  setHistory,
-  popHistoryItem,
-} from "redux/reducers/matchReducer";
+import { GameStatus, GameActions } from "constant";
+import { getMatch } from "redux/reducers/matchReducer";
 
 const Match = () => {
   const params = useParams();
   const dispatch = useDispatch();
+  const gameClientRef = useRef(new GameClient(config.socketURL));
 
   const [chess] = useState(new Chess());
   const [fen, setFen] = useState("");
@@ -27,20 +26,30 @@ const Match = () => {
   const currentMatch = useSelector((state) => state.matchReducer.current);
   const moveHistory = useSelector((state) => state.matchReducer.history);
 
-  const reset = useCallback(() => {
-    chess.reset();
-    setFen(chess.fen());
-    setLastMove(null);
-    dispatch(setHistory([]));
-  }, [dispatch, chess, setFen, setLastMove]);
+  // const reset = useCallback(() => {
+  //   chess.reset();
+  //   setFen(chess.fen());
+  //   setLastMove(null);
+  //   dispatch(setHistory([]));
+  // }, [dispatch, chess, setFen, setLastMove]);
 
-  const undo = useCallback(() => {
-    chess.undo();
-    chess.undo();
-    setFen(chess.fen());
-    setLastMove(null);
-    dispatch(popHistoryItem(2));
-  }, [dispatch, chess, setFen, setLastMove]);
+  // const undo = useCallback(() => {
+  //   chess.undo();
+  //   chess.undo();
+  //   setFen(chess.fen());
+  //   setLastMove(null);
+  //   dispatch(popHistoryItem(2));
+  // }, [dispatch, chess, setFen, setLastMove]);
+  const handleOfferDraw = useCallback(() => {
+    console.log("Offering Draw");
+  }, []);
+  const handleResign = useCallback(() => {
+    gameClientRef.current.sendData({
+      action: GameActions.resign,
+    });
+    setGameStatus(GameStatus.Exited);
+  }, [setGameStatus]);
+
   const startGame = useCallback(() => {
     setGameStatus(GameStatus.Started);
   }, [setGameStatus]);
@@ -68,7 +77,7 @@ const Match = () => {
           display="flex"
           justifyContent="space-around"
           alignItems="flex-start"
-          width="200px"
+          width="300px"
         >
           {gameStatus === GameStatus.Ready ? (
             <Button variant="outlined" color="secondary" onClick={startGame}>
@@ -77,13 +86,26 @@ const Match = () => {
           ) : (
             <></>
           )}
-
-          <Button variant="outlined" color="secondary" onClick={reset}>
-            Reset
-          </Button>
-          <Button variant="outlined" color="secondary" onClick={undo}>
-            Undo
-          </Button>
+          {gameStatus === GameStatus.Started ? (
+            <>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleOfferDraw}
+              >
+                Offer Draw
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleResign}
+              >
+                Resign
+              </Button>
+            </>
+          ) : (
+            <></>
+          )}
         </Box>
       </Box>
       <Box display="flex" justifyContent="space-between">
@@ -92,6 +114,7 @@ const Match = () => {
           <ChessBoard
             chess={chess}
             fen={fen}
+            gameClientRef={gameClientRef}
             lastMove={lastMove}
             pendingMove={pendingMove}
             gameStatus={gameStatus}
