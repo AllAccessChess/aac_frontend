@@ -17,6 +17,7 @@ import createTheme from "./theme";
 import Routes from "./routes/Routes";
 
 import { setMessage } from "redux/reducers/messageReducer";
+import config from "config";
 import { ZoomProvider } from "lib/zoom";
 
 function App() {
@@ -58,7 +59,7 @@ function App() {
               ) : (
                 <></>
               )}
-              <ZoomProvider>
+              <ZoomProvider apiKey={config.zoom.apiKey}>
                 <Routes />
               </ZoomProvider>
             </ThemeProvider>

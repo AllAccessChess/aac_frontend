@@ -1,3 +1,5 @@
+// AAC Zoom Library - Constants
+
 export const ZoomMeetingRole = Object.freeze({ Host: "1", Attendee: "0" });
 
 export const ZoomLocale = Object.freeze({

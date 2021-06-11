@@ -1,4 +1,4 @@
-// DOM Manager for existing Zoom SDK DOM elements
+// AAC Zoom Library - DOM Manager
 
 export default class DOMManager {
   /**

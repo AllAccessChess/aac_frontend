@@ -1,8 +1,8 @@
+// AAC Zoom Library -React Context
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-import config from "config";
-import ZoomClient from "../client";
-import "../styles/override.scss";
+import ZoomClient, { loadStyleSheet } from "../client";
 
 const ZoomContext = createContext(null);
 
@@ -10,8 +10,16 @@ export const ZoomProvider = (props) => {
   const [zoomClient, setZoomClient] = useState(null);
 
   useEffect(() => {
+    // Load Stylesheets
+    loadStyleSheet("/zoom.css");
+
+    if (!props.apiKey) {
+      console.error("API Key is required for Zoom Provider");
+      return;
+    }
+
     // Create a new Zoom Client
-    const zoomClient = new ZoomClient(config.zoom.apiKey);
+    const zoomClient = new ZoomClient(props.apiKey);
 
     // Check System Requirements
     if (!zoomClient.checkSystemRequirements()) {
@@ -23,7 +31,7 @@ export const ZoomProvider = (props) => {
     zoomClient.initialize();
 
     setZoomClient(zoomClient);
-  }, []);
+  }, [props.apiKey]);
 
   return (
     <ZoomContext.Provider value={{ zoomClient }}>

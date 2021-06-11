@@ -1,8 +1,12 @@
-// Zoom Client
+// AAC Zoom Library - Zoom Client
+
 import { ZoomMtg } from "@zoomus/websdk";
 
 import { ZoomLocale, ZoomMeetingRole } from "./constants";
 import DOMManager from "./dom-manager";
+import { loadStyleSheet } from "./helpers";
+
+export { loadStyleSheet };
 
 export default class ZoomClient extends EventTarget {
   /**

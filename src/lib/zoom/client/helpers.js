@@ -1,3 +1,5 @@
+// AAC Zoom Library - Helpers
+
 import { ZoomMtg } from "@zoomus/websdk";
 
 import { ZoomMeetingRole } from "./constants";
