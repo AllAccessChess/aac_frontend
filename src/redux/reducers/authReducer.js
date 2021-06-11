@@ -78,7 +78,7 @@ export const getUser = (userID) => async (dispatch) => {
   try {
     const response = await UserService.getUser(userID);
     if (response.status !== "ok") {
-      dispatch(showError(response.error));
+      // dispatch(showError(response.error));
     } else {
       dispatch(setUser(response.user));
     }
