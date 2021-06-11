@@ -125,7 +125,7 @@ const ChessBoard = (props) => {
         setFen(data.fen);
       }
     },
-    [chess, setFen, setLastMove]
+    [dispatch, chess, setFen, setLastMove]
   );
   const initBoard = useCallback(() => {
     setGameStatus(GameStatus.Ready);
