@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import GameClient from "utils/gameClient";
 
 import { Box } from "@material-ui/core";
-import { Typography } from "components/common/SpacedMui";
 import ScreenLoader from "components/common/ScreenLoader";
 import ChessBoard from "components/ChessBoard";
 import Header from "./Header";
