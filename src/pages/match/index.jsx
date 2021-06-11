@@ -123,14 +123,14 @@ const Match = () => {
         height="100%"
       >
         <Box display="flex" flexDirection="column" alignItems="center">
-          <Typography variant="h6">{currentMatch.black}</Typography>
+          {/* <Typography variant="h6">{currentMatch.players[0].name}</Typography> */}
           <Box display="flex" ref={zoomPreviewRef} />
           <Box
             display="flex"
             flexDirection="column"
             ref={zoomVideoContainerRef}
           />
-          <Typography variant="h6">{currentMatch.white}</Typography>
+          {/* <Typography variant="h6">{currentMatch.players[1].name}</Typography> */}
         </Box>
         <Box pt={5} pl={5} bgcolor="#134378" borderRadius={10}>
           <ChessBoard
