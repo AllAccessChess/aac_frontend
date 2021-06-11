@@ -17,6 +17,7 @@ import createTheme from "./theme";
 import Routes from "./routes/Routes";
 
 import { setMessage } from "redux/reducers/messageReducer";
+import { ZoomProvider } from "lib/zoom";
 
 function App() {
   const dispatch = useDispatch();
@@ -57,7 +58,9 @@ function App() {
               ) : (
                 <></>
               )}
-              <Routes />
+              <ZoomProvider>
+                <Routes />
+              </ZoomProvider>
             </ThemeProvider>
           </MuiThemeProvider>
         </MuiPickersUtilsProvider>

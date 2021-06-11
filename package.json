@@ -22,6 +22,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@zoomus/websdk": "^1.9.6",
     "axios": "^0.21.1",
     "axios-mock-adapter": "^1.19.0",
     "babel-watch": "^7.4.1",
@@ -42,8 +43,11 @@
     "lodash": "^4.17.20",
     "material-ui-color": "^0.4.9",
     "material-ui-dropzone": "^3.5.0",
+    "node-sass": "4.14.1",
+    "patch-package": "^6.4.7",
     "path": "^0.12.7",
     "polished": "^4.1.1",
+    "postinstall-postinstall": "^2.1.0",
     "react": "^17.0.1",
     "react-app-polyfill": "^2.0.0",
     "react-chessground": "^1.5.0",
@@ -74,7 +78,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src --ext .js,.jsx,.ts,.tsx --fix"
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "postinstall": "patch-package"
   },
   "eslintConfig": {
     "extends": [
