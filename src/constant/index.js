@@ -18,7 +18,7 @@ export const RENEW_DIFF = 1000 * 3600 * 24 * 2;
 
 export const Errors = {
   "Error.Auth.WrongPassword": "Wrong Password!",
-  "Error.Auth.UserNotFound": "User Not Found!",
+  "Error.UserNotFound": "User Not Found!",
   "Error.Auth.InvalidToken": "Invalid Token!",
 };
 

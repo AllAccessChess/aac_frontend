@@ -47,6 +47,7 @@ const Tournament = () => {
             key={tournament.id}
             component={RouterLink}
             to={`/tournament/${tournament.id}`}
+            color="secondary"
           >
             {tournament.name}
           </Link>
@@ -57,6 +58,7 @@ const Tournament = () => {
           <Link
             key={tournament.id}
             component={RouterLink}
+            color="secondary"
             to={`/tournament/${tournament.id}`}
           >
             {tournament.name}
@@ -68,6 +70,7 @@ const Tournament = () => {
           <Link
             key={tournament.id}
             component={RouterLink}
+            color="secondary"
             to={`/tournament/${tournament.id}`}
           >
             {tournament.name}

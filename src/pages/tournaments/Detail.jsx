@@ -55,6 +55,7 @@ const Detail = () => {
               <Link
                 key={match.id}
                 component={RouterLink}
+                color="secondary"
                 to={`/match/${match.id}`}
               >
                 {match.white} vs {match.black}
