@@ -80,8 +80,8 @@ const Match = () => {
       );
 
       zoomClient.setUserData({
-        userName: "Richard Zhan",
-        userEmail: "richard.zhan929@gmail.com",
+        userName: "Zoom Test",
+        userEmail: "test@gmail.com",
       });
 
       zoomClient.on("onUserJoin", (data) => {
