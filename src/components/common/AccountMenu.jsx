@@ -56,7 +56,7 @@ const AccountMenu = ({ user, onLogOut }) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        {user.id && <MenuItem onClick={handleClose}>My account</MenuItem>}
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>

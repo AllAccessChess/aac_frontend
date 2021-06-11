@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import clsx from "clsx";
@@ -29,7 +29,7 @@ import {
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { signIn } from "redux/reducers/authReducer";
+import { signIn, setUser } from "redux/reducers/authReducer";
 import LichessButton from "components/common/LichessButton";
 import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/login_background.jpg";
@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Logo = styled.img`
   width: 113px;
+`;
+const FullForm = styled.form`
+  width: 100%;
 `;
 const BackgroundWrapper = styled(Grid)`
   background: url(${(props) => props.background});
@@ -85,7 +88,7 @@ const InnerForm = (props) => {
   };
 
   return (
-    <form noValidate onSubmit={handleSubmit}>
+    <FullForm noValidate onSubmit={handleSubmit}>
       {errors.submit && (
         <Alert mt={2} mb={1} severity="warning">
           {errors.submit}
@@ -153,7 +156,7 @@ const InnerForm = (props) => {
       >
         Log in
       </Button>
-    </form>
+    </FullForm>
   );
 };
 
@@ -182,6 +185,9 @@ const SignIn = () => {
       setSubmitting(false);
     }
   };
+  const handleGuestLogin = useCallback(() => {
+    dispatch(setUser({ name: "Guest" }));
+  }, [dispatch]);
   return (
     <>
       <Helmet title="Sign In" />
@@ -198,12 +204,7 @@ const SignIn = () => {
             <Link component={RouterLink} to="/">
               <Logo src={logoImg} />
             </Link>
-            <Button
-              component={RouterLink}
-              to="/"
-              color="secondary"
-              size="large"
-            >
+            <Button onClick={handleGuestLogin} color="secondary" size="large">
               Continue as a guest
             </Button>
           </Box>

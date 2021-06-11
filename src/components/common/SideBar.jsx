@@ -15,7 +15,7 @@ const SideBar = (props) => {
   const { user } = props;
   const filteredRoutes = useMemo(
     () =>
-      user
+      user && user.id
         ? mainLayoutRoutes
         : mainLayoutRoutes.filter((item) => !item.guarded),
     [user]

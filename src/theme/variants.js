@@ -72,7 +72,7 @@ const blueVariant = merge(defaultVariant, {
   palette: {
     type: "dark",
     primary: {
-      main: customBlue["primary"],
+      main: "#134378",
       contrastText: "#FFF",
     },
     secondary: {

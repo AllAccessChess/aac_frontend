@@ -40,8 +40,34 @@ export const {
 
 const dummyMatch = {
   id: 0,
-  white: "William",
-  black: "Rishabh",
+  players: [
+    {
+      name: "William",
+      ratings: {
+        uscf: {
+          ratings: {
+            rapid: {
+              rating: 1468,
+            },
+          },
+        },
+      },
+    },
+    {
+      name: "Risabh",
+      ratings: {
+        uscf: {
+          ratings: {
+            rapid: {
+              rating: 1300,
+            },
+          },
+        },
+      },
+    },
+  ],
+  round: 0,
+  tournament: "Tournament 1",
 };
 
 export const getMatch = (id) => async (dispatch) => {

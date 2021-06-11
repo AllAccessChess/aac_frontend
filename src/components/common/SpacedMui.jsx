@@ -7,6 +7,8 @@ import {
   TextField as MuiTextField,
   Typography as MuiTypography,
   Link as MuiLink,
+  Paper as MuiPaper,
+  Grid as MuiGrid,
 } from "@material-ui/core";
 
 import { Alert as MuiAlert } from "@material-ui/lab";
@@ -17,3 +19,5 @@ export const Button = styled(MuiButton)(spacing);
 export const IconButton = styled(MuiIconButton)(spacing);
 export const Link = styled(MuiLink)(spacing);
 export const Typography = styled(MuiTypography)(spacing);
+export const Paper = styled(MuiPaper)(spacing);
+export const Grid = styled(MuiGrid)(spacing);

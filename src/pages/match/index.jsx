@@ -5,9 +5,12 @@ import Chess from "chess.js";
 import { useSelector, useDispatch } from "react-redux";
 import GameClient from "utils/gameClient";
 
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box } from "@material-ui/core";
+import { Typography } from "components/common/SpacedMui";
 import ScreenLoader from "components/common/ScreenLoader";
 import ChessBoard from "components/ChessBoard";
+import Header from "./Header";
+import ActionHistory from "./ActionHistory";
 
 import { GameStatus, GameActions } from "constant";
 import { getMatch } from "redux/reducers/matchReducer";
@@ -33,20 +36,6 @@ const Match = () => {
   const zoomPreviewRef = useRef(null);
   const zoomVideoContainerRef = useRef(null);
 
-  // const reset = useCallback(() => {
-  //   chess.reset();
-  //   setFen(chess.fen());
-  //   setLastMove(null);
-  //   dispatch(setHistory([]));
-  // }, [dispatch, chess, setFen, setLastMove]);
-
-  // const undo = useCallback(() => {
-  //   chess.undo();
-  //   chess.undo();
-  //   setFen(chess.fen());
-  //   setLastMove(null);
-  //   dispatch(popHistoryItem(2));
-  // }, [dispatch, chess, setFen, setLastMove]);
   const handleOfferDraw = useCallback(() => {
     console.log("Offering Draw");
   }, []);
@@ -117,55 +106,36 @@ const Match = () => {
 
   if (!currentMatch) return <ScreenLoader />;
   return (
-    <Box width="100%" display="flex" flexDirection="column">
+    <Box display="flex" flexDirection="column" width="100%" height="100%">
+      <Header
+        currentMatch={currentMatch}
+        gameStatus={gameStatus}
+        onOfferDraw={handleOfferDraw}
+        onResign={handleResign}
+        onStartGame={startGame}
+      />
       <Box
+        px={10}
+        py={5}
         display="flex"
         justifyContent="space-between"
-        alignItems="flex-start"
-        width="100%"
+        alignItems="center"
+        height="100%"
       >
-        <h2>
-          {currentMatch.black}(Black) vs {currentMatch.white}(White)
-        </h2>
-        <Box
-          display="flex"
-          justifyContent="space-around"
-          alignItems="flex-start"
-          width="300px"
-        >
-          {gameStatus === GameStatus.Ready ? (
-            <Button variant="outlined" color="secondary" onClick={startGame}>
-              Start
-            </Button>
-          ) : (
-            <></>
-          )}
-          {gameStatus === GameStatus.Started ? (
-            <>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={handleOfferDraw}
-              >
-                Offer Draw
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={handleResign}
-              >
-                Resign
-              </Button>
-            </>
-          ) : (
-            <></>
-          )}
-        </Box>
-      </Box>
-      <Box display="flex" justifyContent="space-between">
-        <Box display="flex" flexDirection="column">
+        <Box display="flex" flexDirection="column" alignItems="center">
           <Typography variant="h6">{currentMatch.black}</Typography>
+          <Box display="flex" ref={zoomPreviewRef} />
+          <Box
+            display="flex"
+            flexDirection="column"
+            ref={zoomVideoContainerRef}
+          />
+          <Typography variant="h6">{currentMatch.white}</Typography>
+        </Box>
+        <Box pt={5} pl={5} bgcolor="#134378" borderRadius={10}>
           <ChessBoard
+            width="38vw"
+            height="38vw"
             chess={chess}
             fen={fen}
             gameClientRef={gameClientRef}
@@ -177,23 +147,13 @@ const Match = () => {
             setPendingMove={setPendingMove}
             setGameStatus={setGameStatus}
           />
-          <Typography variant="h6">{currentMatch.white}</Typography>
         </Box>
 
-        <Box display="flex" ref={zoomPreviewRef} />
-        <Box
-          display="flex"
-          flexDirection="column"
-          ref={zoomVideoContainerRef}
+        <ActionHistory
+          height="calc(38vw + 40px)"
+          width="350px"
+          moveHistory={moveHistory}
         />
-
-        <Box display="flex" flexDirection="column">
-          {moveHistory.map((move, index) => (
-            <Typography key={index}>
-              {index + 1} {move.san}
-            </Typography>
-          ))}
-        </Box>
       </Box>
     </Box>
   );

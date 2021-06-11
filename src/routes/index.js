@@ -17,6 +17,7 @@ const AuthGuard = async(() => import("../components/AuthGuard"));
 const SignIn = async(() => import("../pages/auth/SignIn"));
 const SignUp = async(() => import("../pages/auth/SignUp"));
 const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
+const AuthCallback = async(() => import("../pages/auth/Callback"));
 
 // Main components
 const Account = async(() => import("../pages/account"));
@@ -47,6 +48,11 @@ const authRoutes = {
       name: "Reset Password",
       component: ResetPassword,
     },
+    {
+      path: "/auth/callback/:hash",
+      name: "Auth Callback",
+      component: AuthCallback,
+    },
   ],
   component: null,
 };
@@ -68,11 +74,6 @@ const tournamentRoute = {
       path: "/tournament/:id",
       name: "Tournament Detail",
       component: TournamentDetail,
-    },
-    {
-      path: "/match/:id",
-      name: "Match",
-      component: Match,
     },
   ],
 };
@@ -116,6 +117,13 @@ const settingsRoute = {
   guard: AuthGuard,
 };
 
+const gameRoute = {
+  id: "Game",
+  path: "/match/:id",
+  name: "Match",
+  component: Match,
+};
+
 // Routes using the Dashboard layout
 export const mainLayoutRoutes = [
   accountRoute,
@@ -124,6 +132,9 @@ export const mainLayoutRoutes = [
   prizesRoute,
   settingsRoute,
 ];
+
+// Routes using the Game layout
+export const gameLayoutRoutes = [gameRoute];
 
 // Routes using the Auth layout
 export const authLayoutRoutes = [authRoutes];

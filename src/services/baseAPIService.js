@@ -26,7 +26,11 @@ export default class BaseAPIService {
           rejectUnauthorized: false,
         }),
       })
-      .then((res) => res.data);
+      .then((res) => {
+        if (res.data.status !== "ok" && res.data.error)
+          throw new Error(res.data.error);
+        return res.data;
+      });
   };
 
   static requestWithAuth = (
@@ -53,6 +57,23 @@ export default class BaseAPIService {
           rejectUnauthorized: false,
         }),
       })
-      .then((res) => res.data);
+      .then(async (res) => {
+        if (res.data.status !== "ok" && res.data.error)
+          throw new Error(res.data.error);
+        if (
+          res.data.warnings &&
+          res.data.warnings.includes("Warning.OldToken")
+        ) {
+          let data = { ...res.data };
+          const response = await this.requestWithAuth("/auth/renew", "GET");
+          StorageService.setAuthToken({
+            token: response.token,
+            expiry: response.expiry,
+          });
+          data.warnings.splice(data.warnings.indexOf("Warning.OldToken"));
+          return data;
+        }
+        return res.data;
+      });
   };
 }

@@ -1,9 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { mainLayoutRoutes, authLayoutRoutes } from "./index";
+import { mainLayoutRoutes, authLayoutRoutes, gameLayoutRoutes } from "./index";
 
 import MainLayout from "../layouts/Main";
 import AuthLayout from "../layouts/Auth";
+import GameLayout from "../layouts/Game";
 import Page404 from "../pages/auth/Page404";
 
 const childRoutes = (Layout, routes) =>
@@ -50,6 +51,7 @@ const Routes = () => (
     <Switch>
       {childRoutes(MainLayout, mainLayoutRoutes)}
       {childRoutes(AuthLayout, authLayoutRoutes)}
+      {childRoutes(GameLayout, gameLayoutRoutes)}
       <Route
         render={() => (
           <AuthLayout>

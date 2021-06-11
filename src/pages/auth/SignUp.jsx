@@ -34,7 +34,7 @@ import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/auth_background.png";
 
 import { Valid_USCF_Length } from "constant";
-import { signUp } from "redux/reducers/authReducer";
+import { signUp, setUser } from "redux/reducers/authReducer";
 import { setMessage } from "redux/reducers/messageReducer";
 import UserService from "services/userService";
 
@@ -324,6 +324,9 @@ const SignUp = () => {
     },
     [dispatch, setUscfSubmitting, setUscfData]
   );
+  const handleGuestLogin = useCallback(() => {
+    dispatch(setUser({ name: "Guest" }));
+  }, [dispatch]);
 
   useEffect(() => {
     if (user) {
@@ -347,12 +350,7 @@ const SignUp = () => {
             <Link component={RouterLink} to="/">
               <Logo src={logoImg} />
             </Link>
-            <Button
-              component={RouterLink}
-              to="/"
-              color="secondary"
-              size="large"
-            >
+            <Button color="secondary" size="large" onClick={handleGuestLogin}>
               Continue as a guest
             </Button>
           </Box>

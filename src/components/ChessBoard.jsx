@@ -13,6 +13,8 @@ const ChessBoard = (props) => {
   const {
     chess,
     fen,
+    width,
+    height,
     gameClientRef,
     setFen,
     lastMove,
@@ -51,7 +53,7 @@ const ChessBoard = (props) => {
       const move = chess.move({ from, to, promotion: "x" });
       if (move) {
         console.log(move);
-        dispatch(addHistoryItem(move));
+        dispatch(addHistoryItem({ action: "move", content: move }));
         setFen(chess.fen());
         setLastMove([from, to]);
         // setTimeout(randomMove, 500);
@@ -69,7 +71,8 @@ const ChessBoard = (props) => {
     (e) => {
       const from = pendingMove[0];
       const to = pendingMove[1];
-      chess.move({ from, to, promotion: e });
+      const move = chess.move({ from, to, promotion: e });
+      dispatch(addHistoryItem({ action: "move", content: move }));
       setFen(chess.fen());
       setLastMove([from, to]);
       setShowTransformPawn(false);
@@ -114,7 +117,8 @@ const ChessBoard = (props) => {
         const from = move.slice(0, 2);
         const to = move.slice(2);
 
-        chess.move({ from, to, promotion: "x" });
+        const chessMove = chess.move({ from, to, promotion: "x" });
+        dispatch(addHistoryItem({ action: "move", content: chessMove }));
         setLastMove([from, to]);
       }
       if (data.fen) {
@@ -166,8 +170,8 @@ const ChessBoard = (props) => {
   return (
     <>
       <Chessground
-        width="38vw"
-        height="38vw"
+        width={width}
+        height={height}
         turnColor={turnColor()}
         movable={calcMovable()}
         check={chess.in_check()}

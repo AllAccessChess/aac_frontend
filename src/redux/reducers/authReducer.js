@@ -29,16 +29,13 @@ export const signIn = (credentials) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const response = await AuthService.login(credentials);
-    if (response.status !== "ok") {
-      dispatch(showError(response.error));
-    } else {
-      StorageService.setAuthToken({
-        token: response.token,
-        expiry: response.expiry,
-      });
-      StorageService.setUserID(response.user.id);
-      dispatch(setUser(response.user));
-    }
+
+    StorageService.setAuthToken({
+      token: response.token,
+      expiry: response.expiry,
+    });
+    StorageService.setUserID(response.user.id);
+    dispatch(setUser(response.user));
   } catch (error) {
     console.log(error);
     dispatch(showError(error.message));
@@ -51,20 +48,16 @@ export const signUp = (payload) => async (dispatch) => {
 
   try {
     const response = await AuthService.register(payload);
-    if (response.status !== "ok") {
-      dispatch(showError(response.error));
+    StorageService.setAuthToken({
+      token: response.token,
+      expiry: response.expiry,
+    });
+    StorageService.setUserID(response.user.id);
+    dispatch(setUser(response.user));
+    if (response.warnings) {
+      for (let warn of response.warnings) dispatch(showWarning(warn));
     } else {
-      StorageService.setAuthToken({
-        token: response.token,
-        expiry: response.expiry,
-      });
-      StorageService.setUserID(response.user.id);
-      dispatch(setUser(response.user));
-      if (response.warnings) {
-        for (let warn of response.warnings) dispatch(showWarning(warn));
-      } else {
-        dispatch(showSuccess("Successfully registered!"));
-      }
+      dispatch(showSuccess("Successfully registered!"));
     }
   } catch (error) {
     console.log(error);
@@ -77,11 +70,7 @@ export const signUp = (payload) => async (dispatch) => {
 export const getUser = (userID) => async (dispatch) => {
   try {
     const response = await UserService.getUser(userID);
-    if (response.status !== "ok") {
-      // dispatch(showError(response.error));
-    } else {
-      dispatch(setUser(response.user));
-    }
+    dispatch(setUser(response.user));
   } catch (error) {
     console.log(error);
     dispatch(showError(error.message));
@@ -97,16 +86,12 @@ export const signInWithToken = () => async (dispatch) => {
     if (tokenData && tokenData.expiry > currentTime && userID) {
       if (RENEW_DIFF > tokenData.expiry - currentTime) {
         const response = await AuthService.renew();
-        if (response.status === "ok") {
-          StorageService.setAuthToken({
-            token: response.token,
-            expiry: response.expiry,
-          });
-          dispatch(getUser(userID));
-        }
-      } else {
-        dispatch(getUser(userID));
+        StorageService.setAuthToken({
+          token: response.token,
+          expiry: response.expiry,
+        });
       }
+      dispatch(getUser(userID));
     }
   } catch (error) {
     console.log(error);

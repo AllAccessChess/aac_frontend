@@ -1,16 +1,17 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 
 import { AppBar, Box, Button } from "@material-ui/core";
 import { Link } from "components/common/SpacedMui";
 import Notification from "components/common/Notification";
+import Loader from "components/common/Loader";
 import AccountMenu from "components/common/AccountMenu";
 
 import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/background.svg";
 
-import { useSelector, useDispatch } from "react-redux";
 import { logOut } from "redux/reducers/authReducer";
 
 const Wrapper = styled(AppBar)`
@@ -32,6 +33,7 @@ const menus = [
 
 const TopBar = () => {
   const dispatch = useDispatch();
+  const authLoading = useSelector((state) => state.authReducer.loading);
   const user = useSelector((state) => state.authReducer.user);
 
   const handleLogout = () => {
@@ -61,15 +63,21 @@ const TopBar = () => {
           {user ? (
             <AccountMenu user={user} onLogOut={handleLogout} />
           ) : (
-            <Button
-              component={RouterLink}
-              to="/auth/sign-in"
-              color="secondary"
-              size="large"
-              variant="contained"
-            >
-              Login
-            </Button>
+            <>
+              {authLoading ? (
+                <Loader />
+              ) : (
+                <Button
+                  component={RouterLink}
+                  to="/auth/sign-in"
+                  color="secondary"
+                  size="large"
+                  variant="contained"
+                >
+                  Login
+                </Button>
+              )}
+            </>
           )}
         </Box>
       </Box>
