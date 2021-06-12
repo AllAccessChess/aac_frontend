@@ -114,3 +114,7 @@
 .show-tip {
   display: none;
 }
+
+.media-preview-disconnect-audio-text {
+  color: white;
+}

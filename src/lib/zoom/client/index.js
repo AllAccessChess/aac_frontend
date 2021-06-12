@@ -148,11 +148,11 @@ export default class ZoomClient extends EventTarget {
    * Join Meeting
    *
    * @param {meetingNumber, passWord, signature, leaveUrl}
-   * @param {HTMLElement} previewDOM
+   * @param {object} options
    */
   joinMeeting = async (
     { meetingNumber, passWord, signature, leaveUrl },
-    previewDOM = null
+    options = {}
   ) => {
     try {
       if (!meetingNumber) {
@@ -177,14 +177,23 @@ export default class ZoomClient extends EventTarget {
         });
       });
 
-      if (previewDOM) {
-        this.movePreviewContainer(previewDOM);
+      if (options.previewDOM) {
+        this.movePreviewContainer(options.previewDOM);
+      }
+
+      if (options.joinButtonText) {
+        this.domManager.changeJoinMeetingButtonText(options.joinButtonText);
+      }
+
+      if (options.title) {
+        this.domManager.changeMeetingTitle(options.title);
       }
 
       if (this.domManager.joinButton) {
-        const domManager = this.domManager;
-        domManager.joinButton.addEventListener("click", function () {
-          domManager.hidePreviewContainer();
+        const _this = this;
+        _this.domManager.joinButton.addEventListener("click", function () {
+          _this.domManager.hidePreviewContainer();
+          _this.triggerEvent("joinClicked");
         });
       }
 
@@ -268,6 +277,16 @@ export default class ZoomClient extends EventTarget {
    */
   renderUserVideo = (userId, userVideoCanvas) => {
     this.domManager.renderUserVideo(userId, userVideoCanvas);
+  };
+
+  /**
+   * Returns meeting user name from id
+   *
+   * @param {string} userId
+   * @returns string
+   */
+  getUserName = (userId) => {
+    return this.domManager.getUserName(userId);
   };
 
   //=====================================================================

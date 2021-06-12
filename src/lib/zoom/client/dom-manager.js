@@ -60,6 +60,10 @@ export default class DOMManager {
     return document.querySelector(".gallery-video-container__canvas");
   }
 
+  get meetingTitle() {
+    return document.querySelector(".meeting-title");
+  }
+
   /**
    * Move the media preview container to another DOM
    *
@@ -161,5 +165,48 @@ export default class DOMManager {
     };
 
     window.requestAnimationFrame(renderFrame);
+  };
+
+  /**
+   * Change Meeting Title on Preview
+   *
+   * @param {string} text
+   */
+  changeMeetingTitle = (text) => {
+    if (this.meetingTitle) {
+      this.meetingTitle.innerHTML = text;
+    }
+  };
+
+  /**
+   * Change Join Button Text
+   *
+   * @param {string} text
+   */
+  changeJoinMeetingButtonText = (text) => {
+    if (this.joinButton) {
+      this.joinButton.innerHTML = text;
+    }
+  };
+
+  /**
+   * Returns user name in the zoom meeting
+   *
+   * @param {string} userId
+   * @returns string
+   */
+  getUserName = (userId) => {
+    const userAreaDOM = document.getElementsByClassName(
+      `gallery-video-container__video-frame ${userId}`
+    );
+    if (userAreaDOM && userAreaDOM.length) {
+      const userTextDOM = userAreaDOM[0].querySelector(
+        ".video-avatar__avatar-footer span"
+      );
+      if (userTextDOM) {
+        return userTextDOM.innerHTML;
+      }
+    }
+    return "";
   };
 }
