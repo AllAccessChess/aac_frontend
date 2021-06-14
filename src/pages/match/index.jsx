@@ -112,7 +112,6 @@ const Match = () => {
 
     // if (zoomClient && zoomPreviewRef.current) {
     joinMeeting();
-    console.log("joining");
     // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
