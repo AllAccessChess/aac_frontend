@@ -108,10 +108,10 @@ const Match = () => {
       );
     };
 
-    if (zoomClient) {
+    if (zoomClient && zoomPreviewRef.current) {
       joinMeeting();
     }
-  }, [zoomClient]);
+  }, [zoomClient, zoomPreviewRef]);
 
   if (!currentMatch) return <ScreenLoader />;
   return (
