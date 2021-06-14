@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 
 import Helmet from "react-helmet";
 
-import { Button as MuiButton, Typography } from "@material-ui/core";
+import { Button as MuiButton, Typography, Box } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
 
 const Button = styled(MuiButton)(spacing);
 
-const Wrapper = styled.div`
+const Wrapper = styled(Box)`
   padding: ${(props) => props.theme.spacing(6)}px;
   text-align: center;
   background: transparent;
@@ -21,7 +21,14 @@ const Wrapper = styled.div`
 
 function Page404() {
   return (
-    <Wrapper>
+    <Wrapper
+      width="100%"
+      height="100%"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+    >
       <Helmet title="404 Error" />
       <Typography component="h1" variant="h1" align="center" gutterBottom>
         404

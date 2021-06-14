@@ -8,6 +8,7 @@ import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
+import config from "config";
 
 import {
   Box,
@@ -217,7 +218,14 @@ const SignIn = () => {
             justifyContent="center"
             flexDirection="column"
           >
-            <LichessButton color="default" size="large" fullWidth>
+            <LichessButton
+              color="default"
+              size="large"
+              fullWidth
+              onClick={() =>
+                (window.location.href = `${config.apiURL}/auth/lichess`)
+              }
+            >
               Login with Lichess
             </LichessButton>
             <Typography

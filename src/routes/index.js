@@ -49,7 +49,7 @@ const authRoutes = {
       component: ResetPassword,
     },
     {
-      path: "/auth/callback/:hash",
+      path: "/auth/callback",
       name: "Auth Callback",
       component: AuthCallback,
     },

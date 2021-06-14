@@ -37,7 +37,7 @@ const AccountMenu = ({ user, onLogOut }) => {
         size="large"
         onClick={handleClick}
       >
-        {user.name}
+        {user.name && user.name.length ? user.name : user.username}
       </LargeButton>
       <Menu
         elevation={0}

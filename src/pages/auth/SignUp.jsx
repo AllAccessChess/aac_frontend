@@ -5,6 +5,7 @@ import { useHistory, Link as RouterLink } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import config from "config";
 import styled from "styled-components/macro";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -363,7 +364,14 @@ const SignUp = () => {
             justifyContent="center"
             flexDirection="column"
           >
-            <LichessButton color="default" size="large" fullWidth>
+            <LichessButton
+              color="default"
+              size="large"
+              fullWidth
+              onClick={() =>
+                (window.location.href = `${config.apiURL}/auth/lichess`)
+              }
+            >
               Signup with Lichess
             </LichessButton>
             <Typography

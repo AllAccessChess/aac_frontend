@@ -34,7 +34,6 @@ export const signIn = (credentials) => async (dispatch) => {
       token: response.token,
       expiry: response.expiry,
     });
-    StorageService.setUserID(response.user.id);
     dispatch(setUser(response.user));
   } catch (error) {
     console.log(error);
@@ -52,7 +51,6 @@ export const signUp = (payload) => async (dispatch) => {
       token: response.token,
       expiry: response.expiry,
     });
-    StorageService.setUserID(response.user.id);
     dispatch(setUser(response.user));
     if (response.warnings) {
       for (let warn of response.warnings) dispatch(showWarning(warn));
@@ -67,23 +65,16 @@ export const signUp = (payload) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
-export const getUser = (userID) => async (dispatch) => {
-  try {
-    const response = await UserService.getUser(userID);
-    dispatch(setUser(response.user));
-  } catch (error) {
-    console.log(error);
-    dispatch(showError(error.message));
-  }
-};
-
-export const signInWithToken = () => async (dispatch) => {
+export const signInWithToken = (
+  showMessage = false,
+  callback,
+  fallback
+) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const tokenData = StorageService.getAuthToken();
-    const userID = StorageService.getUserID();
     const currentTime = new Date().getTime();
-    if (tokenData && tokenData.expiry > currentTime && userID) {
+    if (tokenData && tokenData.expiry > currentTime) {
       if (RENEW_DIFF > tokenData.expiry - currentTime) {
         const response = await AuthService.renew();
         StorageService.setAuthToken({
@@ -91,10 +82,16 @@ export const signInWithToken = () => async (dispatch) => {
           expiry: response.expiry,
         });
       }
-      dispatch(getUser(userID));
+      const meResponse = await UserService.getMe();
+      dispatch(setUser(meResponse.user));
+      if (callback) callback();
+    } else {
+      if (fallback) fallback("Auth Token is expired!");
     }
   } catch (error) {
     console.log(error);
+    if (showMessage) dispatch(showError(error.message));
+    if (fallback) fallback(error.message);
   }
   dispatch(setLoading(false));
 };
