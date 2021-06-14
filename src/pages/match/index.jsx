@@ -105,7 +105,7 @@ const Match = () => {
           meetingNumber,
           passWord,
           signature,
-          leaveUrl: "http://localhost:3000/tournament/0",
+          leaveUrl: "/tournament/0",
         },
         {
           previewDOM: zoomPreviewRef.current,
