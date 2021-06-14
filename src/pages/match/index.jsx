@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useParams } from "react-router";
 import config from "config";
 import Chess from "chess.js";
@@ -35,7 +41,7 @@ const Match = () => {
   const moveHistory = useSelector((state) => state.matchReducer.history);
 
   const { zoomClient } = useZoomContext();
-  const zoomPreviewRef = useRef(null);
+  const zoomPreviewRef = createRef(null);
   const userCountRef = useRef(1);
 
   const handleOfferDraw = useCallback(() => {
@@ -91,6 +97,7 @@ const Match = () => {
 
       zoomClient.on("joinClicked", () => {
         setMeetingJoined(true);
+        userCountRef.current = 1;
       });
 
       await zoomClient.joinMeeting(
