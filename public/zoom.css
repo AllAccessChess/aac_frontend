@@ -41,6 +41,10 @@
   height: 240px !important;
 }
 
+.media-preview-container .av-preview-container #media-preview-camera-on {
+  transform: scaleX(-1);
+}
+
 .media-preview-container .media-preview-audio-mic-btn-container {
   display: flex;
   align-items: center;

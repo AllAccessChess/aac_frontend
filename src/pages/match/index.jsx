@@ -139,7 +139,7 @@ const Match = () => {
           flexDirection="column"
           alignItems="center"
           justifyContent="space-between"
-          height="100%"
+          height="80%"
           width={240}
         >
           <Box display="flex" flexDirection="column" alignItems="center">
@@ -147,7 +147,11 @@ const Match = () => {
               width={192}
               height={120}
               id="player1"
-              style={{ borderRadius: 8, background: "black" }}
+              style={{
+                borderRadius: 8,
+                background: "black",
+                transform: "scaleX(-1)",
+              }}
             ></canvas>
             <Box my={2}>
               <Typography variant="h6">
@@ -187,7 +191,11 @@ const Match = () => {
               width={192}
               height={120}
               id="player2"
-              style={{ borderRadius: 8, background: "black" }}
+              style={{
+                borderRadius: 8,
+                background: "black",
+                transform: "scaleX(-1)",
+              }}
             ></canvas>
           </Box>
           <Box
@@ -206,8 +214,8 @@ const Match = () => {
         </Box>
         <Box mx={3} pt={5} pl={5} bgcolor="#134378" borderRadius={10}>
           <ChessBoard
-            width="38vw"
-            height="38vw"
+            width="30vw"
+            height="30vw"
             chess={chess}
             fen={fen}
             gameClientRef={gameClientRef}
@@ -222,7 +230,7 @@ const Match = () => {
         </Box>
 
         <ActionHistory
-          height="calc(38vw + 40px)"
+          height="calc(30vw + 40px)"
           width="350px"
           moveHistory={moveHistory}
         />
