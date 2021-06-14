@@ -1,10 +1,4 @@
-import React, {
-  createRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import config from "config";
 import Chess from "chess.js";
@@ -41,7 +35,7 @@ const Match = () => {
   const moveHistory = useSelector((state) => state.matchReducer.history);
 
   const { zoomClient } = useZoomContext();
-  const zoomPreviewRef = createRef(null);
+  const zoomPreviewRef = useRef(null);
   const userCountRef = useRef(1);
 
   const handleOfferDraw = useCallback(() => {
@@ -83,6 +77,7 @@ const Match = () => {
 
       zoomClient.on("onUserJoin", (data) => {
         setTimeout(() => {
+          console.log("onUserJoin", data, userCountRef.current);
           if (zoomClient.getUserName(data.userId) !== "Richard Zhan") {
             const userVideoCanvas = document.getElementById(
               `player${userCountRef.current}`
@@ -115,10 +110,11 @@ const Match = () => {
       );
     };
 
-    if (zoomClient && zoomPreviewRef.current) {
-      joinMeeting();
-    }
-  }, [zoomClient, zoomPreviewRef]);
+    // if (zoomClient && zoomPreviewRef.current) {
+    joinMeeting();
+    // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!currentMatch) return <ScreenLoader />;
   return (
