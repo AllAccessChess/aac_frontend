@@ -57,25 +57,22 @@ const authRoutes = {
   component: null,
 };
 
-const tournamentRoute = {
+const tournamentsRoute = {
   id: "Tournaments",
   path: "/tournaments",
   name: "Tournaments",
-  component: null,
+  component: Tournaments,
   icon: <TournamentIcon />,
   // guard: AuthGuard,
-  children: [
-    {
-      path: "/tournaments",
-      name: "Tournaments",
-      component: Tournaments,
-    },
-    {
-      path: "/tournament/:id",
-      name: "Tournament Detail",
-      component: TournamentDetail,
-    },
-  ],
+};
+
+const tournamentDetailRoute = {
+  id: "Tournaments",
+  path: "/tournament/:id",
+  name: "Tournament Detail",
+  component: TournamentDetail,
+  icon: <TournamentIcon />,
+  // guard: AuthGuard,
 };
 
 const dashboardRoute = {
@@ -128,7 +125,7 @@ const gameRoute = {
 export const mainLayoutRoutes = [
   accountRoute,
   dashboardRoute,
-  tournamentRoute,
+  tournamentsRoute,
   prizesRoute,
   settingsRoute,
 ];
@@ -138,3 +135,6 @@ export const gameLayoutRoutes = [gameRoute];
 
 // Routes using the Auth layout
 export const authLayoutRoutes = [authRoutes];
+
+// Routes using the MainDetail layout
+export const mainDetailLayoutRoutes = [tournamentDetailRoute];

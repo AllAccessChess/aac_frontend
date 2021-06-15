@@ -52,7 +52,7 @@ const TopBar = () => {
               component={RouterLink}
               to={menu.url}
               color="inherit"
-              variant="h4"
+              variant="h5"
               mr={10}
               key={index}
             >

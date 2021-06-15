@@ -51,7 +51,7 @@ export const {
 const dummyTournaments = [
   {
     id: 0,
-    name: "Tournament 1",
+    name: "US Chess Camp",
     rounds: [
       {
         id: 0,
@@ -106,10 +106,17 @@ const dummyTournaments = [
         ],
       },
     ],
+    organizedBy: "USCF",
+    type: "Classical",
+    duration: 30,
+    extraDuration: 0,
+    prize: 140,
+    startAt: "2021-06-15T16:00:00.877Z",
+    endAt: "2021-06-15T18:00:00.877Z",
   },
   {
     id: 1,
-    name: "Tournament 2",
+    name: "US Chess Camp 2",
     rounds: [
       {
         id: 0,
@@ -164,6 +171,13 @@ const dummyTournaments = [
         ],
       },
     ],
+    organizedBy: "USCF",
+    type: "Classical",
+    duration: 30,
+    extraDuration: 0,
+    prize: 140,
+    startAt: "2021-06-15T16:00:00.877Z",
+    endAt: "2021-06-15T18:00:00.877Z",
   },
 ];
 

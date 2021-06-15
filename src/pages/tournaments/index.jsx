@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 
-import { Link as RouterLink } from "react-router-dom";
-import { Link } from "components/common/SpacedMui";
+import { useHistory } from "react-router-dom";
+import { Typography } from "components/common/SpacedMui";
 import TabPanel from "components/common/TabPanel";
-import { Paper as MuiPaper, Tabs, Tab } from "@material-ui/core";
+import { Box, Tabs, Tab } from "@material-ui/core";
+import TournamentCard from "./TournamentCard";
 
 import { getTournamentList } from "redux/reducers/tournamentReducer";
 
-const Paper = styled(MuiPaper)`
-  width: 100%;
-`;
-
 const Tournament = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const [tabValue, setTabValue] = useState(0);
 
@@ -22,6 +19,9 @@ const Tournament = () => {
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
+  const handleViewTounamentDetail = (tournament) => {
+    history.push(`/tournament/${tournament.id}`);
+  };
 
   useEffect(() => {
     if (!tournamentList.length) dispatch(getTournamentList());
@@ -29,11 +29,10 @@ const Tournament = () => {
   }, []);
 
   return (
-    <Paper square>
+    <Box width="100%" display="flex" flexDirection="column">
+      <Typography variant="h3">Tournaments</Typography>
       <Tabs
         value={tabValue}
-        indicatorColor="primary"
-        textColor="secondary"
         onChange={handleTabChange}
         aria-label="tournaments"
       >
@@ -43,41 +42,56 @@ const Tournament = () => {
       </Tabs>
       <TabPanel value={tabValue} index={0}>
         {tournamentList.map((tournament) => (
-          <Link
+          <Box
+            width="100%"
+            bgcolor="#15375C"
+            p={5}
+            mb={5}
+            borderRadius={10}
             key={tournament.id}
-            component={RouterLink}
-            to={`/tournament/${tournament.id}`}
-            color="secondary"
           >
-            {tournament.name}
-          </Link>
+            <TournamentCard
+              tournament={tournament}
+              onViewDetails={handleViewTounamentDetail}
+            />
+          </Box>
         ))}
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
         {tournamentList.map((tournament) => (
-          <Link
+          <Box
+            width="100%"
+            bgcolor="#15375C"
+            p={5}
+            mb={5}
+            borderRadius={10}
             key={tournament.id}
-            component={RouterLink}
-            color="secondary"
-            to={`/tournament/${tournament.id}`}
           >
-            {tournament.name}
-          </Link>
+            <TournamentCard
+              tournament={tournament}
+              onViewDetails={handleViewTounamentDetail}
+            />
+          </Box>
         ))}
       </TabPanel>
       <TabPanel value={tabValue} index={2}>
         {tournamentList.map((tournament) => (
-          <Link
+          <Box
+            width="100%"
+            bgcolor="#15375C"
+            p={5}
+            mb={5}
+            borderRadius={10}
             key={tournament.id}
-            component={RouterLink}
-            color="secondary"
-            to={`/tournament/${tournament.id}`}
           >
-            {tournament.name}
-          </Link>
+            <TournamentCard
+              tournament={tournament}
+              onViewDetails={handleViewTounamentDetail}
+            />
+          </Box>
         ))}
       </TabPanel>
-    </Paper>
+    </Box>
   );
 };
 

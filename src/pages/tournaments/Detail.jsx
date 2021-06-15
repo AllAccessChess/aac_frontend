@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
 import { Link as RouterLink } from "react-router-dom";
-import { Link } from "components/common/SpacedMui";
+import { Link, Typography, Button } from "components/common/SpacedMui";
 import { Box, Paper, Tabs, Tab } from "@material-ui/core";
+import { ChevronLeft as BackIcon } from "@material-ui/icons";
+
 import TabPanel from "components/common/TabPanel";
 import ScreenLoader from "components/common/ScreenLoader";
+import TournamentCard from "./TournamentCard";
 
-import { getTournament } from "redux/reducers/tournamentReducer";
+import {
+  getTournament,
+  clearCurrent as clearCurrentTournament,
+} from "redux/reducers/tournamentReducer";
 
 const CustomPaper = styled(Paper)`
   width: 100%;
 `;
 
 const Detail = () => {
+  const history = useHistory();
   const params = useParams();
   const dispatch = useDispatch();
   const [tabValue, setTabValue] = useState(0);
@@ -28,6 +35,15 @@ const Detail = () => {
     setTabValue(newValue);
   };
 
+  const handleBack = () => {
+    dispatch(clearCurrentTournament());
+    history.push("/tournaments");
+  };
+
+  const handleRigster = () => {
+    console.log("Registering Now");
+  };
+
   useEffect(() => {
     if (params.id && !currentTournament) dispatch(getTournament(params.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,8 +51,24 @@ const Detail = () => {
 
   if (!currentTournament) return <ScreenLoader />;
   return (
-    <Box width="100%" height="100%" display="flex" flexDirection="column">
-      <h2>Tournament Detail Page</h2>
+    <Box
+      width="100%"
+      height="100%"
+      display="flex"
+      flexDirection="column"
+      alignItems="flex-start"
+    >
+      <Button startIcon={<BackIcon />} onClick={handleBack}>
+        Go Back
+      </Button>
+
+      <Box width="100%" my={5}>
+        <TournamentCard
+          tournament={currentTournament}
+          onRegister={handleRigster}
+        />
+      </Box>
+
       <CustomPaper square>
         <Tabs
           value={tabValue}

@@ -7,7 +7,7 @@ const TabPanel = (props) => {
   return (
     <Box role="tabpanel" hidden={value !== index} {...other}>
       {value === index && (
-        <Box p={3} display="flex" flexDirection="column">
+        <Box py={3} display="flex" flexDirection="column">
           {children}
         </Box>
       )}
