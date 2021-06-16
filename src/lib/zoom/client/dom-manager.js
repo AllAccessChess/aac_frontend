@@ -200,9 +200,7 @@ export default class DOMManager {
       `gallery-video-container__video-frame ${userId}`
     );
     if (userAreaDOM && userAreaDOM.length) {
-      const userTextDOM = userAreaDOM[0].querySelector(
-        ".video-avatar__avatar-footer span"
-      );
+      const userTextDOM = userAreaDOM[0].querySelector("span");
       if (userTextDOM) {
         return userTextDOM.innerHTML;
       }

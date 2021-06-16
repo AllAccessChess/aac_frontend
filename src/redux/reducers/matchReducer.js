@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { setMessage } from "./messageReducer";
 
+import dummyTournaments from "data/tournaments";
+
 const initialState = {
   loading: false,
   current: null,
@@ -38,42 +40,28 @@ export const {
   popHistoryItem,
 } = slice.actions;
 
-const dummyMatch = {
-  id: 0,
-  players: [
-    {
-      name: "William",
-      ratings: {
-        uscf: {
-          ratings: {
-            rapid: {
-              rating: 1468,
-            },
-          },
-        },
-      },
-    },
-    {
-      name: "Risabh",
-      ratings: {
-        uscf: {
-          ratings: {
-            rapid: {
-              rating: 1300,
-            },
-          },
-        },
-      },
-    },
-  ],
-  round: 0,
-  tournament: "Tournament 1",
-};
-
-export const getMatch = (id) => async (dispatch) => {
+export const getMatch = (id) => async (dispatch, getState) => {
   dispatch(setLoading(true));
   try {
-    const match = dummyMatch;
+    const match = dummyTournaments
+      .reduce(
+        (matches, t) => [
+          ...matches,
+          ...t.rounds.reduce(
+            (matches, r) => [
+              ...matches,
+              ...r.matches.map((m) => ({
+                ...m,
+                round: r.id,
+                tournament: t.name,
+              })),
+            ],
+            []
+          ),
+        ],
+        []
+      )
+      .find((m) => m.id === id);
     dispatch(setCurrent(match));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));

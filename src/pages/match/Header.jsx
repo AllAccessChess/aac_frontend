@@ -23,7 +23,7 @@ const Header = (props) => {
   const subHeaderText = useMemo(
     () =>
       currentMatch
-        ? `${currentMatch.players[0].name}(${currentMatch.players[0].ratings.uscf.ratings.rapid.rating}) VS ${currentMatch.players[1].name}(${currentMatch.players[0].ratings.uscf.ratings.rapid.rating})`
+        ? `${currentMatch.black.name}(${currentMatch.black.ratings.uscf.ratings.rapid.rating}) VS ${currentMatch.white.name}(${currentMatch.white.ratings.uscf.ratings.rapid.rating})`
         : "",
     [currentMatch]
   );

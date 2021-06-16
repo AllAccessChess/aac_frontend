@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { setMessage } from "./messageReducer";
 
+import dummyTournaments from "data/tournaments";
+
 const initialState = {
   list: [],
   current: null,
@@ -47,139 +49,6 @@ export const {
   clearCurrent,
   insertToList,
 } = slice.actions;
-
-const dummyTournaments = [
-  {
-    id: 0,
-    name: "US Chess Camp",
-    rounds: [
-      {
-        id: 0,
-        matches: [
-          {
-            id: "dfwer324",
-            white: "William",
-            black: "Rishabh",
-          },
-          {
-            id: "34edsd",
-            white: "Railson",
-            black: "Alex",
-          },
-          {
-            id: "4dcfsdf",
-            white: "Alex",
-            black: "William",
-          },
-          {
-            id: "sdfxcv",
-            white: "Rishabh",
-            black: "Railson",
-          },
-        ],
-      },
-      {
-        id: 1,
-        white: "William",
-        black: "Rishabh",
-        matches: [
-          {
-            id: "234wefsxc",
-            white: "William",
-            black: "Rishabh",
-          },
-          {
-            id: "sdfwe34",
-            white: "Railson",
-            black: "Alex",
-          },
-          {
-            id: "34wedf",
-            white: "Alex",
-            black: "William",
-          },
-          {
-            id: "sdf23d",
-            white: "Rishabh",
-            black: "Railson",
-          },
-        ],
-      },
-    ],
-    organizedBy: "USCF",
-    type: "Classical",
-    duration: 30,
-    extraDuration: 0,
-    prize: 140,
-    startAt: "2021-06-15T16:00:00.877Z",
-    endAt: "2021-06-15T18:00:00.877Z",
-  },
-  {
-    id: 1,
-    name: "US Chess Camp 2",
-    rounds: [
-      {
-        id: 0,
-        matches: [
-          {
-            id: "dfwer324",
-            white: "William",
-            black: "Rishabh",
-          },
-          {
-            id: "34edsd",
-            white: "Railson",
-            black: "Alex",
-          },
-          {
-            id: "4dcfsdf",
-            white: "Alex",
-            black: "William",
-          },
-          {
-            id: "sdfxcv",
-            white: "Rishabh",
-            black: "Railson",
-          },
-        ],
-      },
-      {
-        id: 1,
-        white: "William",
-        black: "Rishabh",
-        matches: [
-          {
-            id: "234wefsxc",
-            white: "William",
-            black: "Rishabh",
-          },
-          {
-            id: "sdfwe34",
-            white: "Railson",
-            black: "Alex",
-          },
-          {
-            id: "34wedf",
-            white: "Alex",
-            black: "William",
-          },
-          {
-            id: "sdf23d",
-            white: "Rishabh",
-            black: "Railson",
-          },
-        ],
-      },
-    ],
-    organizedBy: "USCF",
-    type: "Classical",
-    duration: 30,
-    extraDuration: 0,
-    prize: 140,
-    startAt: "2021-06-15T16:00:00.877Z",
-    endAt: "2021-06-15T18:00:00.877Z",
-  },
-];
 
 export const getTournamentList = () => async (dispatch) => {
   dispatch(setLoading(true));

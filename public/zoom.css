@@ -122,3 +122,7 @@
 .media-preview-disconnect-audio-text {
   color: white;
 }
+
+.ReactModalPortal {
+  display: none;
+}

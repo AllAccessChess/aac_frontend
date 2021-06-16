@@ -33,6 +33,7 @@ const Match = () => {
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
   const moveHistory = useSelector((state) => state.matchReducer.history);
+  const user = useSelector((state) => state.authReducer.user);
 
   const { zoomClient } = useZoomContext();
   const zoomPreviewRef = useRef(null);
@@ -71,20 +72,16 @@ const Match = () => {
       );
 
       zoomClient.setUserData({
-        userName: "Zoom Test",
-        userEmail: "test@gmail.com",
+        userName: user.username,
+        userEmail: user.email,
       });
 
       zoomClient.on("onUserJoin", (data) => {
         setTimeout(() => {
-          console.log("onUserJoin", data, userCountRef.current);
-          if (zoomClient.getUserName(data.userId) !== "Richard Zhan") {
-            const userVideoCanvas = document.getElementById(
-              `player${userCountRef.current}`
-            );
+          const userName = zoomClient.getUserName(data.userId);
+          const userVideoCanvas = document.getElementById(`${userName}-video`);
 
-            userCountRef.current += 1;
-
+          if (userVideoCanvas) {
             zoomClient.renderUserVideo(data.userId, userVideoCanvas);
           }
         }, 5000);
@@ -146,7 +143,7 @@ const Match = () => {
             <canvas
               width={192}
               height={120}
-              id="player1"
+              id={`${currentMatch.black.username}-video`}
               style={{
                 borderRadius: 8,
                 background: "black",
@@ -155,7 +152,8 @@ const Match = () => {
             ></canvas>
             <Box my={2}>
               <Typography variant="h6">
-                {currentMatch.players[0].name}(1400)
+                {currentMatch.black.name}(
+                {currentMatch.black.ratings.uscf.ratings.rapid.rating})
               </Typography>
             </Box>
             <Box
@@ -184,13 +182,14 @@ const Match = () => {
             </Box>
             <Box my={2}>
               <Typography variant="h6">
-                {currentMatch.players[1].name}(300)
+                {currentMatch.white.name}(
+                {currentMatch.white.ratings.uscf.ratings.rapid.rating})
               </Typography>
             </Box>
             <canvas
               width={192}
               height={120}
-              id="player2"
+              id={`${currentMatch.white.username}-video`}
               style={{
                 borderRadius: 8,
                 background: "black",
