@@ -14,12 +14,10 @@ const SmallImg = styled.img`
   width: 32px;
 `;
 
-const LichessButton = (props) => (
+export const LichessButton = (props) => (
   <CustomButton
     variant="contained"
     startIcon={<SmallImg src={LichessIcon} />}
     {...props}
   />
 );
-
-export default LichessButton;

@@ -18,7 +18,7 @@ import {
 import { ChevronLeft as BackIcon } from "@material-ui/icons";
 
 import TabPanel from "components/common/TabPanel";
-import ScreenLoader from "components/common/ScreenLoader";
+import { LoadingScreen } from "components/common";
 import TournamentCard from "./TournamentCard";
 
 import {
@@ -65,7 +65,7 @@ const Detail = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!currentTournament) return <ScreenLoader />;
+  if (!currentTournament) return <LoadingScreen />;
   return (
     <Box
       width="100%"

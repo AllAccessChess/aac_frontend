@@ -1,8 +1,9 @@
-import axios from "utils/axios";
 import https from "https";
-import config from "config";
 
-import StorageService from "./storageService";
+import { config } from "config";
+import axios from "utils/axios";
+import { getAuthToken, setAuthToken } from "utils/storage";
+
 const baseURL = config.apiURL || "";
 
 export default class BaseAPIService {
@@ -40,7 +41,7 @@ export default class BaseAPIService {
     timeout = 0,
     contentType = "application/json"
   ) => {
-    const tokenData = StorageService.getAuthToken();
+    const tokenData = getAuthToken();
     const token =
       tokenData && tokenData.token ? `Bearer ${tokenData.token}` : "";
     return axios
@@ -66,7 +67,7 @@ export default class BaseAPIService {
         ) {
           let data = { ...res.data };
           const response = await this.requestWithAuth("/auth/renew", "GET");
-          StorageService.setAuthToken({
+          setAuthToken({
             token: response.token,
             expiry: response.expiry,
           });
