@@ -90,6 +90,7 @@ export const signInWithToken = (
     }
   } catch (error) {
     console.log(error);
+    clearTokens();
     if (showMessage) dispatch(showError(error.message));
     if (fallback) fallback(error.message);
   }
