@@ -157,7 +157,7 @@ const InnerForm = (props) => {
         )}
       >
         <InputLabel htmlFor="password_confirmation">
-          Confirm Password
+          Confirm password
         </InputLabel>
         <OutlinedInput
           id="password_confirmation"
@@ -206,7 +206,7 @@ const InnerForm = (props) => {
           {uscfSubmitting ? (
             <Spinner />
           ) : (
-            <Typography variant="body2">Fetched USCF Profile</Typography>
+            <Typography variant="body2">Fetched USCF profile</Typography>
           )}
         </EmptyWrapper>
       ) : (
@@ -242,7 +242,7 @@ const InnerForm = (props) => {
         size="large"
         my={5}
       >
-        Sign Up
+        Create account
       </Button>
     </form>
   );
@@ -336,7 +336,7 @@ export const SignUp = () => {
                 (window.location.href = `${config.apiURL}/auth/lichess`)
               }
             >
-              Signup with Lichess
+              Sign up with Lichess
             </LichessButton>
             <Typography
               variant="h4"

@@ -193,7 +193,7 @@ export const SignIn = () => {
                 (window.location.href = `${config.apiURL}/auth/lichess`)
               }
             >
-              Login with Lichess
+              Log in with Lichess
             </LichessButton>
             <Typography
               variant="h4"
@@ -233,7 +233,7 @@ export const SignIn = () => {
                 color="secondary"
                 ml={2}
               >
-                Signup
+                Sign up
               </Link>
             </Typography>
           </Box>

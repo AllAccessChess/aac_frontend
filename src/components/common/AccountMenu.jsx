@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-
-import { Button, Menu, MenuItem } from "@material-ui/core";
 import { ArrowDropDown as ArrowDropDownIcon } from "@material-ui/icons";
+
+import { Button, Menu, MenuItem } from "components/material-ui";
 
 const LargeButton = styled(Button)`
   &.MuiButton-textSizeLarge {
@@ -11,8 +11,9 @@ const LargeButton = styled(Button)`
   }
 `;
 
-const AccountMenu = ({ user, onLogOut }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+export const AccountMenu = (props) => {
+  const { user, onLogOut } = props;
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,9 +28,9 @@ const AccountMenu = ({ user, onLogOut }) => {
     setAnchorEl(null);
   };
 
-  if (!user) return <></>;
+  if (!user) return null;
   return (
-    <>
+    <React.Fragment>
       <LargeButton
         aria-controls="account-menu"
         aria-haspopup="true"
@@ -59,8 +60,6 @@ const AccountMenu = ({ user, onLogOut }) => {
         {user.id && <MenuItem onClick={handleClose}>My account</MenuItem>}
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
-    </>
+    </React.Fragment>
   );
 };
-
-export default AccountMenu;

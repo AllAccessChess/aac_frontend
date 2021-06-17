@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import {
   Button as MuiButton,
   IconButton as MuiIconButton,
@@ -7,7 +8,6 @@ import {
   Paper as MuiPaper,
   Grid as MuiGrid,
 } from "@material-ui/core";
-import { styled } from "@material-ui/core/styles";
 import { Alert as MuiAlert } from "@material-ui/lab";
 import { spacing } from "@material-ui/system";
 

@@ -3,16 +3,12 @@ import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 
-import { AppBar, Box, Button } from "@material-ui/core";
-import { Link } from "components/common/SpacedMui";
-import Notification from "components/common/Notification";
-import { Spinner } from "components/common";
-import AccountMenu from "components/common/AccountMenu";
+import { AccountMenu, Spinner } from "components/common";
+import { AppBar, Box, Button, Link } from "components/material-ui";
+import { logOut } from "redux/reducers/authReducer";
 
 import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/background.svg";
-
-import { logOut } from "redux/reducers/authReducer";
 
 const Wrapper = styled(AppBar)`
   background: url(${(props) => props.background});
@@ -59,7 +55,6 @@ export const TopBar = () => {
               {menu.label}
             </Link>
           ))}
-          <Notification />
           {user ? (
             <AccountMenu user={user} onLogOut={handleLogout} />
           ) : (
