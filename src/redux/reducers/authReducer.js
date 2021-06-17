@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import AuthService from "services/authService";
 import UserService from "services/userService";
-import StorageService from "services/storageService";
+import { setAuthToken, getAuthToken, clearTokens } from "utils/storage";
 import { showSuccess, showError, showWarning } from "./messageReducer";
 import { RENEW_DIFF } from "constant";
 
@@ -30,7 +30,7 @@ export const signIn = (credentials) => async (dispatch) => {
   try {
     const response = await AuthService.login(credentials);
 
-    StorageService.setAuthToken({
+    setAuthToken({
       token: response.token,
       expiry: response.expiry,
     });
@@ -47,7 +47,7 @@ export const signUp = (payload) => async (dispatch) => {
 
   try {
     const response = await AuthService.register(payload);
-    StorageService.setAuthToken({
+    setAuthToken({
       token: response.token,
       expiry: response.expiry,
     });
@@ -72,12 +72,12 @@ export const signInWithToken = (
 ) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const tokenData = StorageService.getAuthToken();
+    const tokenData = getAuthToken();
     const currentTime = new Date().getTime();
     if (tokenData && tokenData.expiry > currentTime) {
       if (RENEW_DIFF > tokenData.expiry - currentTime) {
         const response = await AuthService.renew();
-        StorageService.setAuthToken({
+        setAuthToken({
           token: response.token,
           expiry: response.expiry,
         });
@@ -97,7 +97,7 @@ export const signInWithToken = (
 };
 
 export const logOut = () => (dispatch) => {
-  StorageService.clearTokens();
+  clearTokens();
   dispatch(setUser(null));
 };
 

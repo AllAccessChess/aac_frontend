@@ -6,7 +6,7 @@ import { Button } from "components/common/SpacedMui";
 import { Box } from "@material-ui/core";
 import { ChevronLeft as BackIcon } from "@material-ui/icons";
 
-import ScreenLoader from "components/common/ScreenLoader";
+import { LoadingScreen } from "components/common";
 import TournamentCard from "../TournamentCard";
 import Pairings from "./Pairings";
 import Members from "./Members";
@@ -40,7 +40,7 @@ const Detail = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!currentTournament) return <ScreenLoader />;
+  if (!currentTournament) return <LoadingScreen />;
   return (
     <Box
       width="100%"

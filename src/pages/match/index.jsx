@@ -1,23 +1,19 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router";
-import config from "config";
 import Chess from "chess.js";
+import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
-import GameClient from "utils/gameClient";
-
-import { Box, Typography } from "@material-ui/core";
 import { AccessTime as AccessTimeIcon } from "@material-ui/icons";
 
-import ScreenLoader from "components/common/ScreenLoader";
-import ChessBoard from "components/ChessBoard";
-import Header from "./Header";
-import ActionHistory from "./ActionHistory";
-
+import { config } from "config";
 import { GameStatus, GameActions } from "constant";
-import { getMatch } from "redux/reducers/matchReducer";
-
+import { LoadingScreen } from "components/common";
+import { Box, Divider, Grid, Paper, Typography } from "components/material-ui";
 import { useZoomContext } from "lib/zoom";
 import { generateSignature } from "lib/zoom/client/helpers";
+import { getMatch } from "redux/reducers/matchReducer";
+import GameClient from "utils/gameClient";
+import { Chat, ChessBoard, Info, MoveList } from "./components";
+import { useStyles } from "./styles";
 
 const Match = () => {
   const params = useParams();
@@ -29,19 +25,21 @@ const Match = () => {
   const [lastMove, setLastMove] = useState();
   const [pendingMove, setPendingMove] = useState();
   const [gameStatus, setGameStatus] = useState(GameStatus.Preparing);
-  const [meetingJoined, setMeetingJoined] = useState(false);
+  const [meetingJoining, setMeetingJoining] = useState(false);
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
-  const moveHistory = useSelector((state) => state.matchReducer.history);
+  const history = useSelector((state) => state.matchReducer.history);
   const user = useSelector((state) => state.authReducer.user);
 
   const { zoomClient } = useZoomContext();
   const zoomPreviewRef = useRef(null);
   const userCountRef = useRef(1);
+  const classes = useStyles();
 
   const handleOfferDraw = useCallback(() => {
     console.log("Offering Draw");
   }, []);
+
   const handleResign = useCallback(() => {
     gameClientRef.current.sendData({
       action: GameActions.resign,
@@ -58,7 +56,7 @@ const Match = () => {
       dispatch(getMatch(params.id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const joinMeeting = async () => {
@@ -88,8 +86,9 @@ const Match = () => {
       });
 
       zoomClient.on("joinClicked", () => {
-        setMeetingJoined(true);
+        setMeetingJoining(false);
         userCountRef.current = 1;
+        startGame();
       });
 
       await zoomClient.joinMeeting(
@@ -107,30 +106,51 @@ const Match = () => {
       );
     };
 
-    // if (zoomClient && zoomPreviewRef.current) {
-    joinMeeting();
-    // }
+    if (currentMatch && user && user.username) {
+      setMeetingJoining(true);
+      joinMeeting();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentMatch]);
 
-  if (!currentMatch) return <ScreenLoader />;
+  if (!currentMatch) return <LoadingScreen />;
   return (
-    <Box display="flex" flexDirection="column" width="100%" height="100%">
-      <Header
-        currentMatch={currentMatch}
-        gameStatus={gameStatus}
-        onOfferDraw={handleOfferDraw}
-        onResign={handleResign}
-        onStartGame={startGame}
-      />
-      <Box
-        px={10}
-        py={5}
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        height="100%"
-      >
+    <Grid container spacing={5} p={5} className={classes.wrapper}>
+      <Grid item md={3} sm={2}>
+        <Box display="flex" flexDirection="column" height="100%">
+          <Paper p={5}>
+            <Info match={currentMatch} />
+            <Box my={3}>
+              <Divider />
+            </Box>
+            <Chat />
+          </Paper>
+          <Box flexGrow={1} mt={5}>
+            <MoveList moveList={history} />
+          </Box>
+        </Box>
+      </Grid>
+      <Grid item md={6} sm={8}>
+        <Box display="flex" flexDirection="column" height="100%">
+          <Paper p={5}>
+            <ChessBoard
+              width="30vw"
+              height="30vw"
+              chess={chess}
+              fen={fen}
+              gameClientRef={gameClientRef}
+              lastMove={lastMove}
+              pendingMove={pendingMove}
+              gameStatus={gameStatus}
+              setFen={setFen}
+              setLastMove={setLastMove}
+              setPendingMove={setPendingMove}
+              setGameStatus={setGameStatus}
+            />
+          </Paper>
+        </Box>
+      </Grid>
+      <Grid item md={3} sm={2}>
         <Box
           display="flex"
           flexDirection="column"
@@ -198,7 +218,7 @@ const Match = () => {
             ></canvas>
           </Box>
           <Box
-            display={meetingJoined ? "none" : "flex"}
+            display={meetingJoining ? "flex" : "none"}
             alignItems="center"
             justifyContent="center"
             ref={zoomPreviewRef}
@@ -211,30 +231,8 @@ const Match = () => {
             zIndex={3}
           />
         </Box>
-        <Box mx={3} pt={5} pl={5} bgcolor="#134378" borderRadius={10}>
-          <ChessBoard
-            width="30vw"
-            height="30vw"
-            chess={chess}
-            fen={fen}
-            gameClientRef={gameClientRef}
-            lastMove={lastMove}
-            pendingMove={pendingMove}
-            gameStatus={gameStatus}
-            setFen={setFen}
-            setLastMove={setLastMove}
-            setPendingMove={setPendingMove}
-            setGameStatus={setGameStatus}
-          />
-        </Box>
-
-        <ActionHistory
-          height="calc(30vw + 40px)"
-          width="350px"
-          moveHistory={moveHistory}
-        />
-      </Box>
-    </Box>
+      </Grid>
+    </Grid>
   );
 };
 

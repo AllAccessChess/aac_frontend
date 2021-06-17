@@ -18,7 +18,7 @@ import { Paper } from "components/common/SpacedMui";
 
 import TabPanel from "components/common/TabPanel";
 import SortableTableHead from "components/common/SortableTableHead";
-import { stableSort, tableComparator } from "helper";
+import { stableSort, tableComparator } from "utils/common";
 
 const CustomPaper = styled(Paper)`
   width: 100%;

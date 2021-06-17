@@ -1,64 +1,48 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import {
-  mainLayoutRoutes,
-  authLayoutRoutes,
-  gameLayoutRoutes,
-  mainDetailLayoutRoutes,
-} from "./index";
 
-import MainLayout from "../layouts/Main";
-import AuthLayout from "../layouts/Auth";
-import GameLayout from "../layouts/Game";
-import MainDetailLayout from "../layouts/MainDetail";
-import Page404 from "../pages/auth/Page404";
+import { withAuthGuard } from "components/hoc";
+import { AuthLayout, DetailLayout, GameLayout, MainLayout } from "layouts";
+import { Page404 } from "pages/error";
+import { authLayoutRoutes } from "./authLayoutRoutes";
+import { detailLayoutRoutes } from "./detailLayoutRoutes";
+import { gameLayoutRoutes } from "./gameLayoutRoutes";
+import { mainLayoutRoutes } from "./mainLayoutRoutes";
 
-const childRoutes = (Layout, routes) =>
-  routes.map(({ component: Component, guard, children, path }, index) => {
-    const Guard = guard || React.Fragment;
+const renderChildRoutes = (Layout, routes) =>
+  routes.map(
+    (
+      { path, component: Component, children, guarded, redirectToSignIn },
+      index
+    ) => {
+      const ComponentLayout = guarded
+        ? withAuthGuard(Layout, redirectToSignIn)
+        : Layout;
 
-    return children ? (
-      children.map((element, index) => {
-        const Guard = element.guard || React.Fragment;
-
-        return (
-          <Route
-            key={index}
-            path={element.path}
-            exact
-            render={(props) => (
-              <Guard>
-                <Layout>
-                  <element.component {...props} />
-                </Layout>
-              </Guard>
-            )}
-          />
-        );
-      })
-    ) : Component ? (
-      <Route
-        key={index}
-        path={path}
-        exact
-        render={(props) => (
-          <Guard>
-            <Layout>
+      return children ? (
+        renderChildRoutes(Layout, children)
+      ) : Component ? (
+        <Route
+          key={index}
+          path={path}
+          exact
+          render={(props) => (
+            <ComponentLayout>
               <Component {...props} />
-            </Layout>
-          </Guard>
-        )}
-      />
-    ) : null;
-  });
+            </ComponentLayout>
+          )}
+        />
+      ) : null;
+    }
+  );
 
-const Routes = () => (
+export const Routes = () => (
   <Router>
     <Switch>
-      {childRoutes(MainLayout, mainLayoutRoutes)}
-      {childRoutes(AuthLayout, authLayoutRoutes)}
-      {childRoutes(GameLayout, gameLayoutRoutes)}
-      {childRoutes(MainDetailLayout, mainDetailLayoutRoutes)}
+      {renderChildRoutes(MainLayout, mainLayoutRoutes)}
+      {renderChildRoutes(AuthLayout, authLayoutRoutes)}
+      {renderChildRoutes(GameLayout, gameLayoutRoutes)}
+      {renderChildRoutes(DetailLayout, detailLayoutRoutes)}
       <Route
         render={() => (
           <AuthLayout>
@@ -69,5 +53,3 @@ const Routes = () => (
     </Switch>
   </Router>
 );
-
-export default Routes;

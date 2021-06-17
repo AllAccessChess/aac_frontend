@@ -1,7 +1,8 @@
 // General
-export const Valid_USCF_Length = 8;
+export const VALID_USCF_LENGTH = 8;
+export const AUTH_TOKEN_STORAGE_KEY = "auth-token";
 
-// Theme Constatnts
+// Theme
 export const THEME_SET = "THEME_SET";
 export const THEMES = {
   DEFAULT: "DEFAULT",
@@ -12,8 +13,7 @@ export const THEMES = {
   INDIGO: "INDIGO",
 };
 
-// Auth Constants
-
+// Auth
 export const RENEW_DIFF = 1000 * 3600 * 24 * 2;
 
 export const Errors = {
@@ -28,7 +28,7 @@ export const Warnings = {
   "Warning.UscfIdNotFound": "You've entered wrong USCF ID!",
 };
 
-// Game Constants
+// Game
 
 export const GameActions = {
   join: "join",

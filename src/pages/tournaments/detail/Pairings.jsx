@@ -141,8 +141,9 @@ const Pairings = (props) => {
                             to={`/match/${match.id}`}
                           >
                             <Typography variant="body1">
-                              {user.username === match.white.username ||
-                              user.username === match.black.username
+                              {user &&
+                              (user.username === match.white.username ||
+                                user.username === match.black.username)
                                 ? "Play Now"
                                 : "Watch Live"}
                             </Typography>
