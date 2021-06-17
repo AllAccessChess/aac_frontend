@@ -1,7 +1,8 @@
 import React from "react";
-import styled from "styled-components/macro";
+import styled from "styled-components";
 
-import { Button } from "./SpacedMui";
+import { Button } from "components/material-ui";
+
 import LichessIcon from "assets/icons/lichess-icon.svg";
 
 const CustomButton = styled(Button)`
@@ -10,6 +11,7 @@ const CustomButton = styled(Button)`
     left: 20px;
   }
 `;
+
 const SmallImg = styled.img`
   width: 32px;
 `;

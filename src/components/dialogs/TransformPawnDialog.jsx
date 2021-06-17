@@ -1,6 +1,11 @@
 import React from "react";
 
-import { Box, Dialog, DialogTitle, DialogContent } from "@material-ui/core";
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "components/material-ui";
 
 import queen from "assets/images/wQ.svg";
 import rook from "assets/images/wR.svg";

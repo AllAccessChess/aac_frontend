@@ -1,17 +1,15 @@
 import React from "react";
+import styled from "styled-components";
 
-import styled from "styled-components/macro";
-import { spacing } from "@material-ui/system";
 import {
-  Button as MuiButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Box,
-} from "@material-ui/core";
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "components/material-ui";
 
-const Button = styled(MuiButton)(spacing);
 const TextWrapper = styled(Box)`
   font-size: 1rem;
 `;
