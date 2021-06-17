@@ -115,6 +115,9 @@ const overrides = {
   MuiLink: {
     root: {
       cursor: "pointer",
+      "&.MuiTypography-colorPrimary": {
+        color: "#52A5FF",
+      },
     },
   },
   MuiButton: {
@@ -148,6 +151,22 @@ const overrides = {
         fontWeight: 700,
       },
     },
+  },
+  MuiTableCell: {
+    head: {
+      "&:first-child": {
+        borderRadius: "10px 0 0 10px",
+      },
+      "&:last-child": {
+        borderRadius: "0 10px 10px 0",
+      },
+    },
+    stickyHeader: {
+      border: "none",
+    },
+    // body: {
+    //   border: "none",
+    // },
   },
 };
 

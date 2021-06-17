@@ -15,7 +15,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 1805,
                     },
                   },
@@ -29,7 +29,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2187,
                     },
                   },
@@ -46,7 +46,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 4522,
                     },
                   },
@@ -60,7 +60,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 3452,
                     },
                   },
@@ -77,7 +77,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 1805,
                     },
                   },
@@ -91,7 +91,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2135,
                     },
                   },
@@ -108,7 +108,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 4522,
                     },
                   },
@@ -122,7 +122,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2187,
                     },
                   },
@@ -144,7 +144,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 3452,
                     },
                   },
@@ -158,7 +158,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2187,
                     },
                   },
@@ -175,7 +175,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 4522,
                     },
                   },
@@ -189,7 +189,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2135,
                     },
                   },
@@ -206,7 +206,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2187,
                     },
                   },
@@ -220,7 +220,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2135,
                     },
                   },
@@ -242,7 +242,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 3452,
                     },
                   },
@@ -260,6 +260,78 @@ export default [
     prize: 140,
     startAt: "2021-06-15T16:00:00.877Z",
     endAt: "2021-06-15T18:00:00.877Z",
+    members: [
+      {
+        username: "disruptive-moat77",
+        email: "richard.zhan929@gmail.com",
+        name: "Richard Zhan",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 1805,
+              },
+            },
+          },
+        },
+      },
+      {
+        username: "jauska",
+        email: "",
+        name: "Alex",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 2187,
+              },
+            },
+          },
+        },
+      },
+      {
+        username: "jimfreerksen",
+        email: "td@allaccesschess.com",
+        name: "Jim Freerksen",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 4522,
+              },
+            },
+          },
+        },
+      },
+      {
+        username: "bloodshot-diplomat56",
+        email: "williamd@allaccesschess.com",
+        name: "William",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 3452,
+              },
+            },
+          },
+        },
+      },
+      {
+        username: "glamorous-garnet66",
+        email: "railsonsousa106@gmail.com",
+        name: "Railson Sousa",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 2135,
+              },
+            },
+          },
+        },
+      },
+    ],
   },
   {
     id: 1,
@@ -277,7 +349,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 1805,
                     },
                   },
@@ -291,7 +363,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2187,
                     },
                   },
@@ -308,7 +380,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 4522,
                     },
                   },
@@ -322,7 +394,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 3452,
                     },
                   },
@@ -339,7 +411,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 1805,
                     },
                   },
@@ -353,7 +425,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2135,
                     },
                   },
@@ -370,7 +442,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 4522,
                     },
                   },
@@ -384,7 +456,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2187,
                     },
                   },
@@ -406,7 +478,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 3452,
                     },
                   },
@@ -420,7 +492,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2187,
                     },
                   },
@@ -437,7 +509,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 4522,
                     },
                   },
@@ -451,7 +523,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2135,
                     },
                   },
@@ -468,7 +540,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2187,
                     },
                   },
@@ -482,7 +554,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 2135,
                     },
                   },
@@ -504,7 +576,7 @@ export default [
               ratings: {
                 uscf: {
                   ratings: {
-                    rapid: {
+                    blitz: {
                       rating: 3452,
                     },
                   },
@@ -522,5 +594,77 @@ export default [
     prize: 140,
     startAt: "2021-06-15T16:00:00.877Z",
     endAt: "2021-06-15T18:00:00.877Z",
+    members: [
+      {
+        username: "disruptive-moat77",
+        email: "richard.zhan929@gmail.com",
+        name: "Richard Zhan",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 1805,
+              },
+            },
+          },
+        },
+      },
+      {
+        username: "jauska",
+        email: "",
+        name: "Alex",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 2187,
+              },
+            },
+          },
+        },
+      },
+      {
+        username: "jimfreerksen",
+        email: "td@allaccesschess.com",
+        name: "Jim Freerksen",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 4522,
+              },
+            },
+          },
+        },
+      },
+      {
+        username: "bloodshot-diplomat56",
+        email: "williamd@allaccesschess.com",
+        name: "William",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 3452,
+              },
+            },
+          },
+        },
+      },
+      {
+        username: "glamorous-garnet66",
+        email: "railsonsousa106@gmail.com",
+        name: "Railson Sousa",
+        ratings: {
+          uscf: {
+            ratings: {
+              blitz: {
+                rating: 2135,
+              },
+            },
+          },
+        },
+      },
+    ],
   },
 ];

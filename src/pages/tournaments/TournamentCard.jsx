@@ -117,7 +117,7 @@ const TournamentCard = (props) => {
             fullWidth
             onClick={() => onRegister(tournament)}
           >
-            Registter Now
+            Register Now
           </Button>
         ) : (
           <></>

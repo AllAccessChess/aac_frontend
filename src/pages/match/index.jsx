@@ -153,7 +153,7 @@ const Match = () => {
             <Box my={2}>
               <Typography variant="h6">
                 {currentMatch.black.name}(
-                {currentMatch.black.ratings.uscf.ratings.rapid.rating})
+                {currentMatch.black.ratings.uscf.ratings.blitz.rating})
               </Typography>
             </Box>
             <Box
@@ -183,7 +183,7 @@ const Match = () => {
             <Box my={2}>
               <Typography variant="h6">
                 {currentMatch.white.name}(
-                {currentMatch.white.ratings.uscf.ratings.rapid.rating})
+                {currentMatch.white.ratings.uscf.ratings.blitz.rating})
               </Typography>
             </Box>
             <canvas

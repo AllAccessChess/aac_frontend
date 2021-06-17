@@ -24,7 +24,7 @@ const Account = async(() => import("../pages/account"));
 const Prizes = async(() => import("../pages/prizes"));
 const Settings = async(() => import("../pages/settings"));
 const Tournaments = async(() => import("../pages/tournaments"));
-const TournamentDetail = async(() => import("../pages/tournaments/Detail"));
+const TournamentDetail = async(() => import("../pages/tournaments/detail"));
 const Match = async(() => import("../pages/match"));
 const Dashboard = async(() => import("../pages/dashboard"));
 
