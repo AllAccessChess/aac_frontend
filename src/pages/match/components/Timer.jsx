@@ -20,8 +20,8 @@ export const Timer = (props) => {
     <React.Fragment>
       <Box display="flex" flexDirection="column" alignItems="center">
         <VideoCanvas
-          width={192}
-          height={120}
+          width={384}
+          height={240}
           id={`${match.black.username}-video`}
         ></VideoCanvas>
         <Box my={3}>
@@ -62,8 +62,8 @@ export const Timer = (props) => {
           </Typography>
         </Box>
         <VideoCanvas
-          width={192}
-          height={120}
+          width={384}
+          height={240}
           id={`${match.white.username}-video`}
         ></VideoCanvas>
       </Box>

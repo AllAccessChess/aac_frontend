@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useMemo } from "react";
 import styled from "styled-components";
 
-import { Typography } from "components/common/SpacedMui";
+import { SortableTableHead, TabPanel } from "components/common";
 import {
   Box,
-  Tabs,
+  Paper,
   Tab,
   Table,
   TableBody,
@@ -13,11 +13,9 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-} from "@material-ui/core";
-import { Paper } from "components/common/SpacedMui";
-
-import TabPanel from "components/common/TabPanel";
-import SortableTableHead from "components/common/SortableTableHead";
+  Tabs,
+  Typography,
+} from "components/material-ui";
 import { stableSort, tableComparator } from "utils/common";
 
 const CustomPaper = styled(Paper)`

@@ -1,7 +1,8 @@
 import React from "react";
-import { TableCell, TableSortLabel, Typography } from "@material-ui/core";
 
-const SortableTableHead = (props) => {
+import { TableCell, TableSortLabel, Typography } from "components/material-ui";
+
+export const SortableTableHead = (props) => {
   const { align, order, orderBy, headCell, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -24,5 +25,3 @@ const SortableTableHead = (props) => {
     </TableCell>
   );
 };
-
-export default SortableTableHead;

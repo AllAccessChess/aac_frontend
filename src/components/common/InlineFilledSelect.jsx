@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { FormControl, InputLabel, Select } from "@material-ui/core";
+import { FormControl, InputLabel, Select } from "components/material-ui";
 
 const CustomFormControl = styled(FormControl)`
   width: 180px;
@@ -30,7 +30,7 @@ const CustomFormControl = styled(FormControl)`
   }
 `;
 
-const InlineFilledSelect = (props) => {
+export const InlineFilledSelect = (props) => {
   const { id, labelId, label, value, onChange, children } = props;
   return (
     <CustomFormControl variant="filled">
@@ -41,5 +41,3 @@ const InlineFilledSelect = (props) => {
     </CustomFormControl>
   );
 };
-
-export default InlineFilledSelect;

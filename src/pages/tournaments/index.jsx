@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
 import { useHistory } from "react-router-dom";
-import { Typography } from "components/common/SpacedMui";
-import TabPanel from "components/common/TabPanel";
-import { Box, Tabs, Tab } from "@material-ui/core";
-import TournamentCard from "./TournamentCard";
 
+import { TabPanel } from "components/common";
+import { Box, Tab, Tabs, Typography } from "components/material-ui";
 import { getTournamentList } from "redux/reducers/tournamentReducer";
+import TournamentCard from "./TournamentCard";
 
 const Tournament = () => {
   const history = useHistory();

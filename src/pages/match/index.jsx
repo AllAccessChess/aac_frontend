@@ -19,6 +19,7 @@ import { useWindowSize } from "hooks";
 import { useZoomContext } from "lib/zoom";
 import { generateSignature } from "lib/zoom/client/helpers";
 import { getMatch } from "redux/reducers/matchReducer";
+import { isMatchOwner } from "utils/common";
 import GameClient from "utils/gameClient";
 import {
   Chat,
@@ -126,7 +127,7 @@ const Match = () => {
       );
     };
 
-    if (currentMatch && user && user.username) {
+    if (isMatchOwner(currentMatch, user)) {
       setMeetingJoining(true);
       joinMeeting();
     }

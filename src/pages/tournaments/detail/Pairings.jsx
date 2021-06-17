@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
 import { Link as RouterLink } from "react-router-dom";
-import { Link, Typography, Paper } from "components/common/SpacedMui";
+
 import {
   Box,
-  Tabs,
-  Tab,
+  Link,
   MenuItem,
+  Paper,
+  Tab,
   Table,
   TableBody,
   TableCell,
@@ -15,9 +15,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-} from "@material-ui/core";
-import InlineFilledSelect from "components/common/InlineFilledSelect";
-import TabPanel from "components/common/TabPanel";
+  Tabs,
+  Typography,
+} from "components/material-ui";
+import { InlineFilledSelect, TabPanel } from "components/common";
+import { isMatchOwner } from "utils/common";
 
 const CustomPaper = styled(Paper)`
   width: 100%;
@@ -141,9 +143,7 @@ const Pairings = (props) => {
                             to={`/match/${match.id}`}
                           >
                             <Typography variant="body1">
-                              {user &&
-                              (user.username === match.white.username ||
-                                user.username === match.black.username)
+                              {isMatchOwner(match, user)
                                 ? "Play Now"
                                 : "Watch Live"}
                             </Typography>

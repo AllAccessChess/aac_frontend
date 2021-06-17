@@ -28,3 +28,13 @@ export const stableSort = (array, comparator) => {
   });
   return stabilizedThis.map((el) => el[0]);
 };
+
+export const isMatchOwner = (match, user) => {
+  return !!(
+    match &&
+    user &&
+    user.username &&
+    (match.black.username === user.username ||
+      match.white.username === user.username)
+  );
+};

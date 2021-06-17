@@ -1,7 +1,8 @@
 import React from "react";
-import { Box } from "@material-ui/core";
 
-const TabPanel = (props) => {
+import { Box } from "components/material-ui";
+
+export const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -14,5 +15,3 @@ const TabPanel = (props) => {
     </Box>
   );
 };
-
-export default TabPanel;
