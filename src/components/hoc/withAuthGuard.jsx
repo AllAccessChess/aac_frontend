@@ -7,7 +7,9 @@ import { authSelector } from "redux/reducers";
 import { signInWithToken } from "redux/reducers/authReducer";
 
 // For routes that can only be accessed by authenticated users
-export const withAuthGuard = (Component) => (props) => {
+export const withAuthGuard = (Component, redirectToSignIn = false) => (
+  props
+) => {
   const dispatch = useDispatch();
   const auth = useSelector(authSelector);
   const history = useHistory();
@@ -16,7 +18,9 @@ export const withAuthGuard = (Component) => (props) => {
     if (!auth.user) {
       dispatch(
         signInWithToken(true, null, () => {
-          history.push("/auth/sign-in");
+          if (redirectToSignIn) {
+            history.push("/auth/sign-in");
+          }
         })
       );
     }

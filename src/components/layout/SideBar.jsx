@@ -17,7 +17,7 @@ export const SideBar = (props) => {
     () =>
       user && user.id
         ? mainLayoutRoutes
-        : mainLayoutRoutes.filter((item) => !item.guarded),
+        : mainLayoutRoutes.filter((item) => !item.redirectToSignIn),
     [user]
   );
 

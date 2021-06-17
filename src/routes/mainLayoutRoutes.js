@@ -22,6 +22,7 @@ export const mainLayoutRoutes = [
     name: "Dashboard",
     icon: DashboardIcon,
     component: Dashboard,
+    guarded: true,
   },
   {
     id: "tournament-list",
@@ -29,6 +30,7 @@ export const mainLayoutRoutes = [
     name: "Tournament List",
     component: Tournaments,
     icon: TournamentIcon,
+    guarded: true,
   },
   {
     id: "account",
@@ -37,6 +39,7 @@ export const mainLayoutRoutes = [
     icon: AccountIcon,
     component: Account,
     guarded: true,
+    redirectToSignIn: true,
   },
   {
     id: "Prizes",
@@ -45,6 +48,7 @@ export const mainLayoutRoutes = [
     icon: PrizeIcon,
     component: Prizes,
     guarded: true,
+    redirectToSignIn: true,
   },
   {
     id: "Settings",
@@ -53,5 +57,6 @@ export const mainLayoutRoutes = [
     icon: SettingsIcon,
     component: Settings,
     guarded: true,
+    redirectToSignIn: true,
   },
 ];

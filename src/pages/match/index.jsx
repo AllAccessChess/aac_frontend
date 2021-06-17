@@ -25,7 +25,7 @@ const Match = () => {
   const [lastMove, setLastMove] = useState();
   const [pendingMove, setPendingMove] = useState();
   const [gameStatus, setGameStatus] = useState(GameStatus.Preparing);
-  const [meetingJoined, setMeetingJoined] = useState(false);
+  const [meetingJoining, setMeetingJoining] = useState(false);
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
   const history = useSelector((state) => state.matchReducer.history);
@@ -86,8 +86,9 @@ const Match = () => {
       });
 
       zoomClient.on("joinClicked", () => {
-        setMeetingJoined(true);
+        setMeetingJoining(false);
         userCountRef.current = 1;
+        startGame();
       });
 
       await zoomClient.joinMeeting(
@@ -105,11 +106,12 @@ const Match = () => {
       );
     };
 
-    // if (zoomClient && zoomPreviewRef.current) {
-    joinMeeting();
-    // }
+    if (currentMatch && user && user.username) {
+      setMeetingJoining(true);
+      joinMeeting();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentMatch]);
 
   if (!currentMatch) return <LoadingScreen />;
   return (
@@ -171,7 +173,7 @@ const Match = () => {
             <Box my={2}>
               <Typography variant="h6">
                 {currentMatch.black.name}(
-                {currentMatch.black.ratings.uscf.ratings.rapid.rating})
+                {currentMatch.black.ratings.uscf.ratings.blitz.rating})
               </Typography>
             </Box>
             <Box
@@ -201,7 +203,7 @@ const Match = () => {
             <Box my={2}>
               <Typography variant="h6">
                 {currentMatch.white.name}(
-                {currentMatch.white.ratings.uscf.ratings.rapid.rating})
+                {currentMatch.white.ratings.uscf.ratings.blitz.rating})
               </Typography>
             </Box>
             <canvas
@@ -216,7 +218,7 @@ const Match = () => {
             ></canvas>
           </Box>
           <Box
-            display={meetingJoined ? "none" : "flex"}
+            display={meetingJoining ? "flex" : "none"}
             alignItems="center"
             justifyContent="center"
             ref={zoomPreviewRef}

@@ -174,7 +174,7 @@ export const ChessBoard = (props) => {
         height={height}
         turnColor={turnColor()}
         movable={calcMovable()}
-        check={chess.in_check()}
+        check={chess.in_check().toString()}
         lastMove={lastMove}
         fen={fen}
         onMove={onMove}

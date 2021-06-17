@@ -1,4 +1,4 @@
-import { styled } from "@material-ui/core/styles";
+import styled from "styled-components";
 
 import { Box } from "components/material-ui";
 

@@ -10,24 +10,31 @@ import { gameLayoutRoutes } from "./gameLayoutRoutes";
 import { mainLayoutRoutes } from "./mainLayoutRoutes";
 
 const renderChildRoutes = (Layout, routes) =>
-  routes.map(({ component: Component, guarded, children, path }, index) => {
-    const ComponentLayout = guarded ? withAuthGuard(Layout) : Layout;
+  routes.map(
+    (
+      { path, component: Component, children, guarded, redirectToSignIn },
+      index
+    ) => {
+      const ComponentLayout = guarded
+        ? withAuthGuard(Layout, redirectToSignIn)
+        : Layout;
 
-    return children ? (
-      renderChildRoutes(Layout, children)
-    ) : Component ? (
-      <Route
-        key={index}
-        path={path}
-        exact
-        render={(props) => (
-          <ComponentLayout>
-            <Component {...props} />
-          </ComponentLayout>
-        )}
-      />
-    ) : null;
-  });
+      return children ? (
+        renderChildRoutes(Layout, children)
+      ) : Component ? (
+        <Route
+          key={index}
+          path={path}
+          exact
+          render={(props) => (
+            <ComponentLayout>
+              <Component {...props} />
+            </ComponentLayout>
+          )}
+        />
+      ) : null;
+    }
+  );
 
 export const Routes = () => (
   <Router>

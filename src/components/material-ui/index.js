@@ -21,6 +21,6 @@ export const Link = styled(MuiLink)(spacing);
 export const Typography = styled(MuiTypography)(spacing);
 export const Grid = styled(MuiGrid)(spacing);
 
-export const Paper = styled(styled(MuiPaper)`
+export const Paper = styled(styled(MuiPaper)(spacing))`
   border-radius: 8px;
-`)(spacing);
+`;

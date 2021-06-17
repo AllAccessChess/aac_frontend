@@ -1,7 +1,7 @@
 import loadable from "@loadable/component";
 import { SupervisorAccount as TournamentIcon } from "@material-ui/icons";
 
-const TournamentDetail = loadable(() => import("pages/tournaments/Detail"));
+const TournamentDetail = loadable(() => import("pages/tournaments/detail"));
 
 export const detailLayoutRoutes = [
   {

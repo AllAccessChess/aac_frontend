@@ -19,7 +19,7 @@ export const Info = (props) => {
           mr={5}
         />
         <Typography>
-          {match.black.name}({match.black.ratings.uscf.ratings.rapid.rating})
+          {match.black.name}({match.black.ratings.uscf.ratings.blitz.rating})
         </Typography>
       </Box>
       <Box display="flex" flexDirection="row" alignItems="center">
@@ -31,7 +31,7 @@ export const Info = (props) => {
           mr={5}
         />
         <Typography>
-          {match.white.name}({match.white.ratings.uscf.ratings.rapid.rating})
+          {match.white.name}({match.white.ratings.uscf.ratings.blitz.rating})
         </Typography>
       </Box>
     </Box>

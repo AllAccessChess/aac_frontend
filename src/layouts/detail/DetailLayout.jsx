@@ -12,10 +12,14 @@ const Layout = (props) => {
   return (
     <Wrapper>
       <TopBar user={user} />
-      <Box display="flex" mx="5%" my="20px">
-        <Box display="flex" p={5} width="100%">
-          {props.children}
-        </Box>
+      <Box
+        display="flex"
+        px="5%"
+        py="20px"
+        overflow="auto"
+        height="calc(100% - 87px)"
+      >
+        {props.children}
       </Box>
     </Wrapper>
   );

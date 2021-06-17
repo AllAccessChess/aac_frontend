@@ -28,7 +28,7 @@ import {
   Typography,
 } from "components/material-ui";
 import { signIn, setUser } from "redux/reducers/authReducer";
-import { FullForm, Logo, BackgroundWrapper, useStyles } from "./styles";
+import { BackgroundWrapper, FullForm, Logo, useStyles } from "./styles";
 
 import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/login_background.jpg";
