@@ -37,6 +37,8 @@ export const GameActions = {
   STATUS: "status",
   PLAY_AI: "playAi",
   MOVE: "move",
+  DRAWOFFER: "drawOffer",
+  DRAWRESPONSE: "drawResponse",
   RESIGN: "resign",
 };
 

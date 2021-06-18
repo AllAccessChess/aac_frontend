@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "@material-ui/core";
 
 import { config } from "config";
-import { GameStatus, GameActions } from "constant";
+import { GameEvents, GameStatus, GameActions } from "constant";
 import { LoadingScreen } from "components/common";
 import {
   Box,
@@ -19,6 +19,8 @@ import { useWindowSize } from "hooks";
 import { useZoomContext } from "lib/zoom";
 import { generateSignature } from "lib/zoom/client/helpers";
 import { getMatch } from "redux/reducers/matchReducer";
+import { addHistoryItem } from "redux/reducers/matchReducer";
+import { getAuthToken } from "utils/storage";
 import { isMatchOwner } from "utils/common";
 import GameClient from "utils/gameClient";
 import {
@@ -34,7 +36,6 @@ import { useStyles } from "./styles";
 const Match = () => {
   const params = useParams();
   const dispatch = useDispatch();
-  const gameClientRef = useRef(new GameClient(config.socketURL));
 
   const [chess] = useState(new Chess());
   const [fen, setFen] = useState("");
@@ -46,12 +47,14 @@ const Match = () => {
   const [chessBoardSize, setChessBoardSize] = useState(0);
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
-  const history = useSelector((state) => state.matchReducer.history);
+  const actionHistory = useSelector((state) => state.matchReducer.history);
   const user = useSelector((state) => state.authReducer.user);
 
+  const gameClientRef = useRef(new GameClient(config.socketURL));
   const zoomPreviewRef = useRef(null);
   const userCountRef = useRef(1);
   const chessContainerRef = useRef(null);
+  const historyRef = useRef(actionHistory);
 
   const { zoomClient } = useZoomContext();
   const classes = useStyles();
@@ -60,6 +63,9 @@ const Match = () => {
 
   const handleOfferDraw = useCallback(() => {
     console.log("Offering Draw");
+    gameClientRef.current.sendData({
+      action: GameActions.DRAWOFFER,
+    });
   }, []);
 
   const handleResign = useCallback(() => {
@@ -68,6 +74,103 @@ const Match = () => {
     });
     setGameStatus(GameStatus.EXITED);
   }, [setGameStatus]);
+
+  const addMoveStringToHistory = useCallback(
+    (move) => {
+      const from = move.slice(0, 2);
+      const to = move.slice(2, 4);
+      const e = move.slice(4) || "x";
+
+      const chessMove = chess.move({ from, to, promotion: e });
+      console.log("chessMove: ", chessMove);
+      if (chessMove) {
+        dispatch(addHistoryItem({ action: "move", content: chessMove }));
+        setLastMove([from, to]);
+      }
+    },
+    [dispatch, chess, setLastMove]
+  );
+
+  const getResponse = useCallback(
+    (data) => {
+      if (data.game) {
+        if (data.state === GameStatus.PLAYING)
+          setGameStatus(GameStatus.PLAYING);
+        if (!players.length && data.game.players.length > 1)
+          setPlayers(data.game.players.map((item) => item.id));
+        if (data.game.moves && data.game.moves.length > 0) {
+          console.log("Checking history: ", historyRef.current);
+          if (historyRef.current.length) {
+            const move = data.game.moves[data.game.moves.length - 1];
+            if (move) {
+              console.log("Opponent's move: ", move);
+              addMoveStringToHistory(move);
+            }
+          } else {
+            console.log("Loading Previous Match: ", data.game.moves);
+            for (let move of data.game.moves) {
+              addMoveStringToHistory(move);
+            }
+          }
+        }
+        if (data.game.fen) {
+          console.log("***Setting Fen!");
+          setFen(data.game.fen);
+        }
+      }
+    },
+    [addMoveStringToHistory, setFen, players, setPlayers, setGameStatus]
+  );
+  const onOpenedSocket = useCallback(() => {
+    console.log(
+      "Opened Socket, authenticating with token: ",
+      getAuthToken().token
+    );
+    gameClientRef.current.sendData({
+      action: GameActions.AUTH,
+      token: getAuthToken().token,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const onAuthenticatedSocket = useCallback(
+    (data) => {
+      console.log("Authenticated Socket");
+      // gameClientRef.current.sendData({
+      //   action: GameActions.STATUS,
+      // });
+      if (data.state === GameStatus.PLAYING) setGameStatus(GameStatus.PLAYING);
+      else {
+        console.log("Seeking now");
+        gameClientRef.current.sendData({
+          action: GameActions.SEEK,
+        });
+        setGameStatus(GameStatus.SEEKING);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [setGameStatus]
+  );
+
+  const setUpHandlers = useCallback(() => {
+    if (gameClientRef.current) {
+      gameClientRef.current.on(GameEvents.GET_RESPONSE, getResponse);
+      gameClientRef.current.on(GameEvents.OPENED, onOpenedSocket);
+      gameClientRef.current.on(GameEvents.AUTHENTICATED, onAuthenticatedSocket);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getResponse, onOpenedSocket, onAuthenticatedSocket]);
+
+  const endHandlers = useCallback(() => {
+    if (gameClientRef.current) {
+      gameClientRef.current.off(GameEvents.GET_RESPONSE, getResponse);
+      gameClientRef.current.off(GameEvents.OPENED, onOpenedSocket);
+      gameClientRef.current.off(
+        GameEvents.AUTHENTICATED,
+        onAuthenticatedSocket
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getResponse, onOpenedSocket, onAuthenticatedSocket]);
 
   useEffect(() => {
     if (params.id && !currentMatch) {
@@ -137,6 +240,21 @@ const Match = () => {
     }
   }, [windowSize]);
 
+  useEffect(() => {
+    gameClientRef.current.connect();
+    setUpHandlers();
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      gameClientRef.current.disconnect();
+      endHandlers();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    historyRef.current = actionHistory;
+  }, [actionHistory]);
+
   if (!currentMatch) return <LoadingScreen />;
   return (
     <Grid container spacing={5} p={5} className={classes.wrapper}>
@@ -151,7 +269,7 @@ const Match = () => {
           </Paper>
           <Box flexGrow={1} mt={5}>
             <MoveList
-              moveList={history}
+              moveList={actionHistory}
               onOfferDraw={handleOfferDraw}
               onResign={handleResign}
             />
@@ -178,6 +296,7 @@ const Match = () => {
               height={chessBoardSize}
               chess={chess}
               fen={fen}
+              actionHistory={actionHistory}
               gameClientRef={gameClientRef}
               lastMove={lastMove}
               pendingMove={pendingMove}
