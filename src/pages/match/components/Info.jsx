@@ -20,7 +20,7 @@ export const Info = (props) => {
           bgcolor={theme.palette.common.black}
           mr={5}
         />
-        <Typography>{match.players[0].name}(1200)</Typography>
+        <Typography>{match.players[1].name}(1200)</Typography>
       </Box>
       <Box display="flex" flexDirection="row" alignItems="center">
         <Box
@@ -30,7 +30,7 @@ export const Info = (props) => {
           bgcolor={theme.palette.common.white}
           mr={5}
         />
-        <Typography>{match.players[1].name}(1400)</Typography>
+        <Typography>{match.players[0].name}(1400)</Typography>
       </Box>
     </Box>
   );

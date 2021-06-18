@@ -230,7 +230,7 @@ const Match = () => {
         },
         {
           previewDOM: zoomPreviewRef.current,
-          title: "Start Video Call",
+          title: "Start Game",
           joinButtonText: "Start",
         }
       );
