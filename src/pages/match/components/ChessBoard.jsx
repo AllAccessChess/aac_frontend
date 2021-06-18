@@ -24,6 +24,7 @@ export const ChessBoard = (props) => {
     setLastMove,
     pendingMove,
     setPendingMove,
+    setAskingDraw,
   } = props;
 
   const [showTransformPawn, setShowTransformPawn] = useState(false);
@@ -60,6 +61,7 @@ export const ChessBoard = (props) => {
         setLastMove([from, to]);
         // setTimeout(randomMove, 500);
         console.log("Send Move: ", from + to);
+        setAskingDraw(false);
         gameClientRef.current.sendData({
           action: GameActions.MOVE,
           game: gameClientRef.current.gameId,
@@ -84,6 +86,7 @@ export const ChessBoard = (props) => {
         setShowTransformPawn(false);
         // setTimeout(randomMove, 500);
         console.log("Send Move: ", from + to + e);
+        setAskingDraw(false);
         gameClientRef.current.sendData({
           action: GameActions.MOVE,
           game: gameClientRef.current.gameId,

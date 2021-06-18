@@ -395,6 +395,7 @@ const Match = () => {
               setPendingMove={setPendingMove}
               setGameStatus={setGameStatus}
               setPlayers={setPlayers}
+              setAskingDraw={setAskingDraw}
             />
           </Box>
           <Box display="flex" justifyContent="flex-end" mt={2}>
