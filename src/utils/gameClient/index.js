@@ -17,17 +17,17 @@ export default class GameClient extends EventTarget {
     this.ws.onmessage = (event) => {
       // console.log(`<- SS: ${event.data}`);
       var msg = JSON.parse(event.data);
-      console.log(JSON.stringify(msg));
+      console.log(msg);
       if (msg.status === "ok") {
         if (msg.game) {
           if (!this.gameId) this.gameId = msg.game.id;
-          this.triggerEvent(GameEvents.GET_RESPONSE, msg.game);
+          this.triggerEvent(GameEvents.GET_RESPONSE, msg);
         }
         if (msg.pong) {
           // This is Ping Pong
         }
         if (msg.user) {
-          this.triggerEvent(GameEvents.AUTHENTICATED);
+          this.triggerEvent(GameEvents.AUTHENTICATED, msg);
         }
       }
     };

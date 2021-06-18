@@ -40,7 +40,7 @@ const Match = () => {
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState();
   const [pendingMove, setPendingMove] = useState();
-  const [gameStatus, setGameStatus] = useState(GameStatus.PREPARING);
+  const [gameStatus, setGameStatus] = useState(GameStatus.IDLE);
   const [players, setPlayers] = useState([]);
   const [meetingJoining, setMeetingJoining] = useState(false);
   const [chessBoardSize, setChessBoardSize] = useState(0);

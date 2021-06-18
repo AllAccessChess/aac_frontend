@@ -47,9 +47,8 @@ export const GameEvents = {
 };
 
 export const GameStatus = {
-  PREPARING: "Preparing",
-  SEEKING: "Seeking",
-  READY: "Ready",
-  STARTED: "Started",
+  IDLE: "idle",
+  SEEKING: "seeking",
+  PLAYING: "playing",
   EXITED: "Exited",
 };

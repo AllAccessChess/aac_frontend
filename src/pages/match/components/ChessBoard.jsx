@@ -101,7 +101,7 @@ export const ChessBoard = (props) => {
 
   const calcMovable = useCallback(() => {
     const dests = new Map();
-    if (gameStatus === GameStatus.STARTED) {
+    if (gameStatus === GameStatus.PLAYING) {
       chess.SQUARES.forEach((s) => {
         const ms = chess.moves({ square: s, verbose: true });
         if (ms.length)
@@ -120,14 +120,13 @@ export const ChessBoard = (props) => {
 
   const getResponse = useCallback(
     (data) => {
-      console.log(data);
-      if (data) {
-        if (!players.length && data.players.length > 1) {
-          setPlayers(data.players.map((item) => item.id));
-          setGameStatus(GameStatus.STARTED);
-        }
-        if (data.moves && data.moves.length > 0) {
-          const move = data.moves[data.moves.length - 1];
+      if (data.game) {
+        if (data.state === GameStatus.PLAYING)
+          setGameStatus(GameStatus.PLAYING);
+        if (!players.length && data.game.players.length > 1)
+          setPlayers(data.game.players.map((item) => item.id));
+        if (data.game.moves && data.game.moves.length > 0) {
+          const move = data.game.moves[data.game.moves.length - 1];
           if (move) {
             const from = move.slice(0, 2);
             const to = move.slice(2, 4);
@@ -141,15 +140,14 @@ export const ChessBoard = (props) => {
             }
           }
         }
-        if (data.fen) {
-          setFen(data.fen);
+        if (data.game.fen) {
+          setFen(data.game.fen);
         }
       }
     },
     [dispatch, chess, setFen, setLastMove, players, setPlayers, setGameStatus]
   );
   const onOpenedSocket = useCallback(() => {
-    // setGameStatus(GameStatus.Ready);
     console.log(
       "Opened Socket, authenticating with token: ",
       getAuthToken().token
@@ -160,17 +158,24 @@ export const ChessBoard = (props) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const onAuthenticatedSocket = useCallback(() => {
-    console.log("Authenticated Socket, seeking now");
-    gameClientRef.current.sendData({
-      action: GameActions.STATUS,
-    });
-    gameClientRef.current.sendData({
-      action: GameActions.SEEK,
-    });
-    setGameStatus(GameStatus.SEEKING);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setGameStatus]);
+  const onAuthenticatedSocket = useCallback(
+    (data) => {
+      console.log("Authenticated Socket");
+      // gameClientRef.current.sendData({
+      //   action: GameActions.STATUS,
+      // });
+      if (data.state === GameStatus.PLAYING) setGameStatus(GameStatus.PLAYING);
+      else {
+        console.log("Seeking now");
+        gameClientRef.current.sendData({
+          action: GameActions.SEEK,
+        });
+        setGameStatus(GameStatus.SEEKING);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [setGameStatus]
+  );
 
   const setUpHandlers = useCallback(() => {
     if (gameClientRef.current) {
@@ -207,17 +212,14 @@ export const ChessBoard = (props) => {
   // Interval for Ping-Pong ;)
   useInterval(
     () => {
-      if (
-        gameStatus !== GameStatus.PREPARING &&
-        gameStatus !== GameStatus.EXITED
-      ) {
+      if (gameStatus !== GameStatus.IDLE && gameStatus !== GameStatus.EXITED) {
         console.log(gameStatus);
         gameClientRef.current.sendData({
           action: GameActions.PING,
         });
       }
     },
-    gameStatus !== GameStatus.PREPARING && gameStatus !== GameStatus.EXITED
+    gameStatus !== GameStatus.IDLE && gameStatus !== GameStatus.EXITED
       ? 10000
       : null
   );
