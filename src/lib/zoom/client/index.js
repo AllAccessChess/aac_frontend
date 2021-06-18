@@ -225,7 +225,7 @@ export default class ZoomClient extends EventTarget {
       // Switch to Gallery View
       setTimeout(() => {
         this.domManager.switchToGalleryView();
-      }, 1000);
+      }, 2000);
 
       // Open the chat panel
       // this.domManager.openChatPanel();

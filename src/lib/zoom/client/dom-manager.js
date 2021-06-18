@@ -197,7 +197,7 @@ export default class DOMManager {
           const canvasArea = canvas.getBoundingClientRect();
 
           userVideoCanvasContext.drawImage(
-            galleryCanvas,
+            canvas,
             userArea.x - canvasArea.x,
             userArea.y - canvasArea.y,
             userArea.width,
@@ -244,11 +244,9 @@ export default class DOMManager {
    * @returns string
    */
   getUserName = (userId) => {
-    const userAreaDOM = document.getElementsByClassName(
-      `gallery-video-container__video-frame ${userId}`
-    );
-    if (userAreaDOM && userAreaDOM.length) {
-      const userTextDOM = userAreaDOM[0].querySelector("span");
+    const { userAreaDOM } = this.findUserAreaDOM(userId);
+    if (userAreaDOM) {
+      const userTextDOM = userAreaDOM.querySelector("span");
       if (userTextDOM) {
         return userTextDOM.innerHTML;
       }

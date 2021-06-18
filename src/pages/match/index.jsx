@@ -1,4 +1,5 @@
 import React, {
+  createRef,
   useCallback,
   useEffect,
   useRef,
@@ -65,7 +66,7 @@ const Match = () => {
   const gameClientRef = useRef(new GameClient(config.socketURL));
   const zoomPreviewRef = useRef(null);
   const userCountRef = useRef(1);
-  const chessContainerRef = useRef(null);
+  const chessContainerRef = createRef(null);
   const historyRef = useRef(actionHistory);
   const playersRef = useRef(players);
   const playerColorRef = useRef(playerColor);
@@ -260,7 +261,7 @@ const Match = () => {
           if (userVideoCanvas) {
             zoomClient.renderUserVideo(data.userId, userVideoCanvas);
           }
-        }, 5000);
+        }, 4000);
       });
 
       zoomClient.on("joinClicked", () => {
@@ -299,7 +300,7 @@ const Match = () => {
       const boundingRect = chessContainerRef.current.getBoundingClientRect();
       setChessBoardSize(Math.min(boundingRect.width, boundingRect.height) - 30);
     }
-  }, [windowSize]);
+  }, [windowSize, chessContainerRef]);
 
   useEffect(() => {
     gameClientRef.current.connect();
