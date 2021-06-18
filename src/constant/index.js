@@ -31,21 +31,25 @@ export const Warnings = {
 // Game
 
 export const GameActions = {
-  join: "join",
-  status: "status",
-  rm: "rm",
-  move: "move",
-  resign: "resign",
+  PING: "ping",
+  AUTH: "auth",
+  SEEK: "seek",
+  STATUS: "status",
+  PLAY_AI: "playAi",
+  MOVE: "move",
+  RESIGN: "resign",
 };
 
 export const GameEvents = {
   GET_RESPONSE: "GET_RESPONSE",
-  Initialized: "Initialized",
+  OPENED: "OPENED",
+  AUTHENTICATED: "AUTHENTICATED",
 };
 
 export const GameStatus = {
-  Preparing: "Preparing",
-  Ready: "Ready",
-  Started: "Started",
-  Exited: "Exited",
+  PREPARING: "Preparing",
+  SEEKING: "Seeking",
+  READY: "Ready",
+  STARTED: "Started",
+  EXITED: "Exited",
 };

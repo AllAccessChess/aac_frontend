@@ -1,12 +1,14 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Chessground from "react-chessground";
+import useInterval from "react-useinterval";
 import "react-chessground/dist/styles/chessground.css";
 
 import { GameEvents, GameActions, GameStatus } from "constant";
 
 import TransformPawnDialog from "components/dialogs/TransformPawnDialog";
 import { addHistoryItem } from "redux/reducers/matchReducer";
+import { getAuthToken } from "utils/storage";
 
 export const ChessBoard = (props) => {
   const dispatch = useDispatch();
@@ -15,6 +17,8 @@ export const ChessBoard = (props) => {
     fen,
     width,
     height,
+    players,
+    user,
     gameClientRef,
     setFen,
     lastMove,
@@ -23,6 +27,7 @@ export const ChessBoard = (props) => {
     pendingMove,
     setPendingMove,
     setGameStatus,
+    setPlayers,
   } = props;
 
   const [showTransformPawn, setShowTransformPawn] = useState(false);
@@ -58,8 +63,9 @@ export const ChessBoard = (props) => {
         setLastMove([from, to]);
         // setTimeout(randomMove, 500);
         gameClientRef.current.sendData({
-          action: GameActions.move,
-          message: from + to,
+          action: GameActions.MOVE,
+          game: gameClientRef.current.gameId,
+          move: from + to,
         });
       }
     },
@@ -72,15 +78,18 @@ export const ChessBoard = (props) => {
       const from = pendingMove[0];
       const to = pendingMove[1];
       const move = chess.move({ from, to, promotion: e });
-      dispatch(addHistoryItem({ action: "move", content: move }));
-      setFen(chess.fen());
-      setLastMove([from, to]);
-      setShowTransformPawn(false);
-      // setTimeout(randomMove, 500);
-      gameClientRef.current.sendData({
-        action: GameActions.move,
-        message: from + to + e,
-      });
+      if (move) {
+        dispatch(addHistoryItem({ action: "move", content: move }));
+        setFen(chess.fen());
+        setLastMove([from, to]);
+        setShowTransformPawn(false);
+        // setTimeout(randomMove, 500);
+        gameClientRef.current.sendData({
+          action: GameActions.MOVE,
+          game: gameClientRef.current.gameId,
+          move: from + to + e,
+        });
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [chess, pendingMove, setFen, setShowTransformPawn, setLastMove]
@@ -92,7 +101,7 @@ export const ChessBoard = (props) => {
 
   const calcMovable = useCallback(() => {
     const dests = new Map();
-    if (gameStatus === GameStatus.Started) {
+    if (gameStatus === GameStatus.STARTED) {
       chess.SQUARES.forEach((s) => {
         const ms = chess.moves({ square: s, verbose: true });
         if (ms.length)
@@ -105,47 +114,84 @@ export const ChessBoard = (props) => {
     return {
       free: false,
       dests,
-      color: "white",
+      color: user.id === players[0] ? "white" : "black",
     };
-  }, [chess, gameStatus]);
+  }, [chess, gameStatus, user, players]);
 
   const getResponse = useCallback(
     (data) => {
       console.log(data);
-      if (data.moves && data.moves.length > 0) {
-        const move = data.moves[data.moves.length - 1];
-        const from = move.slice(0, 2);
-        const to = move.slice(2);
+      if (data) {
+        if (!players.length && data.players.length > 1) {
+          setPlayers(data.players.map((item) => item.id));
+          setGameStatus(GameStatus.STARTED);
+        }
+        if (data.moves && data.moves.length > 0) {
+          const move = data.moves[data.moves.length - 1];
+          if (move) {
+            const from = move.slice(0, 2);
+            const to = move.slice(2, 4);
+            const e = move.slice(4) || "x";
 
-        const chessMove = chess.move({ from, to, promotion: "x" });
-        dispatch(addHistoryItem({ action: "move", content: chessMove }));
-        setLastMove([from, to]);
-      }
-      if (data.fen) {
-        setFen(data.fen);
+            const chessMove = chess.move({ from, to, promotion: e });
+            console.log("chessMove: ", chessMove);
+            if (chessMove) {
+              dispatch(addHistoryItem({ action: "move", content: chessMove }));
+              setLastMove([from, to]);
+            }
+          }
+        }
+        if (data.fen) {
+          setFen(data.fen);
+        }
       }
     },
-    [dispatch, chess, setFen, setLastMove]
+    [dispatch, chess, setFen, setLastMove, players, setPlayers, setGameStatus]
   );
-  const initBoard = useCallback(() => {
-    setGameStatus(GameStatus.Ready);
+  const onOpenedSocket = useCallback(() => {
+    // setGameStatus(GameStatus.Ready);
+    console.log(
+      "Opened Socket, authenticating with token: ",
+      getAuthToken().token
+    );
+    gameClientRef.current.sendData({
+      action: GameActions.AUTH,
+      token: getAuthToken().token,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const onAuthenticatedSocket = useCallback(() => {
+    console.log("Authenticated Socket, seeking now");
+    gameClientRef.current.sendData({
+      action: GameActions.STATUS,
+    });
+    gameClientRef.current.sendData({
+      action: GameActions.SEEK,
+    });
+    setGameStatus(GameStatus.SEEKING);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setGameStatus]);
 
   const setUpHandlers = useCallback(() => {
     if (gameClientRef.current) {
       gameClientRef.current.on(GameEvents.GET_RESPONSE, getResponse);
-      gameClientRef.current.on(GameEvents.Initialized, initBoard);
+      gameClientRef.current.on(GameEvents.OPENED, onOpenedSocket);
+      gameClientRef.current.on(GameEvents.AUTHENTICATED, onAuthenticatedSocket);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getResponse, initBoard]);
+  }, [getResponse, onOpenedSocket, onAuthenticatedSocket]);
 
   const endHandlers = useCallback(() => {
     if (gameClientRef.current) {
       gameClientRef.current.off(GameEvents.GET_RESPONSE, getResponse);
-      gameClientRef.current.off(GameEvents.Initialized, initBoard);
+      gameClientRef.current.off(GameEvents.OPENED, onOpenedSocket);
+      gameClientRef.current.off(
+        GameEvents.AUTHENTICATED,
+        onAuthenticatedSocket
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getResponse, initBoard]);
+  }, [getResponse, onOpenedSocket, onAuthenticatedSocket]);
 
   useEffect(() => {
     gameClientRef.current.connect();
@@ -158,14 +204,23 @@ export const ChessBoard = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (gameStatus === GameStatus.Started) {
-      gameClientRef.current.sendData({
-        action: GameActions.join,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameStatus]);
+  // Interval for Ping-Pong ;)
+  useInterval(
+    () => {
+      if (
+        gameStatus !== GameStatus.PREPARING &&
+        gameStatus !== GameStatus.EXITED
+      ) {
+        console.log(gameStatus);
+        gameClientRef.current.sendData({
+          action: GameActions.PING,
+        });
+      }
+    },
+    gameStatus !== GameStatus.PREPARING && gameStatus !== GameStatus.EXITED
+      ? 10000
+      : null
+  );
 
   return (
     <>

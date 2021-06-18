@@ -45,7 +45,7 @@ const Header = (props) => {
         </Typography>
       </Box>
       <Box display="flex" justifyContent="space-around" alignItems="flex-start">
-        {gameStatus === GameStatus.Ready ? (
+        {gameStatus === GameStatus.READY ? (
           <Button
             variant="contained"
             color="primary"
@@ -57,7 +57,7 @@ const Header = (props) => {
         ) : (
           <></>
         )}
-        {gameStatus === GameStatus.Started ? (
+        {gameStatus === GameStatus.STARTED ? (
           <>
             <Button
               variant="contained"
