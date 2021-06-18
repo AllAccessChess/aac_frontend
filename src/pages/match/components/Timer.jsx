@@ -25,7 +25,7 @@ export const Timer = (props) => {
           id={`${match.black.username}-video`}
         ></VideoCanvas>
         <Box my={3}>
-          <Typography variant="h6">
+          <Typography variant="h5">
             {match.black.name}({match.black.ratings.uscf.ratings.blitz.rating})
           </Typography>
         </Box>
@@ -39,7 +39,7 @@ export const Timer = (props) => {
           borderRadius={8}
         >
           <AccessTimeIcon />
-          <Typography>10:00</Typography>
+          <Typography variant="h5">&nbsp;10:00</Typography>
         </Box>
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center">
@@ -54,10 +54,10 @@ export const Timer = (props) => {
           borderRadius={8}
         >
           <AccessTimeIcon />
-          <Typography>10:00</Typography>
+          <Typography variant="h5">&nbsp;10:00</Typography>
         </Box>
         <Box my={3}>
-          <Typography variant="h6">
+          <Typography variant="h5">
             {match.white.name}({match.white.ratings.uscf.ratings.blitz.rating})
           </Typography>
         </Box>

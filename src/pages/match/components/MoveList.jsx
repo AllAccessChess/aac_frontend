@@ -59,8 +59,8 @@ export const MoveList = (props) => {
       py={3}
     >
       <Box flexGrow={1}>
-        <TableContainer component={Paper}>
-          <Table>
+        <TableContainer component={Paper} style={{ maxHeight: 480 }}>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
                 <TableCell>S.No.</TableCell>
