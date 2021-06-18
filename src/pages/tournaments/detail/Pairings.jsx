@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link as RouterLink } from "react-router-dom";
 
 import {
   Box,
-  Link,
   MenuItem,
   Paper,
   Tab,
@@ -19,14 +17,13 @@ import {
   Typography,
 } from "components/material-ui";
 import { InlineFilledSelect, TabPanel } from "components/common";
-import { isMatchOwner } from "utils/common";
 
 const CustomPaper = styled(Paper)`
   width: 100%;
 `;
 
 const Pairings = (props) => {
-  const { tournament, user } = props;
+  const { tournament } = props;
   const [tabValue, setTabValue] = useState(0);
   const [page, setPage] = useState(0);
   const [matchFilter, setMatchFilter] = useState(1200);

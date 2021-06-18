@@ -25,7 +25,6 @@ const Detail = () => {
   const currentTournament = useSelector(
     (state) => state.tournamentReducer.current
   );
-  const user = useSelector((state) => state.authReducer.user);
 
   const handleBack = () => {
     dispatch(clearCurrentTournament());
@@ -72,7 +71,7 @@ const Detail = () => {
           }
         />
       </Box>
-      <Pairings tournament={currentTournament} user={user} />
+      <Pairings tournament={currentTournament} />
       <Members members={currentTournament.players} />
     </Box>
   );
