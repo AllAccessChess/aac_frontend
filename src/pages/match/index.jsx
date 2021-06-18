@@ -24,7 +24,8 @@ const Match = () => {
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState();
   const [pendingMove, setPendingMove] = useState();
-  const [gameStatus, setGameStatus] = useState(GameStatus.Preparing);
+  const [gameStatus, setGameStatus] = useState(GameStatus.PREPARING);
+  const [players, setPlayers] = useState([]);
   const [meetingJoining, setMeetingJoining] = useState(false);
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
@@ -42,13 +43,9 @@ const Match = () => {
 
   const handleResign = useCallback(() => {
     gameClientRef.current.sendData({
-      action: GameActions.resign,
+      action: GameActions.RESIGN,
     });
-    setGameStatus(GameStatus.Exited);
-  }, [setGameStatus]);
-
-  const startGame = useCallback(() => {
-    setGameStatus(GameStatus.Started);
+    setGameStatus(GameStatus.EXITED);
   }, [setGameStatus]);
 
   useEffect(() => {
@@ -88,7 +85,6 @@ const Match = () => {
       zoomClient.on("joinClicked", () => {
         setMeetingJoining(false);
         userCountRef.current = 1;
-        startGame();
       });
 
       await zoomClient.joinMeeting(
@@ -126,7 +122,11 @@ const Match = () => {
             <Chat />
           </Paper>
           <Box flexGrow={1} mt={5}>
-            <MoveList moveList={history} />
+            <MoveList
+              moveList={history}
+              onOfferDraw={handleOfferDraw}
+              onResign={handleResign}
+            />
           </Box>
         </Box>
       </Grid>
@@ -142,10 +142,13 @@ const Match = () => {
               lastMove={lastMove}
               pendingMove={pendingMove}
               gameStatus={gameStatus}
+              players={players}
+              user={user}
               setFen={setFen}
               setLastMove={setLastMove}
               setPendingMove={setPendingMove}
               setGameStatus={setGameStatus}
+              setPlayers={setPlayers}
             />
           </Paper>
         </Box>
