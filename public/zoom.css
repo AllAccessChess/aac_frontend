@@ -99,7 +99,8 @@
   color: white;
 }
 
-.main-layout {
+.main-layout,
+.speaker-view {
   opacity: 0;
 }
 
