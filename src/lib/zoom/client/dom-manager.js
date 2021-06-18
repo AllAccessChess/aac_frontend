@@ -65,6 +65,51 @@ export default class DOMManager {
   }
 
   /**
+   * Speaker View Canvas
+   */
+  get speakerCanvas() {
+    return document.querySelector(".speaker-view__canvas");
+  }
+
+  /**
+   * Find user area DOM
+   * @param {string} userId
+   */
+  findUserAreaDOM = (userId) => {
+    /**
+     * Look from gallery area
+     */
+    let userAreaDOM = document.getElementsByClassName(
+      `gallery-video-container__video-frame ${userId}`
+    );
+    if (userAreaDOM && userAreaDOM.length) {
+      return { userAreaDOM: userAreaDOM[0], fromGallery: true };
+    }
+
+    /**
+     * Look from speaker bar area
+     */
+    userAreaDOM = document.getElementsByClassName(
+      `speaker-active-container__video-frame ${userId}`
+    );
+    if (userAreaDOM && userAreaDOM.length) {
+      return { userAreaDOM: userAreaDOM[0], fromGallery: false };
+    }
+
+    /**
+     * Look from speaker active area
+     */
+    userAreaDOM = document.getElementsByClassName(
+      `speaker-bar-container__video-frame ${userId}`
+    );
+    if (userAreaDOM && userAreaDOM.length) {
+      return { userAreaDOM: userAreaDOM[0], fromGallery: false };
+    }
+
+    return { userAreaDOM: null, fromGallery: false };
+  };
+
+  /**
    * Move the media preview container to another DOM
    *
    * @param {HTMLElement} parentDOM
@@ -140,26 +185,29 @@ export default class DOMManager {
 
     const renderFrame = () => {
       const galleryCanvas = _this.galleryCanvas;
+      const speakerCanvas = _this.speakerCanvas;
       const userVideoCanvasContext = userVideoCanvas.getContext("2d");
-      const userAreaDOM = document.getElementsByClassName(
-        `gallery-video-container__video-frame ${userId}`
-      );
+      const { userAreaDOM, fromGallery } = this.findUserAreaDOM(userId);
 
-      if (userAreaDOM && userAreaDOM.length && galleryCanvas) {
-        const userArea = userAreaDOM[0].getBoundingClientRect();
-        const galleryArea = galleryCanvas.getBoundingClientRect();
+      if (userAreaDOM) {
+        const userArea = userAreaDOM.getBoundingClientRect();
 
-        userVideoCanvasContext.drawImage(
-          galleryCanvas,
-          userArea.x - galleryArea.x,
-          userArea.y - galleryArea.y,
-          userArea.width,
-          userArea.height,
-          0,
-          0,
-          userVideoCanvas.width,
-          userVideoCanvas.height
-        );
+        const canvas = fromGallery ? galleryCanvas : speakerCanvas;
+        if (canvas) {
+          const canvasArea = canvas.getBoundingClientRect();
+
+          userVideoCanvasContext.drawImage(
+            galleryCanvas,
+            userArea.x - canvasArea.x,
+            userArea.y - canvasArea.y,
+            userArea.width,
+            userArea.height,
+            0,
+            0,
+            userVideoCanvas.width,
+            userVideoCanvas.height
+          );
+        }
       }
       window.requestAnimationFrame(renderFrame);
     };
