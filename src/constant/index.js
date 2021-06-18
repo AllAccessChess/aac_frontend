@@ -54,3 +54,11 @@ export const GameStatus = {
   PLAYING: "playing",
   EXITED: "Exited",
 };
+
+// Tournament
+
+export const TournamentStatus = Object.freeze({
+  ONGOING: 3,
+  SCHEDULED: 2,
+  FINISHED: 1,
+});

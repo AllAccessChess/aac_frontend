@@ -23,7 +23,7 @@ const CustomIcon = styled(FontAwesomeIcon)`
 `;
 
 const TournamentCard = (props) => {
-  const { tournament, onViewDetails, onRegister } = props;
+  const { tournament, onViewDetails, onRegister, onFindMatch } = props;
 
   return (
     <Box
@@ -51,7 +51,7 @@ const TournamentCard = (props) => {
           py={4}
           justifyContent="space-between"
         >
-          <Typography variant="h4">{tournament.name}</Typography>
+          <Typography variant="h4">{tournament.title}</Typography>
           <Box
             display="flex"
             alignItems="center"
@@ -60,7 +60,7 @@ const TournamentCard = (props) => {
             <Box display="flex" alignItems="center">
               <CustomIcon icon={faGamepad} />
               <Typography variant="body1" color="textSecondary">
-                {tournament.type}
+                {tournament.settings.variant}
               </Typography>
             </Box>
             <Box display="flex" alignItems="center">
@@ -98,7 +98,7 @@ const TournamentCard = (props) => {
             {tournament.organizedBy}
           </Typography>
         </Typography>
-        {onViewDetails ? (
+        {onViewDetails && (
           <Button
             variant="contained"
             color="primary"
@@ -107,10 +107,8 @@ const TournamentCard = (props) => {
           >
             View Details
           </Button>
-        ) : (
-          <></>
         )}
-        {onRegister ? (
+        {onRegister && (
           <Button
             variant="contained"
             color="primary"
@@ -119,8 +117,16 @@ const TournamentCard = (props) => {
           >
             Register Now
           </Button>
-        ) : (
-          <></>
+        )}
+        {onFindMatch && (
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={() => onFindMatch()}
+          >
+            Find Match
+          </Button>
         )}
       </Box>
     </Box>

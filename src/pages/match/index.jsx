@@ -51,8 +51,9 @@ const Match = () => {
   const [players, setPlayers] = useState([]);
   const [meetingJoining, setMeetingJoining] = useState(false);
   const [chessBoardSize, setChessBoardSize] = useState(0);
+  const [currentMatch, setCurrentMatch] = useState(null);
 
-  const currentMatch = useSelector((state) => state.matchReducer.current);
+  // const currentMatch = useSelector((state) => state.matchReducer.current);
   const actionHistory = useSelector((state) => state.matchReducer.history);
   const user = useSelector((state) => state.authReducer.user);
 
@@ -105,8 +106,10 @@ const Match = () => {
   const getResponse = useCallback(
     (data) => {
       if (data.game) {
-        if (data.state === GameStatus.PLAYING)
+        if (data.state === GameStatus.PLAYING) {
+          setCurrentMatch(data.game);
           setGameStatus(GameStatus.PLAYING);
+        }
         if (!players.length && data.game.players.length > 1)
           setPlayers(data.game.players);
         if (data.game.moves && data.game.moves.length > 0) {
@@ -183,17 +186,17 @@ const Match = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getResponse, onOpenedSocket, onAuthenticatedSocket]);
 
-  useEffect(() => {
-    if (params.id && !currentMatch) {
-      dispatch(getMatch(params.id));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  // useEffect(() => {
+  //   if (params.id && !currentMatch) {
+  //     dispatch(getMatch(params.id));
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [user]);
 
   useEffect(() => {
-    const joinMeeting = async () => {
-      const meetingNumber = 8263378970;
-      const passWord = "5j3UnA";
+    const joinMeeting = async ({ id, password }) => {
+      const meetingNumber = id;
+      const passWord = password;
 
       const signature = await generateSignature(
         meetingNumber,
@@ -202,7 +205,7 @@ const Match = () => {
       );
 
       zoomClient.setUserData({
-        userName: user.username,
+        userName: user.id,
         userEmail: user.email,
       });
 
@@ -237,12 +240,12 @@ const Match = () => {
       );
     };
 
-    if (isMatchOwner(currentMatch, user)) {
+    if (gameStatus === GameStatus.PLAYING && currentMatch) {
       setMeetingJoining(true);
-      joinMeeting();
+      joinMeeting(currentMatch.meeting);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentMatch]);
+  }, [gameStatus]);
 
   useEffect(() => {
     if (chessContainerRef.current) {
@@ -266,7 +269,22 @@ const Match = () => {
     historyRef.current = actionHistory;
   }, [actionHistory]);
 
-  if (!currentMatch) return <LoadingScreen />;
+  if (!currentMatch)
+    return (
+      <LoadingScreen>
+        <Box ml={3}>
+          <Typography variant="h3">
+            {gameStatus === GameStatus.IDLE
+              ? "Connecting to the server"
+              : gameStatus === GameStatus.SEEKING
+              ? "Finding a match"
+              : "Error connecting to the server. Returing to tournament page"}
+            ...
+          </Typography>
+        </Box>
+      </LoadingScreen>
+    );
+
   return (
     <Grid container spacing={5} p={5} className={classes.wrapper}>
       <Grid item md={3} sm={2}>

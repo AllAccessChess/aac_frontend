@@ -2,7 +2,7 @@ import React from "react";
 
 import { Box, CircularProgress } from "components/material-ui";
 
-export const LoadingScreen = () => {
+export const LoadingScreen = (props) => {
   return (
     <Box
       width="100%"
@@ -12,6 +12,7 @@ export const LoadingScreen = () => {
       justifyContent="center"
     >
       <CircularProgress m={2} color="secondary" />
+      {props.children}
     </Box>
   );
 };

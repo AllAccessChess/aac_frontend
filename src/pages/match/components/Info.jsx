@@ -9,7 +9,9 @@ export const Info = (props) => {
 
   return (
     <Box display="flex" flexDirection="column">
-      <Typography variant="h4" mb={3}>{`Round ${match.round + 1}`}</Typography>
+      <Typography variant="h4" mb={3}>
+        Round 1
+      </Typography>
       <Box display="flex" flexDirection="row" alignItems="center">
         <Box
           borderRadius="100%"
@@ -18,9 +20,7 @@ export const Info = (props) => {
           bgcolor={theme.palette.common.black}
           mr={5}
         />
-        <Typography>
-          {match.black.name}({match.black.ratings.uscf.ratings.blitz.rating})
-        </Typography>
+        <Typography>{match.players[0].name}(1200)</Typography>
       </Box>
       <Box display="flex" flexDirection="row" alignItems="center">
         <Box
@@ -30,9 +30,7 @@ export const Info = (props) => {
           bgcolor={theme.palette.common.white}
           mr={5}
         />
-        <Typography>
-          {match.white.name}({match.white.ratings.uscf.ratings.blitz.rating})
-        </Typography>
+        <Typography>{match.players[1].name}(1400)</Typography>
       </Box>
     </Box>
   );

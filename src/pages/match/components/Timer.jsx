@@ -22,12 +22,10 @@ export const Timer = (props) => {
         <VideoCanvas
           width={384}
           height={240}
-          id={`${match.black.username}-video`}
+          id={`${match.players[0].id}-video`}
         ></VideoCanvas>
         <Box my={3}>
-          <Typography variant="h5">
-            {match.black.name}({match.black.ratings.uscf.ratings.blitz.rating})
-          </Typography>
+          <Typography variant="h5">{match.players[0].name}(1200)</Typography>
         </Box>
         <Box
           display="flex"
@@ -57,14 +55,12 @@ export const Timer = (props) => {
           <Typography variant="h5">&nbsp;10:00</Typography>
         </Box>
         <Box my={3}>
-          <Typography variant="h5">
-            {match.white.name}({match.white.ratings.uscf.ratings.blitz.rating})
-          </Typography>
+          <Typography variant="h5">{match.players[1].name}(1400)</Typography>
         </Box>
         <VideoCanvas
           width={384}
           height={240}
-          id={`${match.white.username}-video`}
+          id={`${match.players[1].id}-video`}
         ></VideoCanvas>
       </Box>
     </React.Fragment>

@@ -7,6 +7,7 @@ import { Box } from "@material-ui/core";
 import { ChevronLeft as BackIcon } from "@material-ui/icons";
 
 import { LoadingScreen } from "components/common";
+import { TournamentStatus } from "constant";
 import TournamentCard from "../TournamentCard";
 import Pairings from "./Pairings";
 import Members from "./Members";
@@ -35,6 +36,10 @@ const Detail = () => {
     console.log("Registering Now");
   };
 
+  const handleFindMatch = () => {
+    history.push("/match");
+  };
+
   useEffect(() => {
     if (params.id && !currentTournament) dispatch(getTournament(params.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,7 +60,16 @@ const Detail = () => {
       <Box width="100%" my={5}>
         <TournamentCard
           tournament={currentTournament}
-          onRegister={handleRigster}
+          onRegister={
+            currentTournament.state === TournamentStatus.SCHEDULED
+              ? handleRigster
+              : undefined
+          }
+          onFindMatch={
+            currentTournament.state === TournamentStatus.ONGOING
+              ? handleFindMatch
+              : undefined
+          }
         />
       </Box>
       <Pairings rounds={currentTournament.rounds} user={user} />

@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+
+import { TournamentService } from "services";
 import { setMessage } from "./messageReducer";
 
-import dummyTournaments from "data/tournaments";
+// import dummyTournaments from "data/tournaments";
 
 const initialState = {
   list: [],
@@ -53,7 +55,8 @@ export const {
 export const getTournamentList = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const tournaments = dummyTournaments;
+    // const tournaments = dummyTournaments;
+    const { tournaments } = await TournamentService.getAllTournaments();
     dispatch(setList(tournaments));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
@@ -64,7 +67,8 @@ export const getTournamentList = () => async (dispatch) => {
 export const getTournament = (id) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const tournament = dummyTournaments[id];
+    // const tournament = dummyTournaments[id];
+    const { tournament } = await TournamentService.getTournament(id);
     dispatch(setCurrent(tournament));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
