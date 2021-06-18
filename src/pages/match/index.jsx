@@ -236,7 +236,11 @@ const Match = () => {
       );
     };
 
-    if (gameStatus === GameStatus.PLAYING && currentMatch) {
+    if (
+      gameStatus === GameStatus.PLAYING &&
+      currentMatch &&
+      currentMatch.meeting
+    ) {
       setMeetingJoining(true);
       joinMeeting(currentMatch.meeting);
     }

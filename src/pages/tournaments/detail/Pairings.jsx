@@ -26,7 +26,7 @@ const CustomPaper = styled(Paper)`
 `;
 
 const Pairings = (props) => {
-  const { rounds, user } = props;
+  const { tournament, user } = props;
   const [tabValue, setTabValue] = useState(0);
   const [page, setPage] = useState(0);
   const [matchFilter, setMatchFilter] = useState(1200);
@@ -49,7 +49,7 @@ const Pairings = (props) => {
     setMatchFilter(event.target.value);
   };
 
-  if (!rounds.length) return <></>;
+  if (!tournament.rounds.length) return <></>;
   return (
     <CustomPaper round="true" mb={5}>
       <Box p={3}>
@@ -73,12 +73,12 @@ const Pairings = (props) => {
           </InlineFilledSelect>
         </Box>
         <Tabs value={tabValue} onChange={handleTabChange} aria-label="rounds">
-          {rounds.map((round) => (
-            <Tab key={round.id} label={`Round ${round.id + 1}`} />
+          {tournament.rounds.map((round, index) => (
+            <Tab key={index} label={`Round ${index + 1}`} />
           ))}
         </Tabs>
-        {rounds.map((round) => (
-          <TabPanel key={round.id} value={tabValue} index={round.id}>
+        {tournament.rounds.map((round, index) => (
+          <TabPanel key={index} value={tabValue} index={index}>
             <TableContainer>
               <Table stickyHeader aria-label="members table">
                 <TableHead>
@@ -105,7 +105,7 @@ const Pairings = (props) => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body1" color="textSecondary">
-                        Status
+                        Result
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -116,49 +116,59 @@ const Pairings = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {round.matches
+                  {round.boards
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((match, index) => (
-                      <TableRow tabIndex={-1} key={index}>
-                        <TableCell>
-                          <Typography variant="body1">
-                            {page * rowsPerPage + index + 1}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body1">
-                            {match.white.name}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body1">
-                            {match.black.name}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>-</TableCell>
-                        <TableCell>
-                          <Link
-                            component={RouterLink}
-                            color="primary"
-                            to={`/match/${match.id}`}
-                          >
+                    .map((match, index) => {
+                      const whitePlayer = tournament.players.find(
+                        (player) => player.id === match.playerIds[0]
+                      );
+                      const blackPlayer = tournament.players.find(
+                        (player) => player.id === match.playerIds[1]
+                      );
+
+                      return (
+                        <TableRow tabIndex={-1} key={index}>
+                          <TableCell>
                             <Typography variant="body1">
-                              {isMatchOwner(match, user)
-                                ? "Play Now"
-                                : "Watch Live"}
+                              {page * rowsPerPage + index + 1}
                             </Typography>
-                          </Link>
-                        </TableCell>
-                        <TableCell>-</TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body1">
+                              {whitePlayer ? whitePlayer.name : ""}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body1">
+                              {blackPlayer ? blackPlayer.name : ""}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>{match.result}</TableCell>
+                          <TableCell>
+                            {/* <Link
+                              component={RouterLink}
+                              color="primary"
+                              to={`/match/${match.id}`}
+                            >
+                              <Typography variant="body1">
+                                {isMatchOwner(match, user)
+                                  ? "Play Now"
+                                  : "Watch Live"}
+                              </Typography>
+                            </Link> */}
+                            {round.state === 1 ? "Finished" : "In Progress"}
+                          </TableCell>
+                          <TableCell>-</TableCell>
+                        </TableRow>
+                      );
+                    })}
                 </TableBody>
               </Table>
             </TableContainer>
             <TablePagination
               rowsPerPageOptions={[5, 10, 30]}
               component="div"
-              count={round.matches.length}
+              count={round.boards.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onChangePage={handleChangePage}

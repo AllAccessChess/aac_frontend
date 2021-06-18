@@ -72,8 +72,8 @@ const Detail = () => {
           }
         />
       </Box>
-      <Pairings rounds={currentTournament.rounds} user={user} />
-      <Members members={currentTournament.members} />
+      <Pairings tournament={currentTournament} user={user} />
+      <Members members={currentTournament.players} />
     </Box>
   );
 };
