@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
 import Chess from "chess.js";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
@@ -55,6 +61,11 @@ const Match = () => {
   const userCountRef = useRef(1);
   const chessContainerRef = useRef(null);
   const historyRef = useRef(actionHistory);
+
+  const playerColor = useMemo(
+    () => (!user || !players.length ? 0 : user.id === players[0].id ? 0 : 1),
+    [user, players]
+  );
 
   const { zoomClient } = useZoomContext();
   const classes = useStyles();
@@ -296,6 +307,7 @@ const Match = () => {
               height={chessBoardSize}
               chess={chess}
               fen={fen}
+              playerColor={playerColor}
               actionHistory={actionHistory}
               gameClientRef={gameClientRef}
               lastMove={lastMove}

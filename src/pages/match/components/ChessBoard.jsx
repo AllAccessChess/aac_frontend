@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import Chessground from "react-chessground";
 import useInterval from "react-useinterval";
@@ -16,8 +16,7 @@ export const ChessBoard = (props) => {
     fen,
     width,
     height,
-    players,
-    user,
+    playerColor,
     gameClientRef,
     setFen,
     lastMove,
@@ -27,10 +26,6 @@ export const ChessBoard = (props) => {
     setPendingMove,
   } = props;
 
-  const playerColor = useMemo(
-    () => (user.id === players[0] ? "white" : "black"),
-    [user, players]
-  );
   const [showTransformPawn, setShowTransformPawn] = useState(false);
 
   // const randomMove = useCallback(() => {
@@ -119,7 +114,7 @@ export const ChessBoard = (props) => {
     return {
       free: false,
       dests,
-      color: playerColor,
+      color: playerColor === 0 ? "white" : "black",
     };
   }, [chess, gameStatus, playerColor]);
 
