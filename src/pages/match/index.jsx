@@ -108,7 +108,7 @@ const Match = () => {
         if (data.state === GameStatus.PLAYING)
           setGameStatus(GameStatus.PLAYING);
         if (!players.length && data.game.players.length > 1)
-          setPlayers(data.game.players.map((item) => item.id));
+          setPlayers(data.game.players);
         if (data.game.moves && data.game.moves.length > 0) {
           console.log("Checking history: ", historyRef.current);
           if (historyRef.current.length) {
