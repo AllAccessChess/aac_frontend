@@ -6,7 +6,6 @@ import React, {
   useMemo,
 } from "react";
 import Chess from "chess.js";
-import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "@material-ui/core";
 
@@ -24,10 +23,8 @@ import {
 import { useWindowSize } from "hooks";
 import { useZoomContext } from "lib/zoom";
 import { generateSignature } from "lib/zoom/client/helpers";
-import { getMatch } from "redux/reducers/matchReducer";
 import { addHistoryItem } from "redux/reducers/matchReducer";
 import { getAuthToken } from "utils/storage";
-import { isMatchOwner } from "utils/common";
 import GameClient from "utils/gameClient";
 import {
   Chat,
@@ -40,7 +37,6 @@ import {
 import { useStyles } from "./styles";
 
 const Match = () => {
-  const params = useParams();
   const dispatch = useDispatch();
 
   const [chess] = useState(new Chess());
