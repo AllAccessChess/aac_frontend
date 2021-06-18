@@ -64,11 +64,23 @@ const Members = (props) => {
     setTabValue(newValue);
   };
   const memberFilter = (item, tabValue) => {
-    if (tabValue === 1 && item.ratings.uscf.ratings.blitz.rating >= 2200)
+    if (
+      tabValue === 1 && item.ratings
+        ? item.ratings.uscf.ratings.blitz.rating >= 2200
+        : false
+    )
       return false;
-    if (tabValue === 2 && item.ratings.uscf.ratings.blitz.rating >= 1800)
+    if (
+      tabValue === 2 && item.ratings
+        ? item.ratings.uscf.ratings.blitz.rating >= 1800
+        : false
+    )
       return false;
-    if (tabValue === 3 && item.ratings.uscf.ratings.blitz.rating >= 1400)
+    if (
+      tabValue === 3 && item.ratings
+        ? item.ratings.uscf.ratings.blitz.rating >= 1400
+        : false
+    )
       return false;
     return true;
   };
@@ -78,7 +90,8 @@ const Members = (props) => {
         .filter((item) => memberFilter(item, tabValue))
         .map((item) => ({
           name: item.name,
-          rating: item.ratings.uscf.ratings.blitz.rating,
+          // rating: item.ratings.uscf.ratings.blitz.rating,
+          rating: Math.ceil(Math.random() * 3000),
           byes: "-",
         }));
     },

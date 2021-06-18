@@ -277,13 +277,17 @@ const Match = () => {
         },
         {
           previewDOM: zoomPreviewRef.current,
-          title: "Start Video Call",
+          title: "Start Game",
           joinButtonText: "Start",
         }
       );
     };
 
-    if (gameStatus === GameStatus.PLAYING && currentMatch) {
+    if (
+      gameStatus === GameStatus.PLAYING &&
+      currentMatch &&
+      currentMatch.meeting
+    ) {
       setMeetingJoining(true);
       joinMeeting(currentMatch.meeting);
     }

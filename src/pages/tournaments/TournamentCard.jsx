@@ -66,13 +66,14 @@ const TournamentCard = (props) => {
             <Box display="flex" alignItems="center">
               <CustomIcon icon={faClock} />
               <Typography variant="body1" color="textSecondary">
-                {tournament.duration} + {tournament.extraDuration}
+                {tournament.settings.startTime || 30} +{" "}
+                {tournament.settings.increment || 0}
               </Typography>
             </Box>
             <Box display="flex" alignItems="center">
               <CustomIcon icon={faPoll} />
               <Typography variant="body1" color="textSecondary">
-                ${tournament.prize}
+                ${tournament.prize || 300}
               </Typography>
             </Box>
           </Box>
@@ -95,7 +96,7 @@ const TournamentCard = (props) => {
         <Typography variant="body2" color="textSecondary">
           Organized by{" "}
           <Typography variant="body1" component="span" color="textPrimary">
-            {tournament.organizedBy}
+            {tournament.organizedBy || "USCF"}
           </Typography>
         </Typography>
         {onViewDetails && (
