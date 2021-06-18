@@ -23,7 +23,14 @@ const CellItem = (props) => {
 };
 
 export const MoveList = (props) => {
-  const { moveList, onOfferDraw, onResign } = props;
+  const {
+    moveList,
+    askingDraw,
+    onOfferDraw,
+    onResign,
+    onAcceptDraw,
+    onDeclineDraw,
+  } = props;
   const rows = useMemo(() => {
     let tempRows = [];
     let index = 0;
@@ -84,22 +91,45 @@ export const MoveList = (props) => {
         <Divider />
       </Box>
       <Box display="flex" justifyContent="space-around">
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={onOfferDraw}
-        >
-          Offer Draw
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={onResign}
-        >
-          Resign
-        </Button>
+        {askingDraw ? (
+          <>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={onAcceptDraw}
+            >
+              Accept Draw
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={onDeclineDraw}
+            >
+              Decline Draw
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={onOfferDraw}
+            >
+              Offer Draw
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={onResign}
+            >
+              Resign
+            </Button>
+          </>
+        )}
       </Box>
     </Box>
   );

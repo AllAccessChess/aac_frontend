@@ -1,4 +1,4 @@
-import { GameEvents } from "constant";
+import { GameEvents, GameStatus } from "constant";
 
 export default class GameClient extends EventTarget {
   constructor(socketURL) {
@@ -21,11 +21,19 @@ export default class GameClient extends EventTarget {
       if (msg.status === "ok") {
         if (msg.game) {
           if (!this.gameId) this.gameId = msg.game.id;
-          this.triggerEvent(GameEvents.GET_RESPONSE, msg);
+          if (msg.game.drawOffer === 0 || msg.game.drawOffer === 1) {
+            // Offering Draw
+            this.triggerEvent(GameEvents.OFFEREDDRAW, msg.game.drawOffer);
+          } else {
+            this.triggerEvent(GameEvents.GET_RESPONSE, msg);
+          }
         } else if (msg.pong) {
           // This is Ping Pong
-        } else if (msg.drawOffer === 0 || msg.drawOffer === 1) {
-          // Offering Draw
+        } else if (msg.state) {
+          // State Change
+          if (this.gameId && msg.state === GameStatus.IDLE) {
+            this.triggerEvent(GameEvents.EXITGAME);
+          }
         }
         if (msg.user) {
           this.triggerEvent(GameEvents.AUTHENTICATED, msg);
@@ -43,7 +51,7 @@ export default class GameClient extends EventTarget {
     };
 
     this.ws.onclose = (event) => {
-      console.log(`WS closed: ${event.data}`);
+      console.log("WS closed: ", event);
       this.ws = undefined;
     };
   };

@@ -46,6 +46,8 @@ export const GameEvents = {
   GET_RESPONSE: "GET_RESPONSE",
   OPENED: "OPENED",
   AUTHENTICATED: "AUTHENTICATED",
+  OFFEREDDRAW: "OFFEREDDRAW",
+  EXITGAME: "EXITGAME",
 };
 
 export const GameStatus = {

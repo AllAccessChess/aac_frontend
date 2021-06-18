@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import Chess from "chess.js";
 import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 import { useTheme } from "@material-ui/core";
 
 import { config } from "config";
@@ -24,6 +25,7 @@ import { useWindowSize } from "hooks";
 import { useZoomContext } from "lib/zoom";
 import { generateSignature } from "lib/zoom/client/helpers";
 import { addHistoryItem } from "redux/reducers/matchReducer";
+import { showSuccess } from "redux/reducers/messageReducer";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/gameClient";
 import {
@@ -38,6 +40,7 @@ import { useStyles } from "./styles";
 
 const Match = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [chess] = useState(new Chess());
   const [fen, setFen] = useState("");
@@ -48,6 +51,7 @@ const Match = () => {
   const [meetingJoining, setMeetingJoining] = useState(false);
   const [chessBoardSize, setChessBoardSize] = useState(0);
   const [currentMatch, setCurrentMatch] = useState(null);
+  const [askingDraw, setAskingDraw] = useState(false);
 
   // const currentMatch = useSelector((state) => state.matchReducer.current);
   const actionHistory = useSelector((state) => state.matchReducer.history);
@@ -77,13 +81,23 @@ const Match = () => {
       action: GameActions.DRAWOFFER,
     });
   }, []);
+  const handleRespondToDraw = useCallback(
+    (accept = true) => {
+      console.log("Responding to Draw: ", accept);
+      gameClientRef.current.sendData({
+        action: GameActions.DRAWRESPONSE,
+        accept: accept,
+      });
+      setAskingDraw(false);
+    },
+    [setAskingDraw]
+  );
 
   const handleResign = useCallback(() => {
     gameClientRef.current.sendData({
       action: GameActions.RESIGN,
     });
-    setGameStatus(GameStatus.EXITED);
-  }, [setGameStatus]);
+  }, []);
 
   const addMoveStringToHistory = useCallback(
     (move) => {
@@ -133,6 +147,21 @@ const Match = () => {
     },
     [addMoveStringToHistory, setFen, setPlayers, setGameStatus]
   );
+  const onOfferedDraw = useCallback(
+    (colorBy) => {
+      console.log(colorBy, " offered Draw");
+      if (colorBy !== playerColorRef.current) {
+        setAskingDraw(true);
+      }
+    },
+    [setAskingDraw]
+  );
+  const onExitGame = useCallback(() => {
+    console.log("Game Exited");
+    setGameStatus(GameStatus.EXITED);
+    dispatch(showSuccess("Game Exited!"));
+    history.push("/tournaments");
+  }, [dispatch, history, setGameStatus]);
   const onOpenedSocket = useCallback(() => {
     console.log(
       "Opened Socket, authenticating with token: ",
@@ -168,9 +197,17 @@ const Match = () => {
       gameClientRef.current.on(GameEvents.GET_RESPONSE, getResponse);
       gameClientRef.current.on(GameEvents.OPENED, onOpenedSocket);
       gameClientRef.current.on(GameEvents.AUTHENTICATED, onAuthenticatedSocket);
+      gameClientRef.current.on(GameEvents.OFFEREDDRAW, onOfferedDraw);
+      gameClientRef.current.on(GameEvents.EXITGAME, onExitGame);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getResponse, onOpenedSocket, onAuthenticatedSocket]);
+  }, [
+    getResponse,
+    onOpenedSocket,
+    onAuthenticatedSocket,
+    onOfferedDraw,
+    onExitGame,
+  ]);
 
   const endHandlers = useCallback(() => {
     if (gameClientRef.current) {
@@ -180,9 +217,17 @@ const Match = () => {
         GameEvents.AUTHENTICATED,
         onAuthenticatedSocket
       );
+      gameClientRef.current.off(GameEvents.OFFEREDDRAW, onOfferedDraw);
+      gameClientRef.current.off(GameEvents.EXITGAME, onExitGame);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getResponse, onOpenedSocket, onAuthenticatedSocket]);
+  }, [
+    getResponse,
+    onOpenedSocket,
+    onAuthenticatedSocket,
+    onOfferedDraw,
+    onExitGame,
+  ]);
 
   // useEffect(() => {
   //   if (params.id && !currentMatch) {
@@ -304,8 +349,11 @@ const Match = () => {
           <Box flexGrow={1} mt={5}>
             <MoveList
               moveList={actionHistory}
+              askingDraw={askingDraw}
               onOfferDraw={handleOfferDraw}
               onResign={handleResign}
+              onAcceptDraw={() => handleRespondToDraw(true)}
+              onDeclineDraw={() => handleRespondToDraw(false)}
             />
           </Box>
         </Box>
