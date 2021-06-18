@@ -53,16 +53,18 @@ const Match = () => {
   const actionHistory = useSelector((state) => state.matchReducer.history);
   const user = useSelector((state) => state.authReducer.user);
 
+  const playerColor = useMemo(
+    () => (!user || !players.length ? 0 : user.id === players[0].id ? 0 : 1),
+    [user, players]
+  );
+
   const gameClientRef = useRef(new GameClient(config.socketURL));
   const zoomPreviewRef = useRef(null);
   const userCountRef = useRef(1);
   const chessContainerRef = useRef(null);
   const historyRef = useRef(actionHistory);
-
-  const playerColor = useMemo(
-    () => (!user || !players.length ? 0 : user.id === players[0].id ? 0 : 1),
-    [user, players]
-  );
+  const playersRef = useRef(players);
+  const playerColorRef = useRef(playerColor);
 
   const { zoomClient } = useZoomContext();
   const classes = useStyles();
@@ -106,13 +108,13 @@ const Match = () => {
           setCurrentMatch(data.game);
           setGameStatus(GameStatus.PLAYING);
         }
-        if (!players.length && data.game.players.length > 1)
+        if (!playersRef.length && data.game.players.length > 1)
           setPlayers(data.game.players);
         if (data.game.moves && data.game.moves.length > 0) {
           console.log("Checking history: ", historyRef.current);
           if (historyRef.current.length) {
             const move = data.game.moves[data.game.moves.length - 1];
-            if (move) {
+            if (move && data.game.turn === playerColorRef.current) {
               console.log("Opponent's move: ", move);
               addMoveStringToHistory(move);
             }
@@ -129,7 +131,7 @@ const Match = () => {
         }
       }
     },
-    [addMoveStringToHistory, setFen, players, setPlayers, setGameStatus]
+    [addMoveStringToHistory, setFen, setPlayers, setGameStatus]
   );
   const onOpenedSocket = useCallback(() => {
     console.log(
@@ -261,9 +263,16 @@ const Match = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Setting Refs on Change of States
   useEffect(() => {
     historyRef.current = actionHistory;
   }, [actionHistory]);
+  useEffect(() => {
+    playersRef.current = players;
+  }, [players]);
+  useEffect(() => {
+    playerColorRef.current = playerColor;
+  }, [playerColor]);
 
   if (!currentMatch)
     return (

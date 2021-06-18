@@ -22,9 +22,10 @@ export default class GameClient extends EventTarget {
         if (msg.game) {
           if (!this.gameId) this.gameId = msg.game.id;
           this.triggerEvent(GameEvents.GET_RESPONSE, msg);
-        }
-        if (msg.pong) {
+        } else if (msg.pong) {
           // This is Ping Pong
+        } else if (msg.drawOffer === 0 || msg.drawOffer === 1) {
+          // Offering Draw
         }
         if (msg.user) {
           this.triggerEvent(GameEvents.AUTHENTICATED, msg);
