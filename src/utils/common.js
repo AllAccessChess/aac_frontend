@@ -38,3 +38,7 @@ export const isMatchOwner = (match, user) => {
       match.white.username === user.username)
   );
 };
+
+export const pad2 = (number) => {
+  return (number < 10 ? "0" : "") + number;
+};

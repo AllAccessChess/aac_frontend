@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import Chess from "chess.js";
 import { useSelector, useDispatch } from "react-redux";
+import useInterval from "react-useinterval";
 import { useHistory } from "react-router";
 import { useTheme } from "@material-ui/core";
 
@@ -53,6 +54,9 @@ const Match = () => {
   const [chessBoardSize, setChessBoardSize] = useState(0);
   const [currentMatch, setCurrentMatch] = useState(null);
   const [askingDraw, setAskingDraw] = useState(false);
+  const [whiteClock, setWhiteClock] = useState(300);
+  const [blackClock, setBlackClock] = useState(300);
+  const [turn, setTurn] = useState(0);
 
   // const currentMatch = useSelector((state) => state.matchReducer.current);
   const actionHistory = useSelector((state) => state.matchReducer.history);
@@ -123,8 +127,13 @@ const Match = () => {
           setCurrentMatch(data.game);
           setGameStatus(GameStatus.PLAYING);
         }
+        setTurn(data.game.turn);
         if (!playersRef.length && data.game.players.length > 1)
           setPlayers(data.game.players);
+        if (data.game.clocks) {
+          setWhiteClock(data.game.clocks[0].time / 1000);
+          setBlackClock(data.game.clocks[1].time / 1000);
+        }
         if (data.game.moves && data.game.moves.length > 0) {
           console.log("Checking history: ", historyRef.current);
           if (historyRef.current.length) {
@@ -146,7 +155,14 @@ const Match = () => {
         }
       }
     },
-    [addMoveStringToHistory, setFen, setPlayers, setGameStatus]
+    [
+      addMoveStringToHistory,
+      setFen,
+      setPlayers,
+      setGameStatus,
+      setWhiteClock,
+      setBlackClock,
+    ]
   );
   const onOfferedDraw = useCallback(
     (colorBy) => {
@@ -308,6 +324,14 @@ const Match = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useInterval(
+    () => {
+      if (turn === 0) setWhiteClock((clock) => clock - 1);
+      else setBlackClock((clock) => clock - 1);
+    },
+    gameStatus === GameStatus.PLAYING ? 1000 : null
+  );
+
   // Setting Refs on Change of States
   useEffect(() => {
     historyRef.current = actionHistory;
@@ -426,7 +450,12 @@ const Match = () => {
           ) : (
             <Button></Button>
           )}
-          <Timer match={currentMatch} playerColor={playerColor} />
+          <Timer
+            match={currentMatch}
+            playerColor={playerColor}
+            whiteClock={whiteClock}
+            blackClock={blackClock}
+          />
         </Box>
       </Grid>
       <Box

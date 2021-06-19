@@ -4,6 +4,7 @@ import { useTheme } from "@material-ui/core";
 import { AccessTime as AccessTimeIcon } from "@material-ui/icons";
 
 import { Box, Typography } from "components/material-ui";
+import { pad2 } from "utils/common";
 
 const VideoCanvas = styled.canvas`
   border-radius: 8px;
@@ -13,7 +14,7 @@ const VideoCanvas = styled.canvas`
 `;
 
 export const Timer = (props) => {
-  const { match, playerColor } = props;
+  const { match, playerColor, whiteClock, blackClock } = props;
   const theme = useTheme();
 
   return (
@@ -54,7 +55,16 @@ export const Timer = (props) => {
           borderRadius={8}
         >
           <AccessTimeIcon />
-          <Typography variant="h5">&nbsp;10:00</Typography>
+          <Typography variant="h5">
+            &nbsp;
+            {playerColor
+              ? pad2(Math.floor(whiteClock / 60))
+              : pad2(Math.floor(blackClock / 60))}
+            :
+            {playerColor
+              ? pad2(Math.floor(whiteClock % 60))
+              : pad2(Math.floor(blackClock % 60))}
+          </Typography>
         </Box>
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center">
@@ -77,7 +87,16 @@ export const Timer = (props) => {
           borderRadius={8}
         >
           <AccessTimeIcon />
-          <Typography variant="h5">&nbsp;10:00</Typography>
+          <Typography variant="h5">
+            &nbsp;
+            {playerColor
+              ? pad2(Math.floor(blackClock / 60))
+              : pad2(Math.floor(whiteClock / 60))}
+            :
+            {playerColor
+              ? pad2(Math.floor(blackClock % 60))
+              : pad2(Math.floor(whiteClock % 60))}
+          </Typography>
         </Box>
         <Box my={3}>
           <Typography variant="h5">
