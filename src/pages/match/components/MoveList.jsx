@@ -65,28 +65,29 @@ export const MoveList = (props) => {
       flexDirection="column"
       py={3}
     >
-      <Box flexGrow={1}>
-        <TableContainer component={Paper} style={{ maxHeight: 480 }}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>S.No.</TableCell>
-                <TableCell>White</TableCell>
-                <TableCell>Black</TableCell>
+      <TableContainer
+        component={Paper}
+        style={{ maxHeight: `calc(100% - 70px)` }}
+      >
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              <TableCell>S.No.</TableCell>
+              <TableCell>White</TableCell>
+              <TableCell>Black</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, index) => (
+              <TableRow key={index}>
+                {row.map((cell, cellIndex) => (
+                  <CellItem cell={cell} rowIndex={index} key={cellIndex} />
+                ))}
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={index}>
-                  {row.map((cell, cellIndex) => (
-                    <CellItem cell={cell} rowIndex={index} key={cellIndex} />
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <Box my={3}>
         <Divider />
       </Box>

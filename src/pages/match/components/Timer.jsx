@@ -13,7 +13,7 @@ const VideoCanvas = styled.canvas`
 `;
 
 export const Timer = (props) => {
-  const { match } = props;
+  const { match, playerColor } = props;
   const theme = useTheme();
 
   return (
@@ -22,16 +22,33 @@ export const Timer = (props) => {
         <VideoCanvas
           width={384}
           height={240}
-          id={`${match.players[1].id}-video`}
+          id={
+            playerColor
+              ? `${match.players[0].id}-video`
+              : `${match.players[1].id}-video`
+          }
         ></VideoCanvas>
         <Box my={3}>
-          <Typography variant="h5">{match.players[1].name}(1200)</Typography>
+          <Typography variant="h5">
+            {playerColor
+              ? `${match.players[0].name}(${match.players[0].rating})`
+              : `${match.players[1].name}(${match.players[1].rating})`}
+          </Typography>
         </Box>
         <Box
           display="flex"
           alignItems="center"
           justifyContent="center"
-          bgcolor={theme.palette.background.paper}
+          bgcolor={
+            playerColor
+              ? theme.palette.common.white
+              : theme.palette.background.paper
+          }
+          color={
+            playerColor
+              ? theme.palette.background.paper
+              : theme.palette.common.white
+          }
           width="100%"
           py={3}
           borderRadius={8}
@@ -45,8 +62,16 @@ export const Timer = (props) => {
           display="flex"
           alignItems="center"
           justifyContent="center"
-          bgcolor={theme.palette.common.white}
-          color={theme.palette.background.paper}
+          bgcolor={
+            playerColor
+              ? theme.palette.background.paper
+              : theme.palette.common.white
+          }
+          color={
+            playerColor
+              ? theme.palette.common.white
+              : theme.palette.background.paper
+          }
           width="100%"
           py={3}
           borderRadius={8}
@@ -55,12 +80,20 @@ export const Timer = (props) => {
           <Typography variant="h5">&nbsp;10:00</Typography>
         </Box>
         <Box my={3}>
-          <Typography variant="h5">{match.players[0].name}(1400)</Typography>
+          <Typography variant="h5">
+            {playerColor
+              ? `${match.players[1].name}(${match.players[1].rating})`
+              : `${match.players[0].name}(${match.players[0].rating})`}
+          </Typography>
         </Box>
         <VideoCanvas
           width={384}
           height={240}
-          id={`${match.players[0].id}-video`}
+          id={
+            playerColor
+              ? `${match.players[1].id}-video`
+              : `${match.players[0].id}-video`
+          }
         ></VideoCanvas>
       </Box>
     </React.Fragment>

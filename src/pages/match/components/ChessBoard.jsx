@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import Chessground from "react-chessground";
 import useInterval from "react-useinterval";
@@ -26,6 +26,10 @@ export const ChessBoard = (props) => {
     setPendingMove,
     setAskingDraw,
   } = props;
+  const playerColorName = useMemo(
+    () => (playerColor === 0 ? "white" : "black"),
+    [playerColor]
+  );
 
   const [showTransformPawn, setShowTransformPawn] = useState(false);
 
@@ -117,9 +121,9 @@ export const ChessBoard = (props) => {
     return {
       free: false,
       dests,
-      color: playerColor === 0 ? "white" : "black",
+      color: playerColorName,
     };
-  }, [chess, gameStatus, playerColor]);
+  }, [chess, gameStatus, playerColorName]);
 
   // Interval for Ping-Pong ;)
   useInterval(
@@ -146,6 +150,7 @@ export const ChessBoard = (props) => {
         check={chess.in_check() ? true : false}
         lastMove={lastMove}
         fen={fen}
+        orientation={playerColorName}
         onMove={onMove}
         style={{
           marginRight: "20px",

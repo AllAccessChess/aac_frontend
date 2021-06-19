@@ -346,15 +346,15 @@ const Match = () => {
   return (
     <Grid container spacing={5} p={5} className={classes.wrapper}>
       <Grid item md={3} sm={2}>
-        <Box display="flex" flexDirection="column" height="100%">
+        <Box display="flex" flexDirection="column" height="calc(100vh - 40px)">
           <Paper p={5}>
-            <Info match={currentMatch} />
+            <Info match={currentMatch} playerColor={playerColor} />
             <Box my={3}>
               <Divider />
             </Box>
             <Chat />
           </Paper>
-          <Box flexGrow={1} mt={5}>
+          <Box flexGrow={1} mt={5} height={`calc(100% - 298px)`}>
             <MoveList
               moveList={actionHistory}
               askingDraw={askingDraw}
@@ -404,7 +404,11 @@ const Match = () => {
           </Box>
           <Box display="flex" justifyContent="flex-end" mt={2}>
             <Box width="50%">
-              <Scoreboard match={currentMatch} score={{ black: 0, white: 0 }} />
+              <Scoreboard
+                match={currentMatch}
+                score={{ black: 0, white: 0 }}
+                playerColor={playerColor}
+              />
             </Box>
           </Box>
         </Box>
@@ -430,7 +434,7 @@ const Match = () => {
           ) : (
             <Button></Button>
           )}
-          <Timer match={currentMatch} />
+          <Timer match={currentMatch} playerColor={playerColor} />
         </Box>
       </Grid>
       <Box

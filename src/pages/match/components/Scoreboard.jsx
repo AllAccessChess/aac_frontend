@@ -9,9 +9,13 @@ const Wrapper = styled(Box)`
 `;
 
 export const Scoreboard = (props) => {
-  const { match, score } = props;
+  const { match, score, playerColor } = props;
   return (
-    <Wrapper p={3}>
+    <Wrapper
+      p={3}
+      display="flex"
+      flexDirection={playerColor ? "column-reverse" : "column"}
+    >
       <Box display="flex" justifyContent="space-between">
         <Typography>{match.players[1].name}</Typography>
         <Typography>{score.black}</Typography>
