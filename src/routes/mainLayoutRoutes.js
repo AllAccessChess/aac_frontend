@@ -23,6 +23,7 @@ export const mainLayoutRoutes = [
     icon: DashboardIcon,
     component: Dashboard,
     guarded: true,
+    redirectToSignIn: true,
   },
   {
     id: "tournament-list",
