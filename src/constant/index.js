@@ -57,6 +57,24 @@ export const GameStatus = {
   EXITED: "Exited",
 };
 
+export const GameEndReason = {
+  CHECKMATE: 0,
+  TIMEOUT: 1,
+  RESIGNATION: 2,
+  STALEMATE: 3,
+  THREEFOLD: 4,
+  INSUFFICIENT: 5,
+  FIFTY_MOVE: 6,
+  AGREEMENT: 7,
+};
+
+export const GameResults = {
+  ONGOING: "*",
+  DRAW: "1/2-1/2",
+  WHITE_WIN: "1-0",
+  BLACK_WIN: "0-1",
+};
+
 // Tournament
 
 export const TournamentStatus = Object.freeze({

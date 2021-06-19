@@ -13,7 +13,13 @@ import { useHistory } from "react-router";
 import { useTheme } from "@material-ui/core";
 
 import { config } from "config";
-import { GameEvents, GameStatus, GameActions } from "constant";
+import {
+  GameEvents,
+  GameStatus,
+  GameActions,
+  GameEndReason,
+  GameResults,
+} from "constant";
 import { LoadingScreen } from "components/common";
 import {
   Box,
@@ -104,6 +110,27 @@ const Match = () => {
     });
   }, []);
 
+  const onExitGame = useCallback(
+    (gameResult) => {
+      if (gameResult !== GameResults.ONGOING) {
+        setGameStatus(GameStatus.EXITED);
+
+        if (gameResult === GameResults.DRAW) {
+          dispatch(showSuccess("Game Drawn!"));
+        } else if (gameResult === GameResults.WHITE_WIN) {
+          dispatch(showSuccess("White Win!"));
+        } else if (gameResult === GameResults.BLACK_WIN) {
+          dispatch(showSuccess("Black Win!"));
+        } else {
+          dispatch(showSuccess("Game Exited!"));
+        }
+        dispatch(setHistory([]));
+        history.push("/tournaments");
+      }
+    },
+    [dispatch, history, setGameStatus]
+  );
+
   const addMoveStringToHistory = useCallback(
     (move) => {
       const from = move.slice(0, 2);
@@ -127,6 +154,11 @@ const Match = () => {
           setCurrentMatch(data.game);
           setGameStatus(GameStatus.PLAYING);
         }
+        if (
+          data.game.reason >= GameEndReason.CHECKMATE &&
+          data.game.reason <= GameEndReason.AGREEMENT
+        )
+          onExitGame(data.game.result);
         setTurn(data.game.turn);
         if (!playersRef.length && data.game.players.length > 1)
           setPlayers(data.game.players);
@@ -162,6 +194,8 @@ const Match = () => {
       setGameStatus,
       setWhiteClock,
       setBlackClock,
+      setTurn,
+      onExitGame,
     ]
   );
   const onOfferedDraw = useCallback(
@@ -173,13 +207,6 @@ const Match = () => {
     },
     [setAskingDraw]
   );
-  const onExitGame = useCallback(() => {
-    console.log("Game Exited");
-    setGameStatus(GameStatus.EXITED);
-    dispatch(showSuccess("Game Exited!"));
-    dispatch(setHistory([]));
-    history.push("/tournaments");
-  }, [dispatch, history, setGameStatus]);
   const onOpenedSocket = useCallback(() => {
     console.log(
       "Opened Socket, authenticating with token: ",
