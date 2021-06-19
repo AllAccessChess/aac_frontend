@@ -50,20 +50,34 @@ const Dashboard = () => {
                 <Grid container>
                   <Info label="Name" value={user.name} />
                   <Info label="Username" value={user.username} />
-                  <Info label="Country" value="USA" />
-                  {user.ratings && user.ratings.uscf ? (
-                    <Info label="USCF ID" value={user.ratings.uscf.id || "-"} />
-                  ) : (
-                    <></>
-                  )}
-                  {user.ratings && user.ratings.fide ? (
-                    <Info
-                      label="FIDE ID/Country"
-                      value={user.ratings.fide.id || "-"}
-                    />
-                  ) : (
-                    <></>
-                  )}
+                  <Info
+                    label="Country"
+                    value={
+                      user.location && user.location.country
+                        ? user.location.country.toUpperCase()
+                        : "-"
+                    }
+                  />
+
+                  <Info
+                    label="USCF ID"
+                    value={
+                      (user.ratings &&
+                        user.ratings.uscf &&
+                        user.ratings.uscf.id) ||
+                      "-"
+                    }
+                  />
+
+                  <Info
+                    label="FIDE ID/Country"
+                    value={
+                      (user.ratings &&
+                        user.ratings.fide &&
+                        user.ratings.fide.id) ||
+                      "-"
+                    }
+                  />
                 </Grid>
               </Block>
               {user.ratings && (user.ratings.uscf || user.ratings.fide) ? (
