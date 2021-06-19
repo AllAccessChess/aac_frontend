@@ -65,10 +65,7 @@ export const MoveList = (props) => {
       flexDirection="column"
       py={3}
     >
-      <TableContainer
-        component={Paper}
-        style={{ maxHeight: `calc(100% - 70px)` }}
-      >
+      <TableContainer component={Paper} style={{ height: `calc(100% - 70px)` }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>

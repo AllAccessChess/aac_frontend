@@ -51,51 +51,92 @@ const Dashboard = () => {
                   <Info label="Name" value={user.name} />
                   <Info label="Username" value={user.username} />
                   <Info label="Country" value="USA" />
-                  <Info label="USCF ID" value={"327128562"} />
-                  <Info label="FIDE ID/Country" value={"129387178-USA"} />
+                  {user.ratings && user.ratings.uscf ? (
+                    <Info label="USCF ID" value={user.ratings.uscf.id || "-"} />
+                  ) : (
+                    <></>
+                  )}
+                  {user.ratings && user.ratings.fide ? (
+                    <Info
+                      label="FIDE ID/Country"
+                      value={user.ratings.fide.id || "-"}
+                    />
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
               </Block>
-              <Block>
-                <Box
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="center"
-                  mb={3}
-                >
-                  <Typography variant="h3" component="h3">
-                    Ratings
-                  </Typography>
-                  <Box ml={3}>
-                    <TextHelper>
-                      as on {moment().format("DD MMM YYYY")}
-                    </TextHelper>
-                  </Box>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  <Box mb={3}>
-                    <Typography variant="h5" component="h5">
-                      USCF
+              {user.ratings && (user.ratings.uscf || user.ratings.fide) ? (
+                <Block>
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    mb={3}
+                  >
+                    <Typography variant="h3" component="h3">
+                      Ratings
                     </Typography>
+                    <Box ml={3}>
+                      <TextHelper>
+                        as on {moment().format("DD MMM YYYY")}
+                      </TextHelper>
+                    </Box>
                   </Box>
-                  <Grid container>
-                    <Info label="Blitz" value={1838} />
-                    <Info label="Rapid" value={1789} />
-                    <Info label="Classic" value={1237} />
-                  </Grid>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  <Box mb={3}>
-                    <Typography variant="h5" component="h5">
-                      FIDE
-                    </Typography>
-                  </Box>
-                  <Grid container>
-                    <Info label="Blitz" value={1838} />
-                    <Info label="Rapid" value={1789} />
-                    <Info label="Classic" value={1237} />
-                  </Grid>
-                </Box>
-              </Block>
+                  {user.ratings.uscf ? (
+                    <Box display="flex" flexDirection="column">
+                      <Box mb={3}>
+                        <Typography variant="h5" component="h5">
+                          USCF
+                        </Typography>
+                      </Box>
+                      <Grid container>
+                        <Info
+                          label="Blitz"
+                          value={user.ratings.uscf.ratings.blitz.rating}
+                        />
+                        <Info
+                          label="Rapid"
+                          value={user.ratings.uscf.ratings.rapid.rating}
+                        />
+                        <Info
+                          label="Classic"
+                          value={user.ratings.uscf.ratings.classical.rating}
+                        />
+                      </Grid>
+                    </Box>
+                  ) : (
+                    <></>
+                  )}
+                  {user.ratings.fide ? (
+                    <Box display="flex" flexDirection="column">
+                      <Box mb={3}>
+                        <Typography variant="h5" component="h5">
+                          FIDE
+                        </Typography>
+                      </Box>
+                      <Grid container>
+                        <Info
+                          label="Blitz"
+                          value={user.ratings.fide.ratings.blitz.rating}
+                        />
+                        <Info
+                          label="Rapid"
+                          value={user.ratings.fide.ratings.rapid.rating}
+                        />
+                        <Info
+                          label="Classic"
+                          value={user.ratings.fide.ratings.classical.rating}
+                        />
+                      </Grid>
+                    </Box>
+                  ) : (
+                    <></>
+                  )}
+                </Block>
+              ) : (
+                <></>
+              )}
             </Box>
           </Grid>
           <Grid item md={4} sm={6}>
