@@ -189,6 +189,12 @@ export default class DOMManager {
       const userVideoCanvasContext = userVideoCanvas.getContext("2d");
       const { userAreaDOM, fromGallery } = this.findUserAreaDOM(userId);
 
+      console.log(
+        `## Zoom SDK ## - Rendering ${userId}'s video on ${userVideoCanvas} from ${userAreaDOM} - ${
+          fromGallery ? "Gallery" : "Speaker"
+        }`
+      );
+
       if (userAreaDOM) {
         const userArea = userAreaDOM.getBoundingClientRect();
 

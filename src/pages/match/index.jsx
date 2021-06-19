@@ -256,6 +256,9 @@ const Match = () => {
       zoomClient.on("onUserJoin", (data) => {
         setTimeout(() => {
           const userName = zoomClient.getUserName(data.userId);
+          console.log(
+            `## Zoom SDK ## - User ${data.userId} - ${userName} joined`
+          );
           const userVideoCanvas = document.getElementById(`${userName}-video`);
 
           if (userVideoCanvas) {
