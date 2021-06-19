@@ -242,7 +242,7 @@ export default class DOMManager {
           userVideoCanvas.width,
           userVideoCanvas.height
         );
-        setTimeout(renderFrame, 1000 / _this.fps);
+        requestAnimationFrame(renderFrame);
       } else {
         setTimeout(renderFrame, 1000);
       }
