@@ -275,10 +275,9 @@ export default class ZoomClient extends EventTarget {
    * Render user video on custom canvas
    *
    * @param {string} userId
-   * @param {Element} userVideoCanvas
    */
-  renderUserVideo = (userId, userVideoCanvas) => {
-    this.domManager.renderUserVideo(userId, userVideoCanvas);
+  renderUserVideo = (userId) => {
+    this.domManager.renderUserVideo(userId);
   };
 
   /**

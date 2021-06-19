@@ -110,6 +110,16 @@ export default class DOMManager {
   };
 
   /**
+   * Find Custom User Video Canvas
+   *
+   * @param {string} userName
+   * @returns
+   */
+  getUserVideoCanvas = (userName) => {
+    return document.getElementById(`${userName}-video`);
+  };
+
+  /**
    * Move the media preview container to another DOM
    *
    * @param {HTMLElement} parentDOM
@@ -178,44 +188,43 @@ export default class DOMManager {
    * Render user video on canvas
    *
    * @param {string} userId
-   * @param {Element} userVideoCanvas
    */
-  renderUserVideo = (userId, userVideoCanvas) => {
+  renderUserVideo = (userId) => {
     const _this = this;
 
     const renderFrame = () => {
-      const galleryCanvas = _this.galleryCanvas;
-      const speakerCanvas = _this.speakerCanvas;
-      const userVideoCanvasContext = userVideoCanvas.getContext("2d");
+      const userName = _this.getUserName(userId);
+      const userVideoCanvas = _this.getUserVideoCanvas(userName);
       const { userAreaDOM, fromGallery } = this.findUserAreaDOM(userId);
+      const canvas = fromGallery ? _this.galleryCanvas : _this.speakerCanvas;
 
       console.log(
-        `## Zoom SDK ## - Rendering ${userId}'s video on ${userVideoCanvas} from ${userAreaDOM} - ${
+        `## Zoom SDK ## - Rendering ${userId}'s video on ${userName} from ${
           fromGallery ? "Gallery" : "Speaker"
         }`
       );
 
-      if (userAreaDOM) {
+      if (userAreaDOM && canvas && userVideoCanvas) {
         const userArea = userAreaDOM.getBoundingClientRect();
 
-        const canvas = fromGallery ? galleryCanvas : speakerCanvas;
-        if (canvas) {
-          const canvasArea = canvas.getBoundingClientRect();
+        const canvasArea = canvas.getBoundingClientRect();
+        const userVideoCanvasContext = userVideoCanvas.getContext("2d");
 
-          userVideoCanvasContext.drawImage(
-            canvas,
-            userArea.x - canvasArea.x,
-            userArea.y - canvasArea.y,
-            userArea.width,
-            userArea.height,
-            0,
-            0,
-            userVideoCanvas.width,
-            userVideoCanvas.height
-          );
-        }
+        userVideoCanvasContext.drawImage(
+          canvas,
+          userArea.x - canvasArea.x,
+          userArea.y - canvasArea.y,
+          userArea.width,
+          userArea.height,
+          0,
+          0,
+          userVideoCanvas.width,
+          userVideoCanvas.height
+        );
+        window.requestAnimationFrame(renderFrame);
+      } else {
+        setTimeout(renderFrame, 1000);
       }
-      window.requestAnimationFrame(renderFrame);
     };
 
     window.requestAnimationFrame(renderFrame);
