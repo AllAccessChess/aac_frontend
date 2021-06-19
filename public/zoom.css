@@ -125,5 +125,9 @@
 }
 
 .ReactModalPortal {
+  opacity: 0;
+}
+
+.zm-modal {
   display: none;
 }

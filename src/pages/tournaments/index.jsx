@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { useTheme } from "@material-ui/core";
 
 import { TournamentStatus } from "constant";
 import { TabPanel } from "components/common";
@@ -10,6 +11,7 @@ import TournamentCard from "./TournamentCard";
 
 const Tournament = () => {
   const history = useHistory();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const [tabValue, setTabValue] = useState(TournamentStatus.ONGOING);
 
@@ -29,7 +31,15 @@ const Tournament = () => {
   }, []);
 
   return (
-    <Box width="100%" display="flex" flexDirection="column">
+    <Box
+      width="100%"
+      display="flex"
+      flexDirection="column"
+      borderRadius={10}
+      p={5}
+      m={4}
+      bgcolor={theme.palette.background.paper}
+    >
       <Typography variant="h3">Tournaments</Typography>
       <Tabs
         value={tabValue}

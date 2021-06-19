@@ -2,9 +2,11 @@ import React from "react";
 import moment from "moment";
 
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { Button, Typography } from "components/common/SpacedMui";
 import { Box } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { authSelector } from "redux/reducers";
 
 import Bishop from "assets/images/bishop.svg";
 import {
@@ -24,6 +26,7 @@ const CustomIcon = styled(FontAwesomeIcon)`
 
 const TournamentCard = (props) => {
   const { tournament, onViewDetails, onRegister, onFindMatch } = props;
+  const { user } = useSelector(authSelector);
 
   return (
     <Box
@@ -109,7 +112,7 @@ const TournamentCard = (props) => {
             View Details
           </Button>
         )}
-        {onRegister && (
+        {onRegister && user && (
           <Button
             variant="contained"
             color="primary"
@@ -119,7 +122,7 @@ const TournamentCard = (props) => {
             Register Now
           </Button>
         )}
-        {onFindMatch && (
+        {onFindMatch && user && (
           <Button
             variant="contained"
             color="primary"

@@ -254,17 +254,8 @@ const Match = () => {
       });
 
       zoomClient.on("onUserJoin", (data) => {
-        setTimeout(() => {
-          const userName = zoomClient.getUserName(data.userId);
-          console.log(
-            `## Zoom SDK ## - User ${data.userId} - ${userName} joined`
-          );
-          const userVideoCanvas = document.getElementById(`${userName}-video`);
-
-          if (userVideoCanvas) {
-            zoomClient.renderUserVideo(data.userId, userVideoCanvas);
-          }
-        }, 4000);
+        console.log(`## Zoom SDK ## - User ${data.userId} joined`);
+        zoomClient.renderUserVideo(data.userId);
       });
 
       zoomClient.on("joinClicked", () => {
