@@ -25,7 +25,7 @@ import {
 import { useWindowSize } from "hooks";
 import { useZoomContext } from "lib/zoom";
 import { generateSignature } from "lib/zoom/client/helpers";
-import { addHistoryItem } from "redux/reducers/matchReducer";
+import { addHistoryItem, setHistory } from "redux/reducers/matchReducer";
 import { showSuccess } from "redux/reducers/messageReducer";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/gameClient";
@@ -161,6 +161,7 @@ const Match = () => {
     console.log("Game Exited");
     setGameStatus(GameStatus.EXITED);
     dispatch(showSuccess("Game Exited!"));
+    dispatch(setHistory([]));
     history.push("/tournaments");
   }, [dispatch, history, setGameStatus]);
   const onOpenedSocket = useCallback(() => {
