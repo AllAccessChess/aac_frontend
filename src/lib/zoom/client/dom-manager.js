@@ -1,6 +1,10 @@
 // AAC Zoom Library - DOM Manager
 
 export default class DOMManager {
+  get fps() {
+    return 24;
+  }
+
   /**
    * Root Element
    * Zoom SDK Root Element
@@ -72,6 +76,13 @@ export default class DOMManager {
   }
 
   /**
+   * Suspension View Canvas
+   */
+  get suspensionCanvas() {
+    return document.querySelector(".suspension-video-container__canvas");
+  }
+
+  /**
    * Find user area DOM
    * @param {string} userId
    */
@@ -83,7 +94,7 @@ export default class DOMManager {
       `gallery-video-container__video-frame ${userId}`
     );
     if (userAreaDOM && userAreaDOM.length) {
-      return { userAreaDOM: userAreaDOM[0], fromGallery: true };
+      return { userAreaDOM: userAreaDOM[0], from: "gallery" };
     }
 
     /**
@@ -93,7 +104,7 @@ export default class DOMManager {
       `speaker-active-container__video-frame ${userId}`
     );
     if (userAreaDOM && userAreaDOM.length) {
-      return { userAreaDOM: userAreaDOM[0], fromGallery: false };
+      return { userAreaDOM: userAreaDOM[0], from: "speaker" };
     }
 
     /**
@@ -103,10 +114,17 @@ export default class DOMManager {
       `speaker-bar-container__video-frame ${userId}`
     );
     if (userAreaDOM && userAreaDOM.length) {
-      return { userAreaDOM: userAreaDOM[0], fromGallery: false };
+      return { userAreaDOM: userAreaDOM[0], from: "speaker" };
     }
 
-    return { userAreaDOM: null, fromGallery: false };
+    userAreaDOM = document.getElementsByClassName(
+      `suspension-video-container__video-frame ${userId}`
+    );
+    if (userAreaDOM && userAreaDOM.length) {
+      return { userAreaDOM: userAreaDOM[0], from: "suspension" };
+    }
+
+    return { userAreaDOM: null, fromGallery: null };
   };
 
   /**
@@ -195,13 +213,16 @@ export default class DOMManager {
     const renderFrame = () => {
       const userName = _this.getUserName(userId);
       const userVideoCanvas = _this.getUserVideoCanvas(userName);
-      const { userAreaDOM, fromGallery } = this.findUserAreaDOM(userId);
-      const canvas = fromGallery ? _this.galleryCanvas : _this.speakerCanvas;
+      const { userAreaDOM, from } = this.findUserAreaDOM(userId);
+      const canvas =
+        from === "gallery"
+          ? _this.galleryCanvas
+          : from === "speaker"
+          ? _this.speakerCanvas
+          : _this.suspensionCanvas;
 
       console.log(
-        `## Zoom SDK ## - Rendering ${userId}'s video on ${userName} from ${
-          fromGallery ? "Gallery" : "Speaker"
-        }`
+        `## Zoom SDK ## - Rendering ${userId}'s video on ${userName} from ${from}`
       );
 
       if (userAreaDOM && canvas && userVideoCanvas) {
@@ -221,13 +242,13 @@ export default class DOMManager {
           userVideoCanvas.width,
           userVideoCanvas.height
         );
-        window.requestAnimationFrame(renderFrame);
+        setTimeout(renderFrame, 1000 / _this.fps);
       } else {
         setTimeout(renderFrame, 1000);
       }
     };
 
-    window.requestAnimationFrame(renderFrame);
+    renderFrame();
   };
 
   /**

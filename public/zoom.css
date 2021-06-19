@@ -125,5 +125,5 @@
 }
 
 .ReactModalPortal {
-  display: none;
+  opacity: 0;
 }
