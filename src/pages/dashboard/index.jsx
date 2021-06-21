@@ -97,7 +97,7 @@ const Dashboard = () => {
                       </TextHelper>
                     </Box>
                   </Box>
-                  {user.ratings.uscf ? (
+                  {user.ratings.uscf && user.ratings.uscf.ratings ? (
                     <Box display="flex" flexDirection="column">
                       <Box mb={3}>
                         <Typography variant="h5" component="h5">
@@ -122,7 +122,7 @@ const Dashboard = () => {
                   ) : (
                     <></>
                   )}
-                  {user.ratings.fide ? (
+                  {user.ratings.fide && user.ratings.fide.ratings ? (
                     <Box display="flex" flexDirection="column">
                       <Box mb={3}>
                         <Typography variant="h5" component="h5">
