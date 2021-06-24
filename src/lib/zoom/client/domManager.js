@@ -221,10 +221,6 @@ export default class DOMManager {
           ? _this.speakerCanvas
           : _this.suspensionCanvas;
 
-      console.log(
-        `## Zoom SDK ## - Rendering ${userId}'s video on ${userName} from ${from}`
-      );
-
       if (userAreaDOM && canvas && userVideoCanvas) {
         const userArea = userAreaDOM.getBoundingClientRect();
 

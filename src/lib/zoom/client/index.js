@@ -3,7 +3,7 @@
 import { ZoomMtg } from "@zoomus/websdk";
 
 import { ZoomLocale, ZoomMeetingRole } from "./constants";
-import DOMManager from "./dom-manager";
+import DOMManager from "./domManager";
 import { loadStyleSheet } from "./helpers";
 
 export { loadStyleSheet };
