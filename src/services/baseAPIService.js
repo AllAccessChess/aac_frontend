@@ -65,6 +65,9 @@ export default class BaseAPIService {
           res.data.warnings &&
           res.data.warnings.includes("Warning.OldToken")
         ) {
+          if (url === "/auth/renew") {
+            throw new Error("Session is expired!");
+          }
           let data = { ...res.data };
           const response = await this.requestWithAuth("/auth/renew", "GET");
           setAuthToken({
