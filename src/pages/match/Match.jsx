@@ -327,8 +327,8 @@ export const Match = () => {
       currentMatch &&
       currentMatch.meeting
     ) {
-      // setMeetingJoining(true);
-      // joinMeeting(currentMatch.meeting);
+      setMeetingJoining(true);
+      joinMeeting(currentMatch.meeting);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameStatus]);
