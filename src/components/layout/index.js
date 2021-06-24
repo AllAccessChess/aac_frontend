@@ -1,2 +1,2 @@
-export { SideBar } from "./SideBar";
-export { TopBar } from "./TopBar";
+export { SideBar } from "./side-bar";
+export { TopBar } from "./top-bar";

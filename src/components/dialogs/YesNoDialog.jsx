@@ -14,7 +14,7 @@ const TextWrapper = styled(Box)`
   font-size: 1rem;
 `;
 
-const YesNoDialog = (props) => {
+export const YesNoDialog = (props) => {
   const { text, open, onYes, onNo } = props;
 
   return (
@@ -34,5 +34,3 @@ const YesNoDialog = (props) => {
     </Dialog>
   );
 };
-
-export default YesNoDialog;

@@ -1,6 +1,6 @@
-export { Chat } from "./Chat";
-export { ChessBoard } from "./ChessBoard";
-export { Info } from "./Info";
-export { MoveList } from "./MoveList";
-export { Scoreboard } from "./Scoreboard";
-export { Timer } from "./Timer";
+export { Chat } from "./chat";
+export { ChessBoard } from "./chess-board";
+export { Info } from "./info";
+export { MoveList } from "./move-list";
+export { ScoreBoard } from "./score-board";
+export { Timer } from "./timer";

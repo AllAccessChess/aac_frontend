@@ -9,7 +9,7 @@ import {
   Typography,
 } from "components/material-ui";
 
-const ConfirmDialog = (props) => {
+export const ConfirmDialog = (props) => {
   const { text, open, onCancel, onConfirm } = props;
 
   return (
@@ -34,5 +34,3 @@ const ConfirmDialog = (props) => {
     </Dialog>
   );
 };
-
-export default ConfirmDialog;

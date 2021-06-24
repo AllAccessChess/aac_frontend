@@ -12,7 +12,7 @@ import rook from "assets/images/wR.svg";
 import bishop from "assets/images/wB.svg";
 import knight from "assets/images/wN.svg";
 
-const TransformPawnDialog = (props) => {
+export const TransformPawnDialog = (props) => {
   const { open, onSubmit } = props;
 
   return (
@@ -37,5 +37,3 @@ const TransformPawnDialog = (props) => {
     </Dialog>
   );
 };
-
-export default TransformPawnDialog;

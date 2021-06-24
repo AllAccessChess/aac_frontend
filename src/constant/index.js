@@ -4,33 +4,33 @@ export const AUTH_TOKEN_STORAGE_KEY = "auth-token";
 
 // Theme
 export const THEME_SET = "THEME_SET";
-export const THEMES = {
+export const THEMES = Object.freeze({
   DEFAULT: "DEFAULT",
   DARK: "DARK",
   LIGHT: "LIGHT",
   BLUE: "BLUE",
   GREEN: "GREEN",
   INDIGO: "INDIGO",
-};
+});
 
 // Auth
 export const RENEW_DIFF = 1000 * 3600 * 24 * 2;
 
-export const Errors = {
+export const Errors = Object.freeze({
   "Error.Auth.WrongPassword": "Wrong Password!",
   "Error.UserNotFound": "User Not Found!",
   "Error.Auth.InvalidToken": "Invalid Token!",
-};
+});
 
-export const Warnings = {
+export const Warnings = Object.freeze({
   "Warning.OldToken":
     "You have old token, please refresh the page to get new token",
   "Warning.UscfIdNotFound": "You've entered wrong USCF ID!",
-};
+});
 
 // Game
 
-export const GameActions = {
+export const GameActions = Object.freeze({
   PING: "ping",
   AUTH: "auth",
   SEEK: "seek",
@@ -40,24 +40,24 @@ export const GameActions = {
   DRAWOFFER: "drawOffer",
   DRAWRESPONSE: "drawResponse",
   RESIGN: "resign",
-};
+});
 
-export const GameEvents = {
+export const GameEvents = Object.freeze({
   GET_RESPONSE: "GET_RESPONSE",
   OPENED: "OPENED",
   AUTHENTICATED: "AUTHENTICATED",
   OFFEREDDRAW: "OFFEREDDRAW",
   EXITGAME: "EXITGAME",
-};
+});
 
-export const GameStatus = {
+export const GameStatus = Object.freeze({
   IDLE: "idle",
   SEEKING: "seeking",
   PLAYING: "playing",
   EXITED: "Exited",
-};
+});
 
-export const GameEndReason = {
+export const GameEndReason = Object.freeze({
   CHECKMATE: 0,
   TIMEOUT: 1,
   RESIGNATION: 2,
@@ -66,14 +66,14 @@ export const GameEndReason = {
   INSUFFICIENT: 5,
   FIFTY_MOVE: 6,
   AGREEMENT: 7,
-};
+});
 
-export const GameResults = {
+export const GameResults = Object.freeze({
   ONGOING: "*",
   DRAW: "1/2-1/2",
   WHITE_WIN: "1-0",
   BLACK_WIN: "0-1",
-};
+});
 
 // Tournament
 

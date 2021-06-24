@@ -1,7 +1,9 @@
-export { AccountMenu } from "./AccountMenu";
-export { InlineFilledSelect } from "./InlineFilledSelect";
-export { LichessButton } from "./LichessButton";
-export { LoadingScreen } from "./LoadingScreen";
-export { SortableTableHead } from "./SortableTableHead";
-export { Spinner } from "./Spinner";
-export { TabPanel } from "./TabPanel";
+export { AccountMenu } from "./account-menu";
+export { InlineFilledSelect } from "./inline-field-select";
+export { LichessButton } from "./lichess-button";
+export { LoadingScreen } from "./loading-screen";
+export { Notification } from "./notification";
+export { SortableTableHead } from "./sortable-table-head";
+export { Spinner } from "./spinner";
+export { TabPanel } from "./tab-panel";
+export { TournamentCard } from "./tournament-card";
