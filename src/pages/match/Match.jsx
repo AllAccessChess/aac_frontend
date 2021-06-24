@@ -299,7 +299,7 @@ export const Match = () => {
 
       zoomClient.on("onUserJoin", (data) => {
         console.log(`## Zoom SDK ## - User ${data.userId} joined`);
-        // zoomClient.renderUserVideo(data.userId);
+        zoomClient.renderUserVideo(data.userId);
       });
 
       zoomClient.on("joinClicked", () => {
