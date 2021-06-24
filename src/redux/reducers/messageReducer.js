@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Errors, Warnings } from "constant";
+import { ErrorMessages, WarningMessages } from "constant";
 
 const initialState = {
   msg: null,
@@ -26,12 +26,12 @@ export const showSuccess = (msg) => (dispatch) => {
 };
 
 export const showError = (error) => (dispatch) => {
-  let msg = Errors[error] || error;
+  let msg = ErrorMessages[error] || error;
   dispatch(setMessage({ message: msg }));
 };
 
 export const showWarning = (warning) => (dispatch) => {
-  let msg = Warnings[warning] || warning;
+  let msg = WarningMessages[warning] || warning;
   dispatch(setMessage({ message: msg, type: "warning" }));
 };
 

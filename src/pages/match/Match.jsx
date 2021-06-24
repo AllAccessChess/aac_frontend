@@ -110,6 +110,8 @@ export const Match = () => {
     });
   }, []);
 
+  //!!! From here, You should use Refs, not state!
+
   const onExitGame = useCallback(
     (gameResult) => {
       if (gameResult !== GameResults.ONGOING) {
@@ -118,9 +120,13 @@ export const Match = () => {
         if (gameResult === GameResults.DRAW) {
           dispatch(showSuccess("Game Drawn!"));
         } else if (gameResult === GameResults.WHITE_WIN) {
-          dispatch(showSuccess("White Win!"));
+          dispatch(
+            showSuccess(playerColorRef.current === 0 ? "You Win!" : "You Lose!")
+          );
         } else if (gameResult === GameResults.BLACK_WIN) {
-          dispatch(showSuccess("Black Win!"));
+          dispatch(
+            showSuccess(playerColorRef.current === 1 ? "You Win!" : "You Lose!")
+          );
         } else {
           dispatch(showSuccess("Game Exited!"));
         }
@@ -274,6 +280,8 @@ export const Match = () => {
     onExitGame,
   ]);
 
+  //!!! End of Listeners, you can now use states!
+
   // useEffect(() => {
   //   if (params.id && !currentMatch) {
   //     dispatch(getMatch(params.id));
@@ -399,6 +407,7 @@ export const Match = () => {
           </Paper>
           <Box flexGrow={1} mt={5} height={`calc(100% - 298px)`}>
             <MoveList
+              playerColor={playerColor}
               moveList={actionHistory}
               askingDraw={askingDraw}
               onOfferDraw={handleOfferDraw}

@@ -10,5 +10,6 @@ export const detailLayoutRoutes = [
     name: "Tournament Detail",
     component: TournamentDetail,
     icon: TournamentIcon,
+    guarded: true,
   },
 ];

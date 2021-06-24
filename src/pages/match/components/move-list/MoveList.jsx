@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 
 import {
   Box,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -12,10 +11,11 @@ import {
   Divider,
   Paper,
 } from "components/material-ui";
-import { CellItem } from "./components";
+import { CellItem, EndActions } from "./components";
 
 export const MoveList = (props) => {
   const {
+    playerColor,
     moveList,
     askingDraw,
     onOfferDraw,
@@ -80,47 +80,14 @@ export const MoveList = (props) => {
       <Box my={3}>
         <Divider />
       </Box>
-      <Box display="flex" justifyContent="space-around">
-        {askingDraw ? (
-          <>
-            <Button
-              variant="contained"
-              color="secondary"
-              size="large"
-              onClick={onAcceptDraw}
-            >
-              Accept Draw
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={onDeclineDraw}
-            >
-              Decline Draw
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={onOfferDraw}
-            >
-              Offer Draw
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={onResign}
-            >
-              Resign
-            </Button>
-          </>
-        )}
-      </Box>
+      <EndActions
+        playerColor={playerColor}
+        askingDraw={askingDraw}
+        onOfferDraw={onOfferDraw}
+        onResign={onResign}
+        onAcceptDraw={onAcceptDraw}
+        onDeclineDraw={onDeclineDraw}
+      />
     </Box>
   );
 };

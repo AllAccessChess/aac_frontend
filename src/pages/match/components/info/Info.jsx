@@ -1,6 +1,7 @@
 import React from "react";
 import { useTheme } from "@material-ui/core";
 import { Box, Typography } from "components/material-ui";
+import { capitalizeFirstLetter } from "utils/common";
 
 export const Info = (props) => {
   const { match, playerColor } = props;
@@ -10,6 +11,11 @@ export const Info = (props) => {
     <Box display="flex" flexDirection="column">
       <Typography variant="h4" mb={3}>
         Round 1
+        {match.settings
+          ? `: ${match.settings.startTime} + ${
+              match.settings.increment
+            } ${capitalizeFirstLetter(match.settings.timeCategory)}`
+          : ""}
       </Typography>
       <Box
         display="flex"

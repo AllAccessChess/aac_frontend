@@ -1,6 +1,7 @@
 import https from "https";
 
 import { config } from "config";
+import { Warnings } from "constant";
 import axios from "utils/axios";
 import { getAuthToken, setAuthToken } from "utils/storage";
 
@@ -63,7 +64,7 @@ export default class BaseAPIService {
           throw new Error(res.data.error);
         if (
           res.data.warnings &&
-          res.data.warnings.includes("Warning.OldToken")
+          res.data.warnings.includes(Warnings.OldToken)
         ) {
           let data = { ...res.data };
           const response = await this.requestWithAuth("/auth/renew", "GET");
@@ -71,7 +72,7 @@ export default class BaseAPIService {
             token: response.token,
             expiry: response.expiry,
           });
-          data.warnings.splice(data.warnings.indexOf("Warning.OldToken"));
+          data.warnings.splice(data.warnings.indexOf(Warnings.OldToken));
           return data;
         }
         return res.data;

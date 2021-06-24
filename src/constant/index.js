@@ -17,15 +17,26 @@ export const THEMES = Object.freeze({
 export const RENEW_DIFF = 1000 * 3600 * 24 * 2;
 
 export const Errors = Object.freeze({
-  "Error.Auth.WrongPassword": "Wrong Password!",
-  "Error.UserNotFound": "User Not Found!",
-  "Error.Auth.InvalidToken": "Invalid Token!",
+  Auth_WrongPassword: "Error.Auth.WrongPassword",
+  UserNotFound: "Error.UserNotFound",
+  Auth_InvalidToken: "Error.Auth.InvalidToken",
+});
+
+export const ErrorMessages = Object.freeze({
+  [Errors.Auth_WrongPassword]: "Wrong Password!",
+  [Errors.UserNotFound]: "User Not Found!",
+  [Errors.Auth_InvalidToken]: "Invalid Token!",
 });
 
 export const Warnings = Object.freeze({
-  "Warning.OldToken":
+  OldToken: "Warning.OldToken",
+  UscfIdNotFound: "Warning.UscfIdNotFound",
+});
+
+export const WarningMessages = Object.freeze({
+  [Warnings.OldToken]:
     "You have old token, please refresh the page to get new token",
-  "Warning.UscfIdNotFound": "You've entered wrong USCF ID!",
+  [Warnings.UscfIdNotFound]: "You've entered wrong USCF ID!",
 });
 
 // Game
