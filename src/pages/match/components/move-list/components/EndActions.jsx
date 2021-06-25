@@ -9,11 +9,13 @@ export const EndActions = (props) => {
   const dispatch = useDispatch();
   const {
     playerColor,
+    isSpectator,
     askingDraw,
     onOfferDraw,
     onResign,
     onAcceptDraw,
     onDeclineDraw,
+    onExitSpectating,
   } = props;
 
   const [confirmingDraw, setConfirmingDraw] = useState(false);
@@ -29,6 +31,22 @@ export const EndActions = (props) => {
     onResign();
     setConfirmingResign(false);
   };
+
+  if (isSpectator) {
+    return (
+      <Box p={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          fullWidth
+          onClick={onExitSpectating}
+        >
+          Exit Spectating
+        </Button>
+      </Box>
+    );
+  }
 
   if (askingDraw) {
     return (

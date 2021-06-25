@@ -45,12 +45,14 @@ export const GameActions = Object.freeze({
   PING: "ping",
   AUTH: "auth",
   SEEK: "seek",
+  SPECTATE: "spectate",
   STATUS: "status",
   PLAY_AI: "playAi",
   MOVE: "move",
   DRAWOFFER: "drawOffer",
   DRAWRESPONSE: "drawResponse",
   RESIGN: "resign",
+  STOPSPECTATE: "stopSpectating",
 });
 
 export const GameEvents = Object.freeze({

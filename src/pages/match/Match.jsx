@@ -8,8 +8,9 @@ import React, {
 } from "react";
 import Chess from "chess.js";
 import { useSelector, useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import useInterval from "react-useinterval";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { useTheme } from "@material-ui/core";
 
 import { config } from "config";
@@ -32,7 +33,12 @@ import {
 import { useWindowSize } from "hooks";
 import { useZoomContext } from "lib/zoom";
 import { generateSignature } from "lib/zoom/client/helpers";
-import { addHistoryItem, setHistory } from "redux/reducers/matchReducer";
+import {
+  addHistoryItem,
+  setHistory,
+  setCurrent as setCurrentMatch,
+  getMatch,
+} from "redux/reducers/matchReducer";
 import { showSuccess } from "redux/reducers/messageReducer";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/game-client";
@@ -48,6 +54,8 @@ import { useStyles } from "./styles";
 
 export const Match = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const params = useParams();
   const history = useHistory();
 
   const [chess] = useState(new Chess());
@@ -58,19 +66,27 @@ export const Match = () => {
   const [players, setPlayers] = useState([]);
   const [meetingJoining, setMeetingJoining] = useState(false);
   const [chessBoardSize, setChessBoardSize] = useState(0);
-  const [currentMatch, setCurrentMatch] = useState(null);
   const [askingDraw, setAskingDraw] = useState(false);
   const [whiteClock, setWhiteClock] = useState(300);
   const [blackClock, setBlackClock] = useState(300);
   const [turn, setTurn] = useState(0);
 
-  // const currentMatch = useSelector((state) => state.matchReducer.current);
+  const currentMatch = useSelector((state) => state.matchReducer.current);
   const actionHistory = useSelector((state) => state.matchReducer.history);
   const user = useSelector((state) => state.authReducer.user);
 
+  const isSpectator = useMemo(
+    () => location.pathname.indexOf("/spectate") === 0,
+    [location]
+  );
   const playerColor = useMemo(
-    () => (!user || !players.length ? 0 : user.id === players[0].id ? 0 : 1),
-    [user, players]
+    () =>
+      !user || !players.length || isSpectator
+        ? 0
+        : user.id === players[0].id
+        ? 0
+        : 1,
+    [user, players, isSpectator]
   );
 
   const gameClientRef = useRef(new GameClient(config.socketURL));
@@ -80,6 +96,7 @@ export const Match = () => {
   const historyRef = useRef(actionHistory);
   const playersRef = useRef(players);
   const playerColorRef = useRef(playerColor);
+  const isSpectatorRef = useRef(isSpectator);
 
   const { zoomClient } = useZoomContext();
   const classes = useStyles();
@@ -121,21 +138,44 @@ export const Match = () => {
           dispatch(showSuccess("Game Drawn!"));
         } else if (gameResult === GameResults.WHITE_WIN) {
           dispatch(
-            showSuccess(playerColorRef.current === 0 ? "You Win!" : "You Lose!")
+            showSuccess(
+              isSpectatorRef.current
+                ? "White Wins!"
+                : playerColorRef.current === 0
+                ? "You Win!"
+                : "You Lose!"
+            )
           );
         } else if (gameResult === GameResults.BLACK_WIN) {
           dispatch(
-            showSuccess(playerColorRef.current === 1 ? "You Win!" : "You Lose!")
+            showSuccess(
+              isSpectatorRef.current
+                ? "Black Wins!"
+                : playerColorRef.current === 1
+                ? "You Win!"
+                : "You Lose!"
+            )
           );
         } else {
           dispatch(showSuccess("Game Exited!"));
         }
         dispatch(setHistory([]));
+        dispatch(setCurrentMatch(null));
         history.push("/tournaments");
       }
     },
     [dispatch, history, setGameStatus]
   );
+
+  const onExitSpectating = useCallback(() => {
+    gameClientRef.current.sendData({
+      action: GameActions.STOPSPECTATE,
+    });
+    dispatch(setHistory([]));
+    dispatch(setCurrentMatch(null));
+    setGameStatus(GameStatus.EXITED);
+    history.push("/tournaments");
+  }, [dispatch, history, setGameStatus]);
 
   const addMoveStringToHistory = useCallback(
     (move) => {
@@ -157,7 +197,7 @@ export const Match = () => {
     (data) => {
       if (data.game) {
         if (data.state === GameStatus.PLAYING) {
-          setCurrentMatch(data.game);
+          dispatch(setCurrentMatch(data.game));
           setGameStatus(GameStatus.PLAYING);
         }
         if (
@@ -194,6 +234,7 @@ export const Match = () => {
       }
     },
     [
+      dispatch,
       addMoveStringToHistory,
       setFen,
       setPlayers,
@@ -231,7 +272,12 @@ export const Match = () => {
       //   action: GameActions.STATUS,
       // });
       if (data.state === GameStatus.PLAYING) setGameStatus(GameStatus.PLAYING);
-      else {
+      else if (isSpectator) {
+        console.log("Spectating now");
+        gameClientRef.current.sendData({
+          action: GameActions.SPECTATE,
+        });
+      } else {
         console.log("Seeking now");
         gameClientRef.current.sendData({
           action: GameActions.SEEK,
@@ -240,7 +286,7 @@ export const Match = () => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [setGameStatus]
+    [setGameStatus, isSpectator]
   );
 
   const setUpHandlers = useCallback(() => {
@@ -251,6 +297,9 @@ export const Match = () => {
       gameClientRef.current.on(GameEvents.OFFEREDDRAW, onOfferedDraw);
       gameClientRef.current.on(GameEvents.EXITGAME, onExitGame);
     }
+    if (isSpectator) {
+      window.addEventListener("unload", onExitSpectating);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     getResponse,
@@ -258,6 +307,8 @@ export const Match = () => {
     onAuthenticatedSocket,
     onOfferedDraw,
     onExitGame,
+    isSpectator,
+    onExitSpectating,
   ]);
 
   const endHandlers = useCallback(() => {
@@ -271,6 +322,9 @@ export const Match = () => {
       gameClientRef.current.off(GameEvents.OFFEREDDRAW, onOfferedDraw);
       gameClientRef.current.off(GameEvents.EXITGAME, onExitGame);
     }
+    if (isSpectator) {
+      window.removeEventListener("unload", onExitSpectating);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     getResponse,
@@ -278,6 +332,8 @@ export const Match = () => {
     onAuthenticatedSocket,
     onOfferedDraw,
     onExitGame,
+    isSpectator,
+    onExitSpectating,
   ]);
 
   //!!! End of Listeners, you can now use states!
@@ -330,7 +386,10 @@ export const Match = () => {
       );
     };
 
-    if (
+    if (isSpectator && !currentMatch && params.id) {
+      dispatch(getMatch(params.id));
+    } else if (
+      !isSpectator &&
       gameStatus === GameStatus.PLAYING &&
       currentMatch &&
       currentMatch.meeting
@@ -377,13 +436,18 @@ export const Match = () => {
   useEffect(() => {
     playerColorRef.current = playerColor;
   }, [playerColor]);
+  useEffect(() => {
+    isSpectatorRef.current = isSpectator;
+  }, [isSpectator]);
 
   if (!currentMatch)
     return (
       <LoadingScreen>
         <Box ml={3}>
           <Typography variant="h3">
-            {gameStatus === GameStatus.IDLE
+            {isSpectator
+              ? "Waiting"
+              : gameStatus === GameStatus.IDLE
               ? "Connecting to the server"
               : gameStatus === GameStatus.SEEKING
               ? "Finding a match"
@@ -408,12 +472,14 @@ export const Match = () => {
           <Box flexGrow={1} mt={5} height={`calc(100% - 298px)`}>
             <MoveList
               playerColor={playerColor}
+              isSpectator={isSpectator}
               moveList={actionHistory}
               askingDraw={askingDraw}
               onOfferDraw={handleOfferDraw}
               onResign={handleResign}
               onAcceptDraw={() => handleRespondToDraw(true)}
               onDeclineDraw={() => handleRespondToDraw(false)}
+              onExitSpectating={onExitSpectating}
             />
           </Box>
         </Box>
@@ -439,6 +505,7 @@ export const Match = () => {
               chess={chess}
               fen={fen}
               playerColor={playerColor}
+              isSpectator={isSpectator}
               actionHistory={actionHistory}
               gameClientRef={gameClientRef}
               lastMove={lastMove}

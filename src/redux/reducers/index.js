@@ -19,5 +19,8 @@ const reducers = (history) =>
 
 export const authSelector = (state) => state.authReducer;
 export const themeSelector = (state) => state.themeReducer;
+export const messageSelector = (state) => state.messageReducer;
+export const matchSelector = (state) => state.matchReducer;
+export const tournamentSelector = (state) => state.tournamentReducer;
 
 export default reducers;

@@ -16,12 +16,14 @@ import { CellItem, EndActions } from "./components";
 export const MoveList = (props) => {
   const {
     playerColor,
+    isSpectator,
     moveList,
     askingDraw,
     onOfferDraw,
     onResign,
     onAcceptDraw,
     onDeclineDraw,
+    onExitSpectating,
   } = props;
   const rows = useMemo(() => {
     let tempRows = [];
@@ -81,12 +83,14 @@ export const MoveList = (props) => {
         <Divider />
       </Box>
       <EndActions
+        isSpectator={isSpectator}
         playerColor={playerColor}
         askingDraw={askingDraw}
         onOfferDraw={onOfferDraw}
         onResign={onResign}
         onAcceptDraw={onAcceptDraw}
         onDeclineDraw={onDeclineDraw}
+        onExitSpectating={onExitSpectating}
       />
     </Box>
   );

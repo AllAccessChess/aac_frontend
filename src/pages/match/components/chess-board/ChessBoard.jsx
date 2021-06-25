@@ -17,6 +17,7 @@ export const ChessBoard = (props) => {
     width,
     height,
     playerColor,
+    isSpectator,
     gameClientRef,
     setFen,
     lastMove,
@@ -121,9 +122,9 @@ export const ChessBoard = (props) => {
     return {
       free: false,
       dests,
-      color: playerColorName,
+      color: !isSpectator && playerColorName,
     };
-  }, [chess, gameStatus, playerColorName]);
+  }, [chess, gameStatus, playerColorName, isSpectator]);
 
   // Interval for Ping-Pong ;)
   useInterval(
