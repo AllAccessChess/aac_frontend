@@ -91,6 +91,7 @@ export const Match = () => {
 
   const gameClientRef = useRef(new GameClient(config.socketURL));
   const zoomPreviewRef = useRef(null);
+  const zoomChatRef = useRef(null);
   const userCountRef = useRef(1);
   const chessContainerRef = createRef(null);
   const historyRef = useRef(actionHistory);
@@ -379,6 +380,7 @@ export const Match = () => {
           leaveUrl: "/tournaments",
         },
         {
+          chatDOM: zoomChatRef.current,
           previewDOM: zoomPreviewRef.current,
           title: "Start Game",
           joinButtonText: "Start",
@@ -468,8 +470,9 @@ export const Match = () => {
               <Divider />
             </Box>
             <Chat />
+            <Box className={classes.zoomChatWrapper} ref={zoomChatRef} />
           </Paper>
-          <Box flexGrow={1} mt={5} height={`calc(100% - 298px)`}>
+          <Box flexGrow={1} mt={5} height={`calc(100% - 718px)`}>
             <MoveList
               playerColor={playerColor}
               isSpectator={isSpectator}

@@ -83,6 +83,13 @@ export default class DOMManager {
   }
 
   /**
+   * Chat Window
+   */
+  get chatContainer() {
+    return document.querySelector(".chat-container");
+  }
+
+  /**
    * Find user area DOM
    * @param {string} userId
    */
@@ -284,5 +291,21 @@ export default class DOMManager {
       }
     }
     return "";
+  };
+
+  /**
+   * Move the chat container to another DOM
+   *
+   * @param {HTMLElement} parentDOM
+   * @param {boolean} append
+   */
+  moveChatContainer = (parentDOM, append = true) => {
+    if (this.chatContainer) {
+      if (append) {
+        parentDOM.appendChild(this.chatContainer);
+      } else {
+        parentDOM.prependChild(this.chatContainer);
+      }
+    }
   };
 }

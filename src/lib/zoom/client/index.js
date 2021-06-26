@@ -223,12 +223,15 @@ export default class ZoomClient extends EventTarget {
       });
 
       // Switch to Gallery View
-      setTimeout(() => {
-        this.domManager.switchToGalleryView();
-      }, 2000);
+      this.domManager.switchToGalleryView();
 
       // Open the chat panel
-      // this.domManager.openChatPanel();
+      this.domManager.openChatPanel();
+
+      // Move chat panel
+      if (options.chatDOM) {
+        this.moveChatContainer(options.chatDOM);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -260,6 +263,16 @@ export default class ZoomClient extends EventTarget {
    */
   movePreviewContainer = (parentDOM, append = true) => {
     this.domManager.movePreviewContainer(parentDOM, append);
+  };
+
+  /**
+   * Move chat container
+   *
+   * @param {HTMLElement} parentDOM
+   * @param {boolean} append
+   */
+  moveChatContainer = (parentDOM, append = true) => {
+    this.domManager.moveChatContainer(parentDOM, append);
   };
 
   /**
