@@ -70,6 +70,8 @@ export const Match = () => {
   const [whiteClock, setWhiteClock] = useState(300);
   const [blackClock, setBlackClock] = useState(300);
   const [turn, setTurn] = useState(0);
+  const [showTransformPawn, setShowTransformPawn] = useState(false);
+  const [premove, setPremove] = useState(null);
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
   const actionHistory = useSelector((state) => state.matchReducer.history);
@@ -98,6 +100,7 @@ export const Match = () => {
   const playersRef = useRef(players);
   const playerColorRef = useRef(playerColor);
   const isSpectatorRef = useRef(isSpectator);
+  const premoveRef = useRef(premove);
 
   const { zoomClient } = useZoomContext();
   const classes = useStyles();
@@ -194,6 +197,46 @@ export const Match = () => {
     [dispatch, chess, setLastMove]
   );
 
+  const handleMove = useCallback(
+    (from, to) => {
+      setPremove(null);
+      const moves = chess.moves({ verbose: true });
+      for (let i = 0, len = moves.length; i < len; i++) {
+        /* eslint-disable-line */
+        if (moves[i].flags.indexOf("p") !== -1 && moves[i].from === from) {
+          setPendingMove([from, to]);
+          setShowTransformPawn(true);
+          return;
+        }
+      }
+      const move = chess.move({ from, to, promotion: "x" });
+      if (move) {
+        console.log(move);
+        dispatch(addHistoryItem({ action: "move", content: move }));
+        console.log("***Setting Fen!");
+        setFen(chess.fen());
+        setLastMove([from, to]);
+        console.log("Send Move: ", from + to);
+        setAskingDraw(false);
+        gameClientRef.current.sendData({
+          action: GameActions.MOVE,
+          game: gameClientRef.current.gameId,
+          move: from + to,
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      dispatch,
+      chess,
+      setShowTransformPawn,
+      setFen,
+      setLastMove,
+      setPendingMove,
+      setPremove,
+    ]
+  );
+
   const getResponse = useCallback(
     (data) => {
       if (data.game) {
@@ -217,7 +260,11 @@ export const Match = () => {
           console.log("Checking history: ", historyRef.current);
           if (historyRef.current.length) {
             const move = data.game.moves[data.game.moves.length - 1];
-            if (move && data.game.turn === playerColorRef.current) {
+            if (
+              move &&
+              (data.game.turn === playerColorRef.current ||
+                isSpectatorRef.current)
+            ) {
               console.log("Opponent's move: ", move);
               addMoveStringToHistory(move);
             }
@@ -232,6 +279,9 @@ export const Match = () => {
           console.log("***Setting Fen!");
           setFen(data.game.fen);
         }
+        if (premoveRef.current) {
+          handleMove(premoveRef.current[0], premoveRef.current[1]);
+        }
       }
     },
     [
@@ -244,6 +294,7 @@ export const Match = () => {
       setBlackClock,
       setTurn,
       onExitGame,
+      handleMove,
     ]
   );
   const onOfferedDraw = useCallback(
@@ -441,6 +492,9 @@ export const Match = () => {
   useEffect(() => {
     isSpectatorRef.current = isSpectator;
   }, [isSpectator]);
+  useEffect(() => {
+    premoveRef.current = premove;
+  }, [premove]);
 
   if (!currentMatch)
     return (
@@ -516,12 +570,16 @@ export const Match = () => {
               gameStatus={gameStatus}
               players={players}
               user={user}
+              premove={premove}
+              showTransformPawn={showTransformPawn}
+              setShowTransformPawn={setShowTransformPawn}
+              setPremove={setPremove}
               setFen={setFen}
               setLastMove={setLastMove}
-              setPendingMove={setPendingMove}
               setGameStatus={setGameStatus}
               setPlayers={setPlayers}
               setAskingDraw={setAskingDraw}
+              onMove={handleMove}
             />
           </Box>
           <Box display="flex" justifyContent="flex-end" mt={2}>
