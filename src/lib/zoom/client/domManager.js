@@ -236,10 +236,10 @@ export default class DOMManager {
 
         userVideoCanvasContext.drawImage(
           canvas,
-          userArea.x - canvasArea.x,
-          userArea.y - canvasArea.y,
-          userArea.width,
-          userArea.height,
+          Math.max(0, userArea.x - canvasArea.x),
+          Math.max(0, userArea.y - canvasArea.y),
+          Math.min(canvas.width, userArea.width),
+          Math.min(canvas.height, userArea.height),
           0,
           0,
           userVideoCanvas.width,
