@@ -34,7 +34,7 @@ export const EndActions = (props) => {
 
   if (isSpectator) {
     return (
-      <Box p={2}>
+      <Box px={2}>
         <Button
           variant="contained"
           color="primary"
@@ -50,7 +50,7 @@ export const EndActions = (props) => {
 
   if (askingDraw) {
     return (
-      <Box display="flex" flexDirection="column" alignItems="center" p={2}>
+      <Box display="flex" flexDirection="column" alignItems="center" px={2}>
         <Typography variant="body2" mb={2}>
           {playerColor === 0 ? "Black" : "White"} has offered a draw
         </Typography>
@@ -84,7 +84,7 @@ export const EndActions = (props) => {
 
   if (confirmingResign) {
     return (
-      <Box display="flex" flexDirection="column" alignItems="center" p={2}>
+      <Box display="flex" flexDirection="column" alignItems="center" px={2}>
         <Typography variant="body2" mb={2}>
           Are you sure you want to resign?
         </Typography>
@@ -119,7 +119,7 @@ export const EndActions = (props) => {
 
   if (confirmingDraw) {
     return (
-      <Box display="flex" flexDirection="column" alignItems="center" p={2}>
+      <Box display="flex" flexDirection="column" alignItems="center" px={2}>
         <Typography variant="body2" mb={2}>
           Are you sure you want to offer draw?
         </Typography>
@@ -152,7 +152,7 @@ export const EndActions = (props) => {
   }
 
   return (
-    <Box p={2}>
+    <Box px={2}>
       <Grid container spacing={2}>
         <Grid item md={6}>
           <Button

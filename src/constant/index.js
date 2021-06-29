@@ -81,6 +81,17 @@ export const GameEndReason = Object.freeze({
   AGREEMENT: 7,
 });
 
+export const GameEndReasonMessage = Object.freeze({
+  [GameEndReason.CHECKMATE]: "checkmate",
+  [GameEndReason.TIMEOUT]: "timeout",
+  [GameEndReason.RESIGNATION]: "resignation",
+  [GameEndReason.STALEMATE]: "stalemate",
+  [GameEndReason.THREEFOLD]: "threefold",
+  [GameEndReason.INSUFFICIENT]: "insufficient",
+  [GameEndReason.FIFTY_MOVE]: "fifty move",
+  [GameEndReason.AGREEMENT]: "agreement",
+});
+
 export const GameResults = Object.freeze({
   ONGOING: "*",
   DRAW: "1/2-1/2",

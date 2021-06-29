@@ -32,7 +32,7 @@ export default class GameClient extends EventTarget {
         } else if (msg.state) {
           // State Change
           if (this.gameId && msg.state === GameStatus.IDLE) {
-            this.triggerEvent(GameEvents.EXITGAME);
+            this.triggerEvent(GameEvents.EXITGAME, {});
           }
         }
         if (msg.user) {

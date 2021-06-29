@@ -5,6 +5,6 @@ export const useStyles = makeStyles({
     height: "100%",
   },
   zoomChatWrapper: {
-    height: 400,
+    // height: 400,
   },
 });

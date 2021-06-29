@@ -1,7 +1,8 @@
 import React from "react";
 
-import { Box } from "components/material-ui";
+import { Typography } from "components/material-ui";
 
-export const Chat = () => {
-  return <Box minHeight={40}></Box>;
+export const Chat = (props) => {
+  const { message } = props;
+  return <Typography color="secondary">{message}</Typography>;
 };

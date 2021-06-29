@@ -19,6 +19,7 @@ import {
   GameStatus,
   GameActions,
   GameEndReason,
+  GameEndReasonMessage,
   GameResults,
 } from "constant";
 import { LoadingScreen } from "components/common";
@@ -39,17 +40,9 @@ import {
   setCurrent as setCurrentMatch,
   getMatch,
 } from "redux/reducers/matchReducer";
-import { showSuccess } from "redux/reducers/messageReducer";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/game-client";
-import {
-  Chat,
-  ChessBoard,
-  Info,
-  MoveList,
-  ScoreBoard,
-  Timer,
-} from "./components";
+import { Chat, ChessBoard, Info, MoveList, Videos, Timer } from "./components";
 import { useStyles } from "./styles";
 
 export const Match = () => {
@@ -62,6 +55,7 @@ export const Match = () => {
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState();
   const [pendingMove, setPendingMove] = useState();
+  const [gameMessage, setGameMessage] = useState("");
   const [gameStatus, setGameStatus] = useState(GameStatus.IDLE);
   const [players, setPlayers] = useState([]);
   const [meetingJoining, setMeetingJoining] = useState(false);
@@ -101,6 +95,7 @@ export const Match = () => {
   const playerColorRef = useRef(playerColor);
   const isSpectatorRef = useRef(isSpectator);
   const premoveRef = useRef(premove);
+  const currentMatchRef = useRef(currentMatch);
 
   const { zoomClient } = useZoomContext();
   const classes = useStyles();
@@ -131,55 +126,39 @@ export const Match = () => {
     });
   }, []);
 
+  const handleGoBack = useCallback(() => {
+    dispatch(setHistory([]));
+    dispatch(setCurrentMatch(null));
+    history.goBack();
+  }, [history, dispatch]);
+
   //!!! From here, You should use Refs, not state!
 
   const onExitGame = useCallback(
-    (gameResult) => {
-      if (gameResult !== GameResults.ONGOING) {
+    (game) => {
+      const gameResult = game.result;
+      const endReason = game.reason;
+      if (gameResult && gameResult !== GameResults.ONGOING) {
         setGameStatus(GameStatus.EXITED);
 
         if (gameResult === GameResults.DRAW) {
-          dispatch(showSuccess("Game Drawn!"));
-        } else if (gameResult === GameResults.WHITE_WIN) {
-          dispatch(
-            showSuccess(
-              isSpectatorRef.current
-                ? "White Wins!"
-                : playerColorRef.current === 0
-                ? "You Win!"
-                : "You Lose!"
-            )
-          );
-        } else if (gameResult === GameResults.BLACK_WIN) {
-          dispatch(
-            showSuccess(
-              isSpectatorRef.current
-                ? "Black Wins!"
-                : playerColorRef.current === 1
-                ? "You Win!"
-                : "You Lose!"
-            )
-          );
+          setGameMessage(`Game drawn by ${GameEndReasonMessage[endReason]}`);
         } else {
-          dispatch(showSuccess("Game Exited!"));
+          const winnerIndex = gameResult === GameResults.WHITE_WIN ? 0 : 1;
+          const winner = currentMatchRef.current.players[winnerIndex].name;
+          setGameMessage(`${winner} won by ${GameEndReasonMessage[endReason]}`);
         }
-        dispatch(setHistory([]));
-        dispatch(setCurrentMatch(null));
-        history.push("/tournaments");
       }
     },
-    [dispatch, history, setGameStatus]
+    [setGameMessage, setGameStatus]
   );
 
   const onExitSpectating = useCallback(() => {
     gameClientRef.current.sendData({
       action: GameActions.STOPSPECTATE,
     });
-    dispatch(setHistory([]));
-    dispatch(setCurrentMatch(null));
     setGameStatus(GameStatus.EXITED);
-    history.push("/tournaments");
-  }, [dispatch, history, setGameStatus]);
+  }, [setGameStatus]);
 
   const addMoveStringToHistory = useCallback(
     (move) => {
@@ -248,7 +227,7 @@ export const Match = () => {
           data.game.reason >= GameEndReason.CHECKMATE &&
           data.game.reason <= GameEndReason.AGREEMENT
         )
-          onExitGame(data.game.result);
+          onExitGame(data.game);
         setTurn(data.game.turn);
         if (!playersRef.length && data.game.players.length > 1)
           setPlayers(data.game.players);
@@ -495,6 +474,9 @@ export const Match = () => {
   useEffect(() => {
     premoveRef.current = premove;
   }, [premove]);
+  useEffect(() => {
+    currentMatchRef.current = currentMatch;
+  }, [currentMatch]);
 
   if (!currentMatch)
     return (
@@ -520,10 +502,10 @@ export const Match = () => {
         <Box display="flex" flexDirection="column" height="calc(100vh - 40px)">
           <Paper p={5}>
             <Info match={currentMatch} playerColor={playerColor} />
-            <Box my={3}>
+            <Box my={2}>
               <Divider />
             </Box>
-            <Chat />
+            <Chat message={gameMessage} />
             <Box className={classes.zoomChatWrapper} ref={zoomChatRef} />
           </Paper>
           <Box flexGrow={1} mt={5} height={`calc(100% - 718px)`}>
@@ -550,10 +532,24 @@ export const Match = () => {
           bgcolor={theme.palette.background.paper}
           borderRadius={8}
         >
+          <Timer
+            name={
+              playerColor
+                ? currentMatch.players[0].name
+                : currentMatch.players[1].name
+            }
+            rating={
+              playerColor
+                ? currentMatch.players[0].rating
+                : currentMatch.players[1].rating
+            }
+            clock={playerColor ? whiteClock : blackClock}
+          />
           <Box
             flexGrow={1}
             display="flex"
             justifyContent="center"
+            alignItems="center"
             ref={chessContainerRef}
           >
             <ChessBoard
@@ -582,26 +578,35 @@ export const Match = () => {
               onMove={handleMove}
             />
           </Box>
-          <Box display="flex" justifyContent="flex-end" mt={2}>
-            <Box width="50%">
-              <ScoreBoard
-                match={currentMatch}
-                score={{ black: 0, white: 0 }}
-                playerColor={playerColor}
-              />
-            </Box>
-          </Box>
+          <Timer
+            name={
+              playerColor
+                ? currentMatch.players[1].name
+                : currentMatch.players[0].name
+            }
+            rating={
+              playerColor
+                ? currentMatch.players[1].rating
+                : currentMatch.players[0].rating
+            }
+            clock={playerColor ? blackClock : whiteClock}
+          />
         </Box>
       </Grid>
       <Grid item md={3} sm={2}>
         <Box
           display="flex"
           flexDirection="column"
-          justifyContent="space-between"
+          justifyContent="space-around"
           height="100%"
         >
-          {false ? (
-            <Button variant="contained" color="secondary" size="large">
+          {gameStatus === GameStatus.EXITED ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={handleGoBack}
+            >
               <Box display="flex" flexDirection="column" alignItems="center">
                 <Typography variant="h4" component="p">
                   Go to lobby
@@ -612,14 +617,9 @@ export const Match = () => {
               </Box>
             </Button>
           ) : (
-            <Button></Button>
+            <></>
           )}
-          <Timer
-            match={currentMatch}
-            playerColor={playerColor}
-            whiteClock={whiteClock}
-            blackClock={blackClock}
-          />
+          <Videos match={currentMatch} playerColor={playerColor} />
         </Box>
       </Grid>
       <Box

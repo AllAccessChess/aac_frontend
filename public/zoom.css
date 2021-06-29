@@ -91,7 +91,9 @@
 }
 
 .chat-virtualized-list {
-  height: 250px !important;
+  height: 15vh !important;
+  overflow: auto !important;
+  width: 100% !important;
 }
 
 .chat-box__chat-textarea {
@@ -293,7 +295,7 @@ span[title="Me"] {
   padding: 10px;
   font-size: 14px;
   resize: none;
-  height: 80px;
+  height: 55px;
   font-family: "Rubik", sans-serif;
   border-radius: 12px;
 }

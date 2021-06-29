@@ -9,7 +9,5 @@ export const BackgroundWrapper = styled(Grid)`
   background: url(${(props) => props.background});
   background-position: center;
   background-repeat: no-repeat;
-  background-size: contain;
-  background-position-x: 200px;
-  background-position-y: bottom;
+  background-size: cover;
 `;
