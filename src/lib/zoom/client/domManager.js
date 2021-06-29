@@ -1,5 +1,7 @@
 // AAC Zoom Library - DOM Manager
 
+import { snakeCaseString } from "./helpers";
+
 export default class DOMManager {
   get fps() {
     return 24;
@@ -141,7 +143,7 @@ export default class DOMManager {
    * @returns
    */
   getUserVideoCanvas = (userName) => {
-    return document.getElementById(`${userName}-video`);
+    return document.getElementById(`${snakeCaseString(userName)}-video`);
   };
 
   /**

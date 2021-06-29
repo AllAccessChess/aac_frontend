@@ -33,7 +33,7 @@ import {
 } from "components/material-ui";
 import { useWindowSize } from "hooks";
 import { useZoomContext } from "lib/zoom";
-import { generateSignature } from "lib/zoom/client/helpers";
+import { generateSignature, getValidUserName } from "lib/zoom/client/helpers";
 import {
   addHistoryItem,
   setHistory,
@@ -377,7 +377,7 @@ export const Match = () => {
   // }, [user]);
 
   useEffect(() => {
-    const joinMeeting = async ({ id, password }) => {
+    const joinMeeting = async (id, password, userName, email) => {
       const meetingNumber = id;
       const passWord = password;
 
@@ -388,8 +388,8 @@ export const Match = () => {
       );
 
       zoomClient.setUserData({
-        userName: user.id,
-        userEmail: user.email,
+        userName: userName,
+        userEmail: email,
       });
 
       zoomClient.on("onUserJoin", (data) => {
@@ -427,7 +427,13 @@ export const Match = () => {
       currentMatch.meeting
     ) {
       setMeetingJoining(true);
-      joinMeeting(currentMatch.meeting);
+
+      joinMeeting(
+        currentMatch.meeting.id,
+        currentMatch.meeting.password,
+        getValidUserName(currentMatch, user.id, user.name),
+        user.email
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameStatus]);
