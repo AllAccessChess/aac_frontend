@@ -489,6 +489,8 @@ export const Match = () => {
               ? "Connecting to the server"
               : gameStatus === GameStatus.SEEKING
               ? "Finding a match"
+              : gameStatus === GameStatus.EXITED
+              ? "Redirecting"
               : "Error connecting to the server. Returing to tournament page"}
             ...
           </Typography>
