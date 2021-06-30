@@ -70,6 +70,9 @@ export const Match = () => {
   const currentMatch = useSelector((state) => state.matchReducer.current);
   const actionHistory = useSelector((state) => state.matchReducer.history);
   const user = useSelector((state) => state.authReducer.user);
+  const currentTournament = useSelector(
+    (state) => state.tournamentReducer.current
+  );
 
   const isSpectator = useMemo(
     () => location.pathname.indexOf("/spectate") === 0,
@@ -130,7 +133,8 @@ export const Match = () => {
     dispatch(setHistory([]));
     dispatch(setCurrentMatch(null));
     history.goBack();
-  }, [history, dispatch]);
+    zoomClient.leaveMeeting();
+  }, [dispatch, history, zoomClient]);
 
   //!!! From here, You should use Refs, not state!
 
@@ -407,7 +411,9 @@ export const Match = () => {
           meetingNumber,
           passWord,
           signature,
-          leaveUrl: "/tournaments",
+          leaveUrl: currentTournament
+            ? `/tournament/${currentTournament.id}`
+            : "/tournaments",
         },
         {
           chatDOM: zoomChatRef.current,
