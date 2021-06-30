@@ -18,6 +18,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { InlineFilledSelect, TabPanel } from "components/common";
+import { RoundStatus } from "constant";
 import { CustomPaper } from "./styles";
 
 export const Pairings = (props) => {
@@ -151,7 +152,9 @@ export const Pairings = (props) => {
                                   : "Watch Live"}
                               </Typography>
                             </Link> */}
-                            {round.state === 1 ? "Finished" : "In Progress"}
+                            {round.state === RoundStatus.FINISHED
+                              ? "Finished"
+                              : "In Progress"}
                           </TableCell>
                           <TableCell>
                             <IconButton

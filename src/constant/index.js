@@ -106,3 +106,8 @@ export const TournamentStatus = Object.freeze({
   SCHEDULED: 1,
   FINISHED: 4,
 });
+
+export const RoundStatus = Object.freeze({
+  INPROGRESS: 0,
+  FINISHED: 1,
+});
