@@ -154,6 +154,10 @@
   border: none !important;
 }
 
+.chat-virtualized-list .ReactVirtualized__Grid__innerScrollContainer {
+  overflow-x: auto;
+}
+
 .chat-item__chat-info {
   display: flex;
   padding: 0;
