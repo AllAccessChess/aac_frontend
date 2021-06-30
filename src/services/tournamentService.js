@@ -5,6 +5,18 @@ export default class TournamentService extends BaseAPIService {
     return this.request("/tournaments/all", "GET");
   };
   static getTournament = (tournamentID) => {
-    return this.requestWithAuth(`/tournaments/get/${tournamentID}`, "GET");
+    return this.request(`/tournaments/get/${tournamentID}`, "GET");
+  };
+  static registerTournament = (tournamentID) => {
+    return this.requestWithAuth(
+      `/tournaments/register/${tournamentID}`,
+      "POST"
+    );
+  };
+  static unregisterTournament = (tournamentID) => {
+    return this.requestWithAuth(
+      `/tournaments/unregister/${tournamentID}`,
+      "POST"
+    );
   };
 }

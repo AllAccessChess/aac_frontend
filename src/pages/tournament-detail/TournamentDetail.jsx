@@ -11,7 +11,10 @@ import { TournamentStatus } from "constant";
 import {
   getTournament,
   clearCurrent as clearCurrentTournament,
+  registerTournament,
+  unRegisterTournament,
 } from "redux/reducers/tournamentReducer";
+import { downloadPGN } from "redux/reducers/matchReducer";
 
 export const TournamentDetail = () => {
   const history = useHistory();
@@ -21,14 +24,24 @@ export const TournamentDetail = () => {
   const currentTournament = useSelector(
     (state) => state.tournamentReducer.current
   );
+  const user = useSelector((state) => state.authReducer.user);
 
   const handleBack = () => {
     dispatch(clearCurrentTournament());
     history.push("/tournaments");
   };
 
-  const handleRigster = () => {
-    console.log("Registering Now");
+  const handleDownloadPGN = (gameID, roundTitle) => {
+    // dispatch(downloadPGN(gameID));
+    dispatch(downloadPGN("60c8a855a2f4807757ce30cb", roundTitle));
+  };
+
+  const handleRegister = () => {
+    dispatch(registerTournament(currentTournament.id));
+  };
+
+  const handleUnRegister = () => {
+    dispatch(unRegisterTournament(currentTournament.id));
   };
 
   const handleFindMatch = () => {
@@ -56,8 +69,15 @@ export const TournamentDetail = () => {
         <TournamentCard
           tournament={currentTournament}
           onRegister={
-            currentTournament.state === TournamentStatus.SCHEDULED
-              ? handleRigster
+            currentTournament.state === TournamentStatus.SCHEDULED &&
+            !currentTournament.players.find((item) => item.id === user.id)
+              ? handleRegister
+              : undefined
+          }
+          onUnRegister={
+            currentTournament.state === TournamentStatus.SCHEDULED &&
+            currentTournament.players.find((item) => item.id === user.id)
+              ? handleUnRegister
               : undefined
           }
           onFindMatch={
@@ -67,7 +87,10 @@ export const TournamentDetail = () => {
           }
         />
       </Box>
-      <Pairings tournament={currentTournament} />
+      <Pairings
+        tournament={currentTournament}
+        onDownloadPGN={handleDownloadPGN}
+      />
       <Members members={currentTournament.players} />
     </Box>
   );

@@ -103,6 +103,6 @@ export const GameResults = Object.freeze({
 
 export const TournamentStatus = Object.freeze({
   ONGOING: 3,
-  SCHEDULED: 0,
+  SCHEDULED: 1,
   FINISHED: 4,
 });

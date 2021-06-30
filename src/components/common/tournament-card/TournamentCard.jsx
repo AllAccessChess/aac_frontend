@@ -15,7 +15,13 @@ import {
 
 import { authSelector } from "redux/reducers";
 export const TournamentCard = (props) => {
-  const { tournament, onViewDetails, onRegister, onFindMatch } = props;
+  const {
+    tournament,
+    onViewDetails,
+    onRegister,
+    onUnRegister,
+    onFindMatch,
+  } = props;
   const { user } = useSelector(authSelector);
 
   return (
@@ -107,9 +113,19 @@ export const TournamentCard = (props) => {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={() => onRegister(tournament)}
+            onClick={() => onRegister()}
           >
             Register Now
+          </Button>
+        )}
+        {onUnRegister && user && (
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={() => onUnRegister()}
+          >
+            UnRegister
           </Button>
         )}
         {onFindMatch && user && (

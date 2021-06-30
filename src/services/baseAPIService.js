@@ -29,7 +29,7 @@ export default class BaseAPIService {
         }),
       })
       .then((res) => {
-        if (res.data.status !== "ok" && res.data.error)
+        if (res.data.status && res.data.status !== "ok" && res.data.error)
           throw new Error(res.data.error);
         return res.data;
       });
@@ -60,7 +60,7 @@ export default class BaseAPIService {
         }),
       })
       .then(async (res) => {
-        if (res.data.status !== "ok" && res.data.error)
+        if (res.data.status && res.data.status !== "ok" && res.data.error)
           throw new Error(res.data.error);
         if (
           res.data.warnings &&

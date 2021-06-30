@@ -66,4 +66,27 @@ export const getMatch = (id) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
+export const downloadPGN = (id, roundTitle) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const pgnData = await GameService.getPGNData(id);
+    const blob = new Blob([pgnData], {
+      type: "application/octet-stream",
+    });
+    const blobURL = window.URL.createObjectURL(blob);
+
+    var a = document.createElement("a");
+    a.style = "display: none";
+    a.href = blobURL;
+    a.download = `${roundTitle}.pgn`;
+    a.click();
+    setTimeout(() => {
+      window.URL.revokeObjectURL(blobURL);
+    }, 100);
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+  }
+  dispatch(setLoading(false));
+};
+
 export default slice.reducer;

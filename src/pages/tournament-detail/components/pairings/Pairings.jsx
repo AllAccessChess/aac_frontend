@@ -13,12 +13,15 @@ import {
   TableRow,
   Tabs,
   Typography,
+  IconButton,
 } from "components/material-ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { InlineFilledSelect, TabPanel } from "components/common";
 import { CustomPaper } from "./styles";
 
 export const Pairings = (props) => {
-  const { tournament } = props;
+  const { tournament, onDownloadPGN } = props;
   const [tabValue, setTabValue] = useState(0);
   const [page, setPage] = useState(0);
   const [matchFilter, setMatchFilter] = useState(1200);
@@ -150,7 +153,20 @@ export const Pairings = (props) => {
                             </Link> */}
                             {round.state === 1 ? "Finished" : "In Progress"}
                           </TableCell>
-                          <TableCell>-</TableCell>
+                          <TableCell>
+                            <IconButton
+                              onClick={() =>
+                                onDownloadPGN(
+                                  match.gameId,
+                                  `${tournament.title}: Round ${index + 1}(${
+                                    whitePlayer.name
+                                  } vs ${blackPlayer.name})`
+                                )
+                              }
+                            >
+                              <FontAwesomeIcon icon={faFileDownload} />
+                            </IconButton>
+                          </TableCell>
                         </TableRow>
                       );
                     })}

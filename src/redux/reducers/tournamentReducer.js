@@ -76,4 +76,26 @@ export const getTournament = (id) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
+export const registerTournament = (id) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const { tournament } = await TournamentService.registerTournament(id);
+    dispatch(setCurrent(tournament));
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+  }
+  dispatch(setLoading(false));
+};
+
+export const unRegisterTournament = (id) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const { tournament } = await TournamentService.unregisterTournament(id);
+    dispatch(setCurrent(tournament));
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+  }
+  dispatch(setLoading(false));
+};
+
 export default slice.reducer;
