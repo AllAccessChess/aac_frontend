@@ -66,6 +66,7 @@ export const Match = () => {
   const [turn, setTurn] = useState(0);
   const [showTransformPawn, setShowTransformPawn] = useState(false);
   const [premove, setPremove] = useState(null);
+  const [usingVideo, setUsingVideo] = useState(true);
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
   const actionHistory = useSelector((state) => state.matchReducer.history);
@@ -398,7 +399,6 @@ export const Match = () => {
 
       zoomClient.on("onUserJoin", (data) => {
         console.log(`## Zoom SDK ## - User ${data.userId} joined`);
-        zoomClient.renderUserVideo(data.userId);
       });
 
       zoomClient.on("joinClicked", () => {
@@ -422,6 +422,8 @@ export const Match = () => {
           joinButtonText: "Start",
         }
       );
+
+      zoomClient.renderUserVideo();
     };
 
     if (isSpectator && !currentMatch && params.id) {
@@ -450,6 +452,16 @@ export const Match = () => {
       setChessBoardSize(Math.min(boundingRect.width, boundingRect.height) - 30);
     }
   }, [windowSize, chessContainerRef]);
+
+  useEffect(() => {
+    if (usingVideo) {
+      zoomClient.enableCustomRendering();
+      zoomClient.renderUserVideo();
+    } else {
+      zoomClient.disableCustomRendering();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usingVideo]);
 
   useEffect(() => {
     gameClientRef.current.connect();
@@ -489,6 +501,10 @@ export const Match = () => {
   useEffect(() => {
     currentMatchRef.current = currentMatch;
   }, [currentMatch]);
+
+  const handleToggleUsingVideo = () => {
+    setUsingVideo((usingVideo) => !usingVideo);
+  };
 
   if (!currentMatch)
     return (
@@ -633,7 +649,12 @@ export const Match = () => {
           ) : (
             <></>
           )}
-          <Videos match={currentMatch} playerColor={playerColor} />
+          <Videos
+            match={currentMatch}
+            playerColor={playerColor}
+            usingVideo={usingVideo}
+            onToggleUsingVideo={handleToggleUsingVideo}
+          />
         </Box>
       </Grid>
       <Box

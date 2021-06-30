@@ -30,8 +30,10 @@ export default class ZoomClient extends EventTarget {
     // Meeting Info
     this.meetingNumber = null;
     this.passWord = null;
+    this.userIds = [];
+    this.customRenderingEnabled = true;
 
-    this.domManager = new DOMManager();
+    this.domManager = new DOMManager(this);
   }
 
   //=====================================================================
@@ -93,6 +95,7 @@ export default class ZoomClient extends EventTarget {
    * @param {object} data
    */
   onUserJoin = (data) => {
+    this.userIds.push(data.userId);
     this.triggerEvent("onUserJoin", data);
   };
 
@@ -102,6 +105,7 @@ export default class ZoomClient extends EventTarget {
    * @param {object} data
    */
   onUserLeave = (data) => {
+    this.userIds = this.userIds.filter((userId) => userId !== data.userId);
     this.triggerEvent("onUserLeave", data);
   };
 
@@ -249,6 +253,20 @@ export default class ZoomClient extends EventTarget {
     }
   };
 
+  /**
+   * Enable Custom Rendering
+   */
+  enableCustomRendering = () => {
+    this.customRenderingEnabled = true;
+  };
+
+  /**
+   * Disable Custom Rendering
+   */
+  disableCustomRendering = () => {
+    this.customRenderingEnabled = false;
+  };
+
   //=====================================================================
 
   /********************
@@ -289,8 +307,8 @@ export default class ZoomClient extends EventTarget {
    *
    * @param {string} userId
    */
-  renderUserVideo = (userId) => {
-    this.domManager.renderUserVideo(userId);
+  renderUserVideo = () => {
+    this.domManager.renderUserVideo();
   };
 
   /**

@@ -1,11 +1,12 @@
 import React from "react";
 
+import { Button } from "components/material-ui";
 import { getValidUserName, snakeCaseString } from "lib/zoom/client/helpers";
 
 import { VideoCanvas } from "./styles";
 
 export const Videos = (props) => {
-  const { match, playerColor } = props;
+  const { match, playerColor, usingVideo } = props;
 
   const player1Id = snakeCaseString(
     getValidUserName(match, match.players[0].id, match.players[0].name)
@@ -17,6 +18,13 @@ export const Videos = (props) => {
 
   return (
     <React.Fragment>
+      <Button
+        color={usingVideo ? "secondary" : "primary"}
+        variant="contained"
+        onClick={props.onToggleUsingVideo}
+      >
+        {usingVideo ? "Stop Video" : "Start Video"}
+      </Button>
       <VideoCanvas
         width={384}
         height={240}

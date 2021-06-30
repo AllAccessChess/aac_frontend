@@ -3,6 +3,10 @@
 import { snakeCaseString } from "./helpers";
 
 export default class DOMManager {
+  constructor(meetingClient) {
+    this.meetingClient = meetingClient;
+  }
+
   get fps() {
     return 24;
   }
@@ -214,46 +218,66 @@ export default class DOMManager {
   /**
    * Render user video on canvas
    *
-   * @param {string} userId
    */
-  renderUserVideo = (userId) => {
+  renderUserVideo = () => {
     const _this = this;
 
     const renderFrame = () => {
-      const userName = _this.getUserName(userId);
-      const userVideoCanvas = _this.getUserVideoCanvas(userName);
-      const { userAreaDOM, from } = this.findUserAreaDOM(userId);
-      const canvas =
-        from === "gallery"
-          ? _this.galleryCanvas
-          : from === "speaker"
-          ? _this.speakerCanvas
-          : _this.suspensionCanvas;
+      let bRendered = false;
 
-      if (userAreaDOM && canvas && userVideoCanvas) {
-        const userArea = userAreaDOM.getBoundingClientRect();
+      for (const userId of this.meetingClient.userIds) {
+        const userName = _this.getUserName(userId);
+        const userVideoCanvas = _this.getUserVideoCanvas(userName);
+        const { userAreaDOM, from } = this.findUserAreaDOM(userId);
+        const canvas =
+          from === "gallery"
+            ? _this.galleryCanvas
+            : from === "speaker"
+            ? _this.speakerCanvas
+            : _this.suspensionCanvas;
 
-        const canvasArea = canvas.getBoundingClientRect();
-        const userVideoCanvasContext = userVideoCanvas.getContext("2d");
+        if (userAreaDOM && canvas && userVideoCanvas) {
+          const userArea = userAreaDOM.getBoundingClientRect();
 
-        userVideoCanvasContext.drawImage(
-          canvas,
-          Math.max(0, userArea.x - canvasArea.x),
-          Math.max(0, userArea.y - canvasArea.y),
-          Math.min(canvas.width, userArea.width),
-          Math.min(canvas.height, userArea.height),
-          0,
-          0,
-          userVideoCanvas.width,
-          userVideoCanvas.height
-        );
-        requestAnimationFrame(renderFrame);
-      } else {
-        setTimeout(renderFrame, 1000);
+          const canvasArea = canvas.getBoundingClientRect();
+          const userVideoCanvasContext = userVideoCanvas.getContext("2d");
+
+          if (this.meetingClient.customRenderingEnabled) {
+            userVideoCanvasContext.drawImage(
+              canvas,
+              Math.max(0, userArea.x - canvasArea.x),
+              Math.max(0, userArea.y - canvasArea.y),
+              Math.min(canvas.width, userArea.width),
+              Math.min(canvas.height, userArea.height),
+              0,
+              0,
+              userVideoCanvas.width,
+              userVideoCanvas.height
+            );
+          } else {
+            userVideoCanvasContext.fillStyle = "black";
+            userVideoCanvasContext.fillRect(
+              0,
+              0,
+              userVideoCanvas.width,
+              userVideoCanvas.height
+            );
+          }
+          bRendered = true;
+        }
+      }
+      if (this.meetingClient.customRenderingEnabled) {
+        if (bRendered) {
+          requestAnimationFrame(renderFrame);
+        } else {
+          setTimeout(renderFrame, 1000);
+        }
       }
     };
 
-    renderFrame();
+    if (this.meetingClient.customRenderingEnabled) {
+      renderFrame();
+    }
   };
 
   /**
