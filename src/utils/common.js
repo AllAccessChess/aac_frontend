@@ -46,3 +46,106 @@ export const pad2 = (number) => {
 export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+export const reorderList = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+export const redoPairing = (white, black, unpaired, source, destination) => {
+  let whiteRes = [...white];
+  let blackRes = [...black];
+  let unpairedRes = [...unpaired];
+
+  const emptyIndexMatch = destination.droppableId.match(
+    /^(black|white)-empty-(\d)+$/
+  );
+  const emptyIndex =
+    emptyIndexMatch && emptyIndexMatch.length > 2
+      ? parseInt(emptyIndexMatch[2])
+      : 0;
+
+  if (source.droppableId === "unpaired") {
+    const [removed] = unpairedRes.splice(source.index, 1);
+    if (destination.droppableId === "white") {
+      // unpaired -> white
+      whiteRes.splice(destination.index, 0, removed);
+      blackRes.splice(destination.index, 0, null);
+    } else if (destination.droppableId === "black") {
+      // unpaired -> black
+      whiteRes.splice(destination.index, 0, null);
+      blackRes.splice(destination.index, 0, removed);
+    } else if (destination.droppableId.includes("white-empty")) {
+      // unpaired -> white empty
+      whiteRes.splice(emptyIndex, 1, removed);
+    } else if (destination.droppableId.includes("black-empty")) {
+      // unpaired -> black empty
+      blackRes.splice(emptyIndex, 1, removed);
+    }
+  } else if (source.droppableId === "white") {
+    let sourceIndex = source.index;
+    const removed = white[sourceIndex];
+
+    if (destination.droppableId === "unpaired") {
+      // white -> unpaired
+      unpairedRes.splice(destination.index, 0, removed);
+    } else if (destination.droppableId.includes("black-empty")) {
+      // white -> black-empty
+      blackRes[emptyIndex] = removed;
+    } else if (destination.droppableId.includes("white-empty")) {
+      // white -> white-empty
+      whiteRes[emptyIndex] = removed;
+    } else if (destination.droppableId === "black") {
+      // white -> black
+      if (destination.index < sourceIndex) {
+        sourceIndex += 1;
+      }
+      blackRes.splice(destination.index, 0, removed);
+      whiteRes.splice(destination.index, 0, null);
+    }
+
+    if (blackRes[sourceIndex] === null) {
+      whiteRes.splice(sourceIndex, 1);
+      blackRes.splice(sourceIndex, 1);
+    } else {
+      whiteRes[sourceIndex] = null;
+    }
+  } else if (source.droppableId === "black") {
+    let sourceIndex = source.index;
+    const removed = black[sourceIndex];
+
+    if (destination.droppableId === "unpaired") {
+      // black -> unpaired
+      unpairedRes.splice(destination.index, 0, removed);
+    } else if (destination.droppableId.includes("black-empty")) {
+      // black -> black-empty
+      blackRes[emptyIndex] = removed;
+    } else if (destination.droppableId.includes("white-empty")) {
+      // black -> white-empty
+      whiteRes[emptyIndex] = removed;
+    } else if (destination.droppableId === "white") {
+      // black -> white
+      if (destination.index < sourceIndex) {
+        sourceIndex += 1;
+      }
+      whiteRes.splice(destination.index, 0, removed);
+      blackRes.splice(destination.index, 0, null);
+    }
+
+    if (whiteRes[sourceIndex] === null) {
+      whiteRes.splice(sourceIndex, 1);
+      blackRes.splice(sourceIndex, 1);
+    } else {
+      blackRes[sourceIndex] = null;
+    }
+  }
+
+  return {
+    white: whiteRes,
+    black: blackRes,
+    unpaired: unpairedRes,
+  };
+};

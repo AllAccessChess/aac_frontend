@@ -7,6 +7,7 @@ import { setMessage } from "./messageReducer";
 
 const initialState = {
   list: [],
+  pairings: null,
   current: null,
   loading: false,
 };
@@ -40,6 +41,9 @@ export const slice = createSlice({
     clearCurrent: (state, action) => {
       state.current = null;
     },
+    setPairings: (state, action) => {
+      state.pairings = action.payload;
+    },
   },
 });
 
@@ -50,6 +54,7 @@ export const {
   setCurrent,
   clearCurrent,
   insertToList,
+  setPairings,
 } = slice.actions;
 
 export const getTournamentList = () => async (dispatch) => {
@@ -96,6 +101,19 @@ export const unRegisterTournament = (id) => async (dispatch) => {
     dispatch(setMessage({ message: err.message }));
   }
   dispatch(setLoading(false));
+};
+
+export const getPairings = (tournamentId, roundId) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const { pairings, players, unpaired } = await TournamentService.getPairings(
+      tournamentId,
+      roundId
+    );
+    dispatch(setPairings({ pairings, players, unpaired }));
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+  }
 };
 
 export default slice.reducer;
