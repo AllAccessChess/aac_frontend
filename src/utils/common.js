@@ -46,3 +46,18 @@ export const pad2 = (number) => {
 export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+export const getRemainingTimeString = (remaining) => {
+  let string = "";
+  if (remaining > 1000 * 60 * 60) {
+    string += Math.floor(remaining / (1000 * 60 * 60) / 24) + "d ";
+  }
+  if (remaining > 1000 * 60 * 60) {
+    string += pad2(Math.floor((remaining / (1000 * 60 * 60)) % 24)) + "h ";
+  }
+  if (remaining > 1000 * 60) {
+    string += pad2(Math.floor((remaining / (1000 * 60)) % 60)) + "min ";
+  }
+  string += pad2(Math.floor((remaining / 1000) % 60)) + "s";
+  return string;
+};
