@@ -164,3 +164,7 @@ export const redoPairing = (white, black, unpaired, source, destination) => {
     unpaired: unpairedRes,
   };
 };
+
+export const isAdmin = (user) => {
+  return user && user.permissions && user.permissions.includes("admin");
+};

@@ -1,5 +1,9 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 
+import { InlineFilledSelect, TabPanel } from "components/common";
 import {
   Box,
   Button,
@@ -16,14 +20,13 @@ import {
   Typography,
   IconButton,
 } from "components/material-ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
-import { InlineFilledSelect, TabPanel } from "components/common";
 import { RoundStatus } from "constant";
+import { isAdmin } from "utils/common";
 import { CustomPaper } from "./styles";
 
 export const Pairings = (props) => {
   const { tournament, onManagePairings, onDownloadPGN } = props;
+  const user = useSelector((state) => state.authReducer.user);
   const [tabValue, setTabValue] = useState(0);
   const [page, setPage] = useState(0);
   const [matchFilter, setMatchFilter] = useState(1200);
@@ -76,15 +79,17 @@ export const Pairings = (props) => {
         </Tabs>
         {tournament.rounds.map((round, index) => (
           <TabPanel key={index} value={tabValue} index={index}>
-            <Box my={5} display="flex" justifyContent="flex-end">
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => onManagePairings(index)}
-              >
-                Manage Pairings
-              </Button>
-            </Box>
+            {isAdmin(user) && round.state !== RoundStatus.FINISHED && (
+              <Box my={5} display="flex" justifyContent="flex-end">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={() => onManagePairings(index)}
+                >
+                  Manage Pairings
+                </Button>
+              </Box>
+            )}
             <TableContainer>
               <Table stickyHeader aria-label="members table">
                 <TableHead>

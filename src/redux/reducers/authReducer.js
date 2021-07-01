@@ -34,7 +34,9 @@ export const signIn = (credentials) => async (dispatch) => {
       token: response.token,
       expiry: response.expiry,
     });
-    dispatch(setUser(response.user));
+
+    const { user } = await UserService.getMe();
+    dispatch(setUser(user));
   } catch (error) {
     console.log(error);
     dispatch(showError(error.message));
