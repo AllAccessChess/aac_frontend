@@ -14,6 +14,7 @@ export const ChessBoard = (props) => {
   const {
     chess,
     fen,
+    inPast,
     width,
     height,
     playerColor,
@@ -42,7 +43,9 @@ export const ChessBoard = (props) => {
       const to = pendingMove[1];
       const move = chess.move({ from, to, promotion: e });
       if (move) {
-        dispatch(addHistoryItem({ action: "move", content: move }));
+        dispatch(
+          addHistoryItem({ action: "move", content: move, fen: chess.fen() })
+        );
         console.log("***Setting Fen!");
         setFen(chess.fen());
         setLastMove([from, to]);
@@ -104,7 +107,7 @@ export const ChessBoard = (props) => {
       <Chessground
         width={width}
         height={height}
-        viewOnly={isSpectator}
+        viewOnly={isSpectator || inPast}
         turnColor={turnColor()}
         movable={calcMovable()}
         check={chess.in_check() ? true : false}

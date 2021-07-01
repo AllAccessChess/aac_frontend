@@ -1,2 +1,2 @@
-export { CellItem } from "./CellItem";
-export { EndActions } from "./EndActions";
+export { CellItem } from "./cell-item";
+export { EndActions } from "./end-actions";

@@ -67,6 +67,7 @@ export const Match = () => {
   const [showTransformPawn, setShowTransformPawn] = useState(false);
   const [premove, setPremove] = useState(null);
   const [usingVideo, setUsingVideo] = useState(true);
+  const [pastMoveIndex, setPastMoveIndex] = useState(-1);
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
   const actionHistory = useSelector((state) => state.matchReducer.history);
@@ -137,6 +138,22 @@ export const Match = () => {
     zoomClient.leaveMeeting();
   }, [dispatch, history, zoomClient]);
 
+  const handleShowPast = useCallback(
+    (index) => {
+      if (index === actionHistory.length - 1) {
+        setPastMoveIndex(-1);
+      } else {
+        setPastMoveIndex(index);
+      }
+      setFen(actionHistory[index].fen);
+      setLastMove([
+        actionHistory[index].content.from,
+        actionHistory[index].content.to,
+      ]);
+    },
+    [actionHistory, setPastMoveIndex, setLastMove, setFen]
+  );
+
   //!!! From here, You should use Refs, not state!
 
   const onExitGame = useCallback(
@@ -174,7 +191,13 @@ export const Match = () => {
       const chessMove = chess.move({ from, to, promotion: e });
       console.log("chessMove: ", chessMove);
       if (chessMove) {
-        dispatch(addHistoryItem({ action: "move", content: chessMove }));
+        dispatch(
+          addHistoryItem({
+            action: "move",
+            content: chessMove,
+            fen: chess.fen(),
+          })
+        );
         setLastMove([from, to]);
       }
     },
@@ -196,7 +219,9 @@ export const Match = () => {
       const move = chess.move({ from, to, promotion: "x" });
       if (move) {
         console.log(move);
-        dispatch(addHistoryItem({ action: "move", content: move }));
+        dispatch(
+          addHistoryItem({ action: "move", content: move, fen: chess.fen() })
+        );
         console.log("***Setting Fen!");
         setFen(chess.fen());
         setLastMove([from, to]);
@@ -261,6 +286,7 @@ export const Match = () => {
         }
         if (data.game.fen) {
           console.log("***Setting Fen!");
+          setPastMoveIndex(-1);
           setFen(data.game.fen);
         }
         if (premoveRef.current) {
@@ -272,6 +298,7 @@ export const Match = () => {
       dispatch,
       addMoveStringToHistory,
       setFen,
+      setPastMoveIndex,
       setPlayers,
       setGameStatus,
       setWhiteClock,
@@ -544,8 +571,10 @@ export const Match = () => {
               isSpectator={isSpectator}
               moveList={actionHistory}
               askingDraw={askingDraw}
+              pastMoveIndex={pastMoveIndex}
               onOfferDraw={handleOfferDraw}
               onResign={handleResign}
+              onShowPast={handleShowPast}
               onAcceptDraw={() => handleRespondToDraw(true)}
               onDeclineDraw={() => handleRespondToDraw(false)}
               onExitSpectating={onExitSpectating}
@@ -587,6 +616,7 @@ export const Match = () => {
               height={chessBoardSize}
               chess={chess}
               fen={fen}
+              inPast={pastMoveIndex !== -1}
               playerColor={playerColor}
               isSpectator={isSpectator}
               actionHistory={actionHistory}

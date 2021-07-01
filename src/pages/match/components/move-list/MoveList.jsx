@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import {
   Box,
@@ -19,36 +19,14 @@ export const MoveList = (props) => {
     isSpectator,
     moveList,
     askingDraw,
+    pastMoveIndex,
     onOfferDraw,
     onResign,
     onAcceptDraw,
     onDeclineDraw,
     onExitSpectating,
+    onShowPast,
   } = props;
-  const rows = useMemo(() => {
-    let tempRows = [];
-    let index = 0;
-    let tempRow = [];
-    for (let item of moveList) {
-      if (item.action === "move") {
-        if (index === 0) {
-          tempRow.push({ action: "number" });
-          index++;
-        }
-        tempRow.push(item);
-        index++;
-        if (index === 3) {
-          tempRows.push(tempRow);
-          tempRow = [];
-          index = 0;
-        }
-      } else {
-        tempRows.push([item]);
-      }
-    }
-    if (tempRow.length) tempRows.push(tempRow);
-    return tempRows;
-  }, [moveList]);
 
   return (
     <Box
@@ -63,17 +41,39 @@ export const MoveList = (props) => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell>S.No.</TableCell>
-              <TableCell>White</TableCell>
-              <TableCell>Black</TableCell>
+              <TableCell align="center">S.No.</TableCell>
+              <TableCell align="center">White</TableCell>
+              <TableCell align="center">Black</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
+            {[...Array(Math.ceil(moveList.length / 2)).keys()].map((index) => (
               <TableRow key={index}>
-                {row.map((cell, cellIndex) => (
-                  <CellItem cell={cell} rowIndex={index} key={cellIndex} />
-                ))}
+                <CellItem cell={index + 1} align="center" />
+                <CellItem
+                  cell={moveList[index * 2]}
+                  active={
+                    pastMoveIndex === -1
+                      ? index * 2 === moveList.length - 1
+                      : index * 2 === pastMoveIndex
+                  }
+                  align="center"
+                  onClick={() => onShowPast(index * 2)}
+                />
+                {index * 2 + 1 < moveList.length ? (
+                  <CellItem
+                    align="center"
+                    cell={moveList[index * 2 + 1]}
+                    active={
+                      pastMoveIndex === -1
+                        ? index * 2 + 1 === moveList.length - 1
+                        : index * 2 + 1 === pastMoveIndex
+                    }
+                    onClick={() => onShowPast(index * 2 + 1)}
+                  />
+                ) : (
+                  <></>
+                )}
               </TableRow>
             ))}
           </TableBody>
