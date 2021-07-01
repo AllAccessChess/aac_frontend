@@ -48,6 +48,10 @@ export const TournamentDetail = () => {
     history.push("/match");
   };
 
+  const handleManagePairings = (roundId) => {
+    history.push(`/tournament/${params.id}/round/${roundId}/pairing`);
+  };
+
   useEffect(() => {
     if (params.id && !currentTournament) dispatch(getTournament(params.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,6 +94,7 @@ export const TournamentDetail = () => {
       <Pairings
         tournament={currentTournament}
         onDownloadPGN={handleDownloadPGN}
+        onManagePairings={handleManagePairings}
       />
       <Members members={currentTournament.players} />
     </Box>

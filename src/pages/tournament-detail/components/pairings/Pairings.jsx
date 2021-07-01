@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import {
   Box,
+  Button,
   MenuItem,
   Tab,
   Table,
@@ -22,7 +23,7 @@ import { RoundStatus } from "constant";
 import { CustomPaper } from "./styles";
 
 export const Pairings = (props) => {
-  const { tournament, onDownloadPGN } = props;
+  const { tournament, onManagePairings, onDownloadPGN } = props;
   const [tabValue, setTabValue] = useState(0);
   const [page, setPage] = useState(0);
   const [matchFilter, setMatchFilter] = useState(1200);
@@ -75,6 +76,15 @@ export const Pairings = (props) => {
         </Tabs>
         {tournament.rounds.map((round, index) => (
           <TabPanel key={index} value={tabValue} index={index}>
+            <Box my={5} display="flex" justifyContent="flex-end">
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => onManagePairings(index)}
+              >
+                Manage Pairings
+              </Button>
+            </Box>
             <TableContainer>
               <Table stickyHeader aria-label="members table">
                 <TableHead>
