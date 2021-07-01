@@ -127,6 +127,7 @@ export const updatePairings = (tournamentId, roundId, parings) => async (
       unpaired,
     } = await TournamentService.updatePairings(tournamentId, roundId, parings);
     dispatch(setPairings({ pairings, players, unpaired }));
+    dispatch(setMessage({ message: "Updated pairings!", type: "info" }));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
   }

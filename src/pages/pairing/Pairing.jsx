@@ -28,6 +28,7 @@ export const Pairing = () => {
   const [white, setWhite] = useState([]);
   const [black, setBlack] = useState([]);
   const [unpaired, setUnpaired] = useState([]);
+  const [byes, setByes] = useState([]);
 
   const handleBack = () => {
     history.push(`/tournament/${params.tournamentId}`);
@@ -46,6 +47,7 @@ export const Pairing = () => {
       setWhite(pairings.pairings.map((pairing) => pairing.white));
       setBlack(pairings.pairings.map((pairing) => pairing.black));
       setUnpaired(pairings.unpaired);
+      setByes(pairings.byes || []);
     }
   }, [pairings]);
 
@@ -69,6 +71,9 @@ export const Pairing = () => {
         case "unpaired":
           setUnpaired(reorderList(unpaired, source.index, destination.index));
           break;
+        case "byes":
+          setByes(reorderList(byes, source.index, destination.index));
+          break;
         default:
           break;
       }
@@ -77,11 +82,13 @@ export const Pairing = () => {
         white,
         black,
         unpaired,
+        byes,
         source,
         destination
       );
       setWhite(rePairing.white);
       setBlack(rePairing.black);
+      setByes(rePairing.byes);
       setUnpaired(rePairing.unpaired);
     }
   };
@@ -229,6 +236,7 @@ export const Pairing = () => {
               alignItems="center"
               bgcolor={theme.palette.background.paper}
               borderRadius={12}
+              mr={5}
               p={5}
             >
               <Typography variant="h3">Unpaired</Typography>
@@ -236,22 +244,19 @@ export const Pairing = () => {
                 {renderDroppableList("unpaired", unpaired)}
               </Box>
             </Box>
-            <Droppable droppableId={"temp"} type="droppableItem">
-              {(provided, snapshot) => (
-                <Box
-                  ref={provided.innerRef}
-                  p={2}
-                  border={`1px dashed ${
-                    snapshot.isDraggingOver
-                      ? theme.palette.secondary.main
-                      : "transparent"
-                  }`}
-                  width={250}
-                >
-                  {provided.placeholder}
-                </Box>
-              )}
-            </Droppable>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              bgcolor={theme.palette.background.paper}
+              borderRadius={12}
+              p={5}
+            >
+              <Typography variant="h3">Byes</Typography>
+              <Box display="flex" mt={5}>
+                {renderDroppableList("byes", byes)}
+              </Box>
+            </Box>
           </DragDropContext>
         </Box>
         <Button variant="contained" color="primary" onClick={handleClickUpdate}>

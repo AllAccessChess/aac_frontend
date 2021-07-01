@@ -1,3 +1,5 @@
+import { RoundStatus } from "constant";
+
 export const mathRound2 = (num) =>
   Math.round((num + Number.EPSILON) * 100) / 100;
 
@@ -70,10 +72,18 @@ export const reorderList = (list, startIndex, endIndex) => {
   return result;
 };
 
-export const redoPairing = (white, black, unpaired, source, destination) => {
+export const redoPairing = (
+  white,
+  black,
+  unpaired,
+  byes,
+  source,
+  destination
+) => {
   let whiteRes = [...white];
   let blackRes = [...black];
   let unpairedRes = [...unpaired];
+  let byesRes = [...byes];
 
   const emptyIndexMatch = destination.droppableId.match(
     /^(black|white)-empty-(\d)+$/
@@ -161,10 +171,35 @@ export const redoPairing = (white, black, unpaired, source, destination) => {
   return {
     white: whiteRes,
     black: blackRes,
+    byes: byesRes,
     unpaired: unpairedRes,
   };
 };
 
 export const isAdmin = (user) => {
   return user && user.permissions && user.permissions.includes("admin");
+};
+
+export const getRoundStateString = (state) => {
+  const roundStateString = {
+    [RoundStatus.FINISHED]: "Finished",
+    [RoundStatus.PLAYING]: "Watch Live",
+    [RoundStatus.PREP]: "Waiting for players",
+    [RoundStatus.SETUP]: "Scheduled",
+  };
+
+  return roundStateString[state];
+};
+
+export const getWinnerString = (result) => {
+  if (result === "1-0") {
+    return "White";
+  }
+  if (result === "0-1") {
+    return "Black";
+  }
+  if (result === "1/2-1/2") {
+    return "Draw";
+  }
+  return "-";
 };

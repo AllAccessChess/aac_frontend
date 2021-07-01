@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { Link as RouterLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 
@@ -7,6 +8,7 @@ import { InlineFilledSelect, TabPanel } from "components/common";
 import {
   Box,
   Button,
+  Link,
   MenuItem,
   Tab,
   Table,
@@ -21,7 +23,7 @@ import {
   IconButton,
 } from "components/material-ui";
 import { RoundStatus } from "constant";
-import { isAdmin } from "utils/common";
+import { getRoundStateString, getWinnerString, isAdmin } from "utils/common";
 import { CustomPaper } from "./styles";
 
 export const Pairings = (props) => {
@@ -82,7 +84,7 @@ export const Pairings = (props) => {
             {isAdmin(user) && round.state !== RoundStatus.FINISHED && (
               <Box my={5} display="flex" justifyContent="flex-end">
                 <Button
-                  color="primary"
+                  color="secondary"
                   variant="contained"
                   onClick={() => onManagePairings(index)}
                 >
@@ -116,7 +118,7 @@ export const Pairings = (props) => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body1" color="textSecondary">
-                        Result
+                        Status
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -154,22 +156,23 @@ export const Pairings = (props) => {
                               {blackPlayer ? blackPlayer.name : ""}
                             </Typography>
                           </TableCell>
-                          <TableCell>{match.result}</TableCell>
+                          <TableCell>{getWinnerString(match.result)}</TableCell>
                           <TableCell>
-                            {/* <Link
-                              component={RouterLink}
-                              color="primary"
-                              to={`/match/${match.id}`}
-                            >
+                            {round.state === RoundStatus.PLAYING ? (
+                              <Link
+                                component={RouterLink}
+                                color="primary"
+                                to={`/match/${match.gameId}`}
+                              >
+                                <Typography variant="body1">
+                                  {getRoundStateString(round.state)}
+                                </Typography>
+                              </Link>
+                            ) : (
                               <Typography variant="body1">
-                                {isMatchOwner(match, user)
-                                  ? "Play Now"
-                                  : "Watch Live"}
+                                {getRoundStateString(round.state)}
                               </Typography>
-                            </Link> */}
-                            {round.state === RoundStatus.FINISHED
-                              ? "Finished"
-                              : "In Progress"}
+                            )}
                           </TableCell>
                           <TableCell>
                             <IconButton

@@ -108,6 +108,8 @@ export const TournamentStatus = Object.freeze({
 });
 
 export const RoundStatus = Object.freeze({
-  INPROGRESS: 0,
-  FINISHED: 1,
+  SETUP: 0, // Admin Setup
+  PREP: 1, // Player preparation time - count down
+  PLAYING: 2,
+  FINISHED: 3,
 });
