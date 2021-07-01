@@ -7,7 +7,11 @@ import { ChevronLeft as BackIcon } from "@material-ui/icons";
 
 import { Box, Button, Typography } from "components/material-ui";
 import { LoadingScreen } from "components/common";
-import { getPairings, getTournament } from "redux/reducers/tournamentReducer";
+import {
+  getPairings,
+  getTournament,
+  updatePairings,
+} from "redux/reducers/tournamentReducer";
 import { redoPairing, reorderList } from "utils/common";
 
 export const Pairing = () => {
@@ -80,6 +84,16 @@ export const Pairing = () => {
       setBlack(rePairing.black);
       setUnpaired(rePairing.unpaired);
     }
+  };
+
+  const handleClickUpdate = () => {
+    const pairings = [];
+    for (let index = 0; index < white.length; index++) {
+      if (white[index] && black[index]) {
+        pairings.push({ white: white[index], black: black[index] });
+      }
+    }
+    dispatch(updatePairings(currentTournament.id, params.roundId, pairings));
   };
 
   const renderDroppableList = (id, list) => (
@@ -240,6 +254,9 @@ export const Pairing = () => {
             </Droppable>
           </DragDropContext>
         </Box>
+        <Button variant="contained" color="primary" onClick={handleClickUpdate}>
+          Update
+        </Button>
       </Box>
     </Box>
   );

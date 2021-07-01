@@ -116,4 +116,20 @@ export const getPairings = (tournamentId, roundId) => async (dispatch) => {
   }
 };
 
+export const updatePairings = (tournamentId, roundId, parings) => async (
+  dispatch
+) => {
+  dispatch(setLoading(true));
+  try {
+    const {
+      pairings,
+      players,
+      unpaired,
+    } = await TournamentService.updatePairings(tournamentId, roundId, parings);
+    dispatch(setPairings({ pairings, players, unpaired }));
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+  }
+};
+
 export default slice.reducer;

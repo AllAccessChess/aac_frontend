@@ -25,4 +25,14 @@ export default class TournamentService extends BaseAPIService {
       "GET"
     );
   };
+  static updatePairings = (tournamentID, roundID, pairings) => {
+    return this.requestWithAuth(
+      `/tournaments/pairings/update/${tournamentID}/${roundID}`,
+      "POST",
+      {
+        unpaired: [],
+        pairings,
+      }
+    );
+  };
 }
