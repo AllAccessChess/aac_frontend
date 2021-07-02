@@ -54,7 +54,9 @@ export const TournamentDetail = () => {
   };
 
   useEffect(() => {
-    if (params.id && !currentTournament) dispatch(getTournament(params.id));
+    if (params.id) {
+      dispatch(getTournament(params.id));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
