@@ -100,7 +100,13 @@ export const Pairing = () => {
         pairings.push({ white: white[index], black: black[index] });
       }
     }
-    dispatch(updatePairings(currentTournament.id, params.roundId, pairings));
+    dispatch(
+      updatePairings(currentTournament.id, params.roundId, {
+        pairings,
+        unpaired,
+        byes,
+      })
+    );
   };
 
   const renderDroppableList = (id, list) => (

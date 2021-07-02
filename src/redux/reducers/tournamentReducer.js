@@ -111,18 +111,20 @@ export const unRegisterTournament = (id) => async (dispatch) => {
 export const getPairings = (tournamentId, roundId) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const { pairings, players, unpaired } = await TournamentService.getPairings(
-      tournamentId,
-      roundId
-    );
-    dispatch(setPairings({ pairings, players, unpaired }));
+    const {
+      pairings,
+      players,
+      unpaired,
+      byes,
+    } = await TournamentService.getPairings(tournamentId, roundId);
+    dispatch(setPairings({ pairings, players, unpaired, byes }));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
   }
   dispatch(setLoading(false));
 };
 
-export const updatePairings = (tournamentId, roundId, parings) => async (
+export const updatePairings = (tournamentId, roundId, newPairings) => async (
   dispatch
 ) => {
   dispatch(setLoading(true));
@@ -131,9 +133,19 @@ export const updatePairings = (tournamentId, roundId, parings) => async (
       pairings,
       players,
       unpaired,
-    } = await TournamentService.updatePairings(tournamentId, roundId, parings);
-    dispatch(setPairings({ pairings, players, unpaired }));
-    dispatch(setMessage({ message: "Updated pairings!", type: "info" }));
+      byes,
+    } = await TournamentService.updatePairings(
+      tournamentId,
+      roundId,
+      newPairings
+    );
+    dispatch(setPairings({ pairings, players, unpaired, byes }));
+    dispatch(
+      setMessage({
+        message: "Updated pairings for the round!",
+        type: "success",
+      })
+    );
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
   }

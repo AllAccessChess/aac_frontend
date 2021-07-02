@@ -29,10 +29,7 @@ export default class TournamentService extends BaseAPIService {
     return this.requestWithAuth(
       `/tournaments/pairings/update/${tournamentID}/${roundID}`,
       "POST",
-      {
-        unpaired: [],
-        pairings,
-      }
+      pairings
     );
   };
   static getByes = (tournamentID) => {

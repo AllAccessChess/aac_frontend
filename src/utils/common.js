@@ -95,7 +95,10 @@ export const redoPairing = (
 
   if (source.droppableId === "unpaired") {
     const [removed] = unpairedRes.splice(source.index, 1);
-    if (destination.droppableId === "white") {
+    if (destination.droppableId === "byes") {
+      // unpaired -> byes
+      byesRes.splice(destination.index, 0, removed);
+    } else if (destination.droppableId === "white") {
       // unpaired -> white
       whiteRes.splice(destination.index, 0, removed);
       blackRes.splice(destination.index, 0, null);
@@ -110,6 +113,26 @@ export const redoPairing = (
       // unpaired -> black empty
       blackRes.splice(emptyIndex, 1, removed);
     }
+  } else if (source.droppableId === "byes") {
+    const [removed] = byesRes.splice(source.index, 1);
+    if (destination.droppableId === "unpaired") {
+      // byes -> unpaired
+      unpairedRes.splice(destination.index, 0, removed);
+    } else if (destination.droppableId === "white") {
+      // byes -> white
+      whiteRes.splice(destination.index, 0, removed);
+      blackRes.splice(destination.index, 0, null);
+    } else if (destination.droppableId === "black") {
+      // byes -> black
+      whiteRes.splice(destination.index, 0, null);
+      blackRes.splice(destination.index, 0, removed);
+    } else if (destination.droppableId.includes("white-empty")) {
+      // byes -> white empty
+      whiteRes.splice(emptyIndex, 1, removed);
+    } else if (destination.droppableId.includes("black-empty")) {
+      // unpaired -> black empty
+      blackRes.splice(emptyIndex, 1, removed);
+    }
   } else if (source.droppableId === "white") {
     let sourceIndex = source.index;
     const removed = white[sourceIndex];
@@ -117,6 +140,9 @@ export const redoPairing = (
     if (destination.droppableId === "unpaired") {
       // white -> unpaired
       unpairedRes.splice(destination.index, 0, removed);
+    } else if (destination.droppableId === "byes") {
+      // white -> byes
+      byesRes.splice(destination.index, 0, removed);
     } else if (destination.droppableId.includes("black-empty")) {
       // white -> black-empty
       blackRes[emptyIndex] = removed;
@@ -145,6 +171,9 @@ export const redoPairing = (
     if (destination.droppableId === "unpaired") {
       // black -> unpaired
       unpairedRes.splice(destination.index, 0, removed);
+    } else if (destination.droppableId === "byes") {
+      // black -> byes
+      byesRes.splice(destination.index, 0, removed);
     } else if (destination.droppableId.includes("black-empty")) {
       // black -> black-empty
       blackRes[emptyIndex] = removed;
