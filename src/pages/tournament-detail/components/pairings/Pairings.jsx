@@ -2,14 +2,20 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileDownload,
+  faPencilAlt,
+  faSave,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { InlineFilledSelect, TabPanel } from "components/common";
 import {
   Box,
   Button,
+  IconButton,
   Link,
   MenuItem,
+  Select,
   Tab,
   Table,
   TableBody,
@@ -20,10 +26,9 @@ import {
   TableRow,
   Tabs,
   Typography,
-  IconButton,
 } from "components/material-ui";
 import { RoundStatus } from "constant";
-import { getRoundStateString, getWinnerString, isAdmin } from "utils/common";
+import { getRoundStateString, isAdmin } from "utils/common";
 import { CustomPaper } from "./styles";
 
 export const Pairings = (props) => {
@@ -33,6 +38,8 @@ export const Pairings = (props) => {
   const [page, setPage] = useState(0);
   const [matchFilter, setMatchFilter] = useState(1200);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [editingGameId, setEditingGameId] = useState(null);
+  const [editedResult, setEditedResult] = useState();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -49,6 +56,20 @@ export const Pairings = (props) => {
 
   const handleSelectChange = (event) => {
     setMatchFilter(event.target.value);
+  };
+
+  const handleClickEditGame = (match) => {
+    setEditingGameId(match.gameId);
+    setEditedResult(match.result);
+  };
+
+  const handleSelectResult = (event) => {
+    setEditedResult(event.target.value);
+  };
+
+  const handleClickSaveGameResult = () => {
+    setEditingGameId(null);
+    setEditedResult(null);
   };
 
   if (!tournament.rounds.length) return <></>;
@@ -113,7 +134,7 @@ export const Pairings = (props) => {
                     </TableCell>
                     <TableCell align="center">
                       <Typography variant="body1" color="textSecondary">
-                        Winner
+                        Result
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
@@ -157,9 +178,57 @@ export const Pairings = (props) => {
                             </Typography>
                           </TableCell>
                           <TableCell align="center">
-                            <Typography variant="body1">
-                              {getWinnerString(match.result)}
-                            </Typography>
+                            <Box
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="center"
+                            >
+                              {editingGameId === match.gameId ? (
+                                <React.Fragment>
+                                  <Select
+                                    value={editedResult}
+                                    onChange={handleSelectResult}
+                                  >
+                                    <MenuItem value={"1-0"}>1-0</MenuItem>
+                                    <MenuItem value={"1/2-1/2"}>
+                                      1/2-1/2
+                                    </MenuItem>
+                                    <MenuItem value={"0-1"}>0-1</MenuItem>
+                                  </Select>
+                                  <Box ml={3}>
+                                    <IconButton
+                                      onClick={handleClickSaveGameResult}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faSave}
+                                        size="sm"
+                                      />
+                                    </IconButton>
+                                  </Box>
+                                </React.Fragment>
+                              ) : (
+                                <React.Fragment>
+                                  <Typography variant="body1">
+                                    {match.result}
+                                  </Typography>
+                                  {isAdmin(user) &&
+                                    round.state === RoundStatus.FINISHED && (
+                                      <Box ml={3}>
+                                        <IconButton
+                                          onClick={() =>
+                                            handleClickEditGame(match)
+                                          }
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={faPencilAlt}
+                                            size="sm"
+                                          />
+                                        </IconButton>
+                                      </Box>
+                                    )}
+                                </React.Fragment>
+                              )}
+                            </Box>
                           </TableCell>
                           <TableCell align="center">
                             {round.state === RoundStatus.PLAYING ? (
