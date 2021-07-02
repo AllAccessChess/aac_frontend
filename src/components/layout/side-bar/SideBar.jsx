@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 import {
   Box,
@@ -12,6 +12,7 @@ import { mainLayoutRoutes } from "routes/mainLayoutRoutes";
 
 export const SideBar = (props) => {
   const history = useHistory();
+  const location = useLocation();
   const { user } = props;
   const filteredRoutes = useMemo(
     () =>
@@ -25,7 +26,12 @@ export const SideBar = (props) => {
     <Box width="250px" mr={4}>
       <List>
         {filteredRoutes.map(({ id, path, name, icon: Icon }) => (
-          <ListItem button key={id} onClick={() => history.push(path)}>
+          <ListItem
+            key={id}
+            button
+            selected={location.pathname === path}
+            onClick={() => history.push(path)}
+          >
             <ListItemIcon>
               <Icon />
             </ListItemIcon>
