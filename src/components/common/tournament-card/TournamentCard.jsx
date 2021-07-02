@@ -120,7 +120,7 @@ export const TournamentCard = (props) => {
         <Typography variant="body2" color="textSecondary">
           Organized by{" "}
           <Typography variant="body1" component="span" color="textPrimary">
-            {tournament.organizedBy || "USCF"}
+            {tournament.organiser || "USCF"}
           </Typography>
         </Typography>
         <Box

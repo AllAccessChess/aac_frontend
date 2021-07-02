@@ -353,11 +353,15 @@ export const Match = () => {
           game: currentMatchRef.current.id,
         });
       } else {
-        console.log("Seeking now");
+        console.log("Seeking/Joining now");
+        // gameClientRef.current.sendData({
+        //   action: GameActions.SEEK,
+        // });
+        // setGameStatus(GameStatus.SEEKING);
         gameClientRef.current.sendData({
-          action: GameActions.SEEK,
+          action: GameActions.JOIN,
         });
-        setGameStatus(GameStatus.SEEKING);
+        setGameStatus(GameStatus.JOINING);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
@@ -559,6 +563,8 @@ export const Match = () => {
               ? "Connecting to the server"
               : gameStatus === GameStatus.SEEKING
               ? "Finding a match"
+              : gameStatus === GameStatus.JOINING
+              ? "Joining a match"
               : gameStatus === GameStatus.EXITED
               ? "Redirecting"
               : "Error connecting to the server. Returing to tournament page"}

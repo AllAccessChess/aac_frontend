@@ -45,6 +45,7 @@ export const GameActions = Object.freeze({
   PING: "ping",
   AUTH: "auth",
   SEEK: "seek",
+  JOIN: "join",
   SPECTATE: "spectate",
   STATUS: "status",
   PLAY_AI: "playAi",
@@ -66,6 +67,7 @@ export const GameEvents = Object.freeze({
 export const GameStatus = Object.freeze({
   IDLE: "idle",
   SEEKING: "seeking",
+  JOINING: "joining",
   PLAYING: "playing",
   EXITED: "Exited",
 });
