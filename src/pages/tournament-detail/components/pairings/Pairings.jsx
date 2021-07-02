@@ -104,7 +104,7 @@ export const Pairings = (props) => {
         </Tabs>
         {tournament.rounds.map((round, index) => (
           <TabPanel key={index} value={tabValue} index={index}>
-            {isAdmin(user) && round.state !== RoundStatus.FINISHED && (
+            {isAdmin(user) && round.state === RoundStatus.SETUP && (
               <Box my={5} display="flex" justifyContent="flex-end">
                 <Button
                   color="secondary"

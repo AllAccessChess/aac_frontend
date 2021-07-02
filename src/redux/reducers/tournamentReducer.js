@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { TournamentService } from "services";
+import { validatePairing } from "utils/common";
 import { setMessage } from "./messageReducer";
 
 // import dummyTournaments from "data/tournaments";
@@ -117,7 +118,10 @@ export const getPairings = (tournamentId, roundId) => async (dispatch) => {
       unpaired,
       byes,
     } = await TournamentService.getPairings(tournamentId, roundId);
-    dispatch(setPairings({ pairings, players, unpaired, byes }));
+
+    dispatch(
+      setPairings(validatePairing({ pairings, players, unpaired, byes }))
+    );
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
   }

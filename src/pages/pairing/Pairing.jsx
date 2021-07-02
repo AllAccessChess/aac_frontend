@@ -167,7 +167,11 @@ export const Pairing = () => {
                       display="flex"
                       justifyContent="center"
                     >
-                      <Typography>{player ? player.name : "Empty"}</Typography>
+                      <Typography variant="body1">
+                        {player
+                          ? `${player.name} (${player.score || 0})`
+                          : "Empty"}
+                      </Typography>
                     </Box>
                     {!player && (
                       <Droppable droppableId={key} type="droppableItem">
