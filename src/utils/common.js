@@ -232,3 +232,49 @@ export const getWinnerString = (result) => {
   }
   return "-";
 };
+
+export const getPlayerScores = (tournament, player) => {
+  const scores = new Array(tournament.settings.numRounds);
+
+  const scoreData = {
+    black: {
+      "1-0": 2,
+      "1/2-1/2": 1,
+      "0-1": 0,
+      "*": "-",
+    },
+    white: {
+      "1-0": 0,
+      "1/2-1/2": 1,
+      "0-1": 2,
+      "*": "-",
+    },
+  };
+
+  for (let index = 0; index < tournament.settings.numRounds; index++) {
+    try {
+      if (tournament.rounds[index].state !== RoundStatus.FINISHED) {
+        scores[index] = "-";
+        continue;
+      }
+      const playerBoard = tournament.rounds[index].boards.find((board) =>
+        board.playerIds.includes(player.id)
+      );
+      const playerColor =
+        playerBoard.playerIds[0] === player.id ? "black" : "white";
+      scores[index] = scoreData[playerColor][playerBoard.result];
+    } catch (err) {
+      try {
+        if (tournament.rounds[index].byes.includes(player.id)) {
+          scores[index] = "1/2";
+        } else {
+          scores[index] = "-";
+        }
+      } catch (err) {
+        scores[index] = "-";
+      }
+    }
+  }
+
+  return scores;
+};
