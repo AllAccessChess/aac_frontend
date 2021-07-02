@@ -199,6 +199,11 @@ export default class ZoomClient extends EventTarget {
           _this.domManager.hidePreviewContainer();
           _this.triggerEvent("joinClicked");
         });
+        if (options.autoJoin) {
+          setTimeout(() => {
+            _this.domManager.joinButton.click();
+          }, 500);
+        }
       }
 
       await new Promise((resolve, reject) => {
