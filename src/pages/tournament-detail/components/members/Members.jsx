@@ -14,12 +14,12 @@ import {
   Tabs,
   Typography,
 } from "components/material-ui";
-import { CustomPaper } from "./styles";
+import { CustomPaper, ByeCell, NumberCell } from "./styles";
 
 import { stableSort, tableComparator } from "utils/common";
 
 export const Members = (props) => {
-  const { members } = props;
+  const { user, members, rounds } = props;
   const tabs = useMemo(
     () => ["Open", "Under 2200", "Under 1800", "Under 1400"],
     []
@@ -36,7 +36,7 @@ export const Members = (props) => {
       },
       {
         id: "byes",
-        label: "Byes",
+        label: "Bye Rounds",
       },
     ],
     []
@@ -70,12 +70,13 @@ export const Members = (props) => {
       return members
         .filter((item) => memberFilter(item, tabValue))
         .map((item) => ({
+          id: item.id,
           name: item.name,
           rating: item.rating || 0,
-          byes: "-",
+          byes: rounds.map((round) => round.byes.includes(item.id)),
         }));
     },
-    [members]
+    [members, rounds]
   );
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -136,9 +137,14 @@ export const Members = (props) => {
                       .map((member, index) => (
                         <TableRow hover tabIndex={-1} key={index}>
                           <TableCell>
-                            <Typography variant="body1">
-                              {page * rowsPerPage + index + 1}
-                            </Typography>
+                            <Box display="flex">
+                              <NumberCell
+                                variant="body1"
+                                state={member.id === user.id ? "owner" : ""}
+                              >
+                                {page * rowsPerPage + index + 1}
+                              </NumberCell>
+                            </Box>
                           </TableCell>
                           <TableCell>
                             <Typography variant="body1">
@@ -151,7 +157,23 @@ export const Members = (props) => {
                             </Typography>
                           </TableCell>
                           <TableCell>
-                            <Typography variant="body1">-</Typography>
+                            <Box display="flex" alignItems="center">
+                              {member.byes.map((bye, index) => (
+                                <ByeCell
+                                  key={index}
+                                  variant="body2"
+                                  state={
+                                    member.id === user.id && bye
+                                      ? "owneractive"
+                                      : bye
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  {index + 1}
+                                </ByeCell>
+                              ))}
+                            </Box>
                           </TableCell>
                         </TableRow>
                       ))}

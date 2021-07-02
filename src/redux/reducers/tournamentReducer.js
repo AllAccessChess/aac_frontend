@@ -10,6 +10,7 @@ const initialState = {
   pairings: null,
   current: null,
   loading: false,
+  byeSaving: false,
 };
 
 export const slice = createSlice({
@@ -44,6 +45,9 @@ export const slice = createSlice({
     setPairings: (state, action) => {
       state.pairings = action.payload;
     },
+    setByeSaving: (state, action) => {
+      state.byeSaving = action.payload;
+    },
   },
 });
 
@@ -55,6 +59,7 @@ export const {
   clearCurrent,
   insertToList,
   setPairings,
+  setByeSaving,
 } = slice.actions;
 
 export const getTournamentList = () => async (dispatch) => {
@@ -114,6 +119,7 @@ export const getPairings = (tournamentId, roundId) => async (dispatch) => {
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
   }
+  dispatch(setLoading(false));
 };
 
 export const updatePairings = (tournamentId, roundId, parings) => async (
@@ -131,6 +137,19 @@ export const updatePairings = (tournamentId, roundId, parings) => async (
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
   }
+  dispatch(setLoading(false));
+};
+
+export const updateByes = (tournamentId, byes) => async (dispatch) => {
+  dispatch(setByeSaving(true));
+  try {
+    await TournamentService.updateByes(tournamentId, byes);
+    const { tournament } = await TournamentService.getTournament(tournamentId);
+    dispatch(setCurrent(tournament));
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+  }
+  dispatch(setByeSaving(false));
 };
 
 export default slice.reducer;

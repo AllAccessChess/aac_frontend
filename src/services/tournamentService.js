@@ -35,4 +35,16 @@ export default class TournamentService extends BaseAPIService {
       }
     );
   };
+  static getByes = (tournamentID) => {
+    return this.requestWithAuth(`/tournaments/byes/get/${tournamentID}`, "GET");
+  };
+  static updateByes = (tournamentID, byes) => {
+    return this.requestWithAuth(
+      `/tournaments/byes/update/${tournamentID}`,
+      "POST",
+      {
+        byes,
+      }
+    );
+  };
 }

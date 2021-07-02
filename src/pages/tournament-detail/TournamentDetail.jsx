@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { ChevronLeft as BackIcon } from "@material-ui/icons";
 import { Box, Button } from "components/material-ui";
 import { LoadingScreen, TournamentCard } from "components/common";
-import { Pairings, Members } from "./components";
+import { Pairings, Members, Byes } from "./components";
 
 import { TournamentStatus } from "constant";
 import {
@@ -24,6 +24,7 @@ export const TournamentDetail = () => {
   const currentTournament = useSelector(
     (state) => state.tournamentReducer.current
   );
+  const byeSaving = useSelector((state) => state.tournamentReducer.byeSaving);
   const user = useSelector((state) => state.authReducer.user);
 
   const handleBack = () => {
@@ -96,7 +97,18 @@ export const TournamentDetail = () => {
         onDownloadPGN={handleDownloadPGN}
         onManagePairings={handleManagePairings}
       />
-      <Members members={currentTournament.players} />
+      <Byes
+        tournament={currentTournament}
+        byeSaving={byeSaving}
+        byes={currentTournament.rounds.map((round) =>
+          round.byes.includes(user.id)
+        )}
+      />
+      <Members
+        user={user}
+        members={currentTournament.players}
+        rounds={currentTournament.rounds}
+      />
     </Box>
   );
 };
