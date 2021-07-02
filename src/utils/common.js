@@ -72,6 +72,19 @@ export const reorderList = (list, startIndex, endIndex) => {
   return result;
 };
 
+export const validatePairing = ({ pairings, players, unpaired, byes }) => {
+  const invalid = [...unpaired, ...byes];
+  return {
+    pairings: pairings.map((pairing) => ({
+      white: invalid.includes(pairing.white) ? null : pairing.white,
+      black: invalid.includes(pairing.black) ? null : pairing.black,
+    })),
+    players,
+    unpaired,
+    byes,
+  };
+};
+
 export const redoPairing = (
   white,
   black,
@@ -253,10 +266,6 @@ export const getPlayerScores = (tournament, player) => {
 
   for (let index = 0; index < tournament.settings.numRounds; index++) {
     try {
-      if (tournament.rounds[index].state !== RoundStatus.FINISHED) {
-        scores[index] = "-";
-        continue;
-      }
       const playerBoard = tournament.rounds[index].boards.find((board) =>
         board.playerIds.includes(player.id)
       );
