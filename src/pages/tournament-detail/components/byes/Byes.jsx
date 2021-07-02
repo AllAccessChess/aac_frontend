@@ -52,7 +52,7 @@ export const Byes = (props) => {
     <CustomAccordion>
       <AccordionSummary expandIcon={<CustomExpandMoreIcon />}>
         <Typography variant="h4" px={4}>
-          Manage Byes({Math.max(remainings, 0)} remaining)
+          Manage Byes ({Math.max(remainings, 0)} remaining)
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
