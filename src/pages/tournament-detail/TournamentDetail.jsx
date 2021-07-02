@@ -97,13 +97,18 @@ export const TournamentDetail = () => {
         onDownloadPGN={handleDownloadPGN}
         onManagePairings={handleManagePairings}
       />
-      <Byes
-        tournament={currentTournament}
-        byeSaving={byeSaving}
-        byes={currentTournament.rounds.map((round) =>
-          round.byes.includes(user.id)
-        )}
-      />
+      {currentTournament.state === TournamentStatus.SCHEDULED ? (
+        <Byes
+          tournament={currentTournament}
+          byeSaving={byeSaving}
+          byes={currentTournament.rounds.map((round) =>
+            round.byes.includes(user.id)
+          )}
+        />
+      ) : (
+        <></>
+      )}
+
       <Members
         user={user}
         members={currentTournament.players}
