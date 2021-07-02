@@ -163,7 +163,11 @@ export const Pairings = (props) => {
                           </TableCell>
                           <TableCell align="center">
                             {round.state === RoundStatus.PLAYING ? (
-                              <Box display="flex" alignItems="center">
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                              >
                                 <Link
                                   component={RouterLink}
                                   color="primary"
