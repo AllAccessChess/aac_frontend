@@ -17,4 +17,11 @@ export const gameLayoutRoutes = [
     component: Match,
     guarded: true,
   },
+  {
+    id: "spectate-td",
+    path: "/spectate/:id/td",
+    name: "Director",
+    component: Match,
+    guarded: true,
+  },
 ];

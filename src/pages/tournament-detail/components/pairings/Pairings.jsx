@@ -111,17 +111,17 @@ export const Pairings = (props) => {
                         Black
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell align="center">
                       <Typography variant="body1" color="textSecondary">
                         Winner
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell align="center">
                       <Typography variant="body1" color="textSecondary">
                         Status
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell align="center">
                       <Typography variant="body1" color="textSecondary">
                         PGN
                       </Typography>
@@ -156,25 +156,45 @@ export const Pairings = (props) => {
                               {blackPlayer ? blackPlayer.name : ""}
                             </Typography>
                           </TableCell>
-                          <TableCell>{getWinnerString(match.result)}</TableCell>
-                          <TableCell>
+                          <TableCell align="center">
+                            <Typography variant="body1">
+                              {getWinnerString(match.result)}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="center">
                             {round.state === RoundStatus.PLAYING ? (
-                              <Link
-                                component={RouterLink}
-                                color="primary"
-                                to={`/spectate/${match.gameId}`}
-                              >
-                                <Typography variant="body1">
-                                  {getRoundStateString(round.state)}
-                                </Typography>
-                              </Link>
+                              <Box display="flex" alignItems="center">
+                                <Link
+                                  component={RouterLink}
+                                  color="primary"
+                                  to={`/spectate/${match.gameId}`}
+                                >
+                                  <Typography variant="body1">
+                                    {getRoundStateString(round.state)}
+                                  </Typography>
+                                </Link>
+                                {isAdmin(user) && (
+                                  <Box display="flex">
+                                    <Typography>&nbsp;|&nbsp;</Typography>
+                                    <Link
+                                      component={RouterLink}
+                                      color="primary"
+                                      to={`/spectate/${match.gameId}/td`}
+                                    >
+                                      <Typography variant="body1">
+                                        Join as Director
+                                      </Typography>
+                                    </Link>
+                                  </Box>
+                                )}
+                              </Box>
                             ) : (
                               <Typography variant="body1">
                                 {getRoundStateString(round.state)}
                               </Typography>
                             )}
                           </TableCell>
-                          <TableCell>
+                          <TableCell align="center">
                             <IconButton
                               onClick={() =>
                                 onDownloadPGN(

@@ -80,6 +80,14 @@ export const Match = () => {
     () => location.pathname.indexOf("/spectate") === 0,
     [location]
   );
+
+  const isDirector = useMemo(
+    () =>
+      location.pathname.indexOf("/spectate") === 0 &&
+      location.pathname.indexOf("/td") !== -1,
+    [location]
+  );
+
   const playerColor = useMemo(
     () =>
       !user || !players.length || isSpectator
@@ -336,9 +344,13 @@ export const Match = () => {
       // });
       if (data.state === GameStatus.PLAYING) setGameStatus(GameStatus.PLAYING);
       else if (isSpectator) {
-        console.log("Spectating now");
+        if (!currentMatchRef.current) {
+          return;
+        }
+        console.log("Spectating now", currentMatchRef.current.id);
         gameClientRef.current.sendData({
           action: GameActions.SPECTATE,
+          game: currentMatchRef.current.id,
         });
       } else {
         console.log("Seeking now");
@@ -349,7 +361,7 @@ export const Match = () => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [setGameStatus, isSpectator]
+    [isSpectator]
   );
 
   const setUpHandlers = useCallback(() => {
@@ -447,6 +459,7 @@ export const Match = () => {
           previewDOM: zoomPreviewRef.current,
           title: "Start Game",
           joinButtonText: "Start",
+          autoJoin: isDirector,
         }
       );
 
@@ -456,7 +469,7 @@ export const Match = () => {
     if (isSpectator && !currentMatch && params.id) {
       dispatch(getMatch(params.id));
     } else if (
-      !isSpectator &&
+      (!isSpectator || isDirector) &&
       gameStatus === GameStatus.PLAYING &&
       currentMatch &&
       currentMatch.meeting
@@ -466,7 +479,9 @@ export const Match = () => {
       joinMeeting(
         currentMatch.meeting.id,
         currentMatch.meeting.password,
-        getValidUserName(currentMatch, user.id, user.name),
+        isDirector
+          ? `${user.name || user.username}(Tournament Director)`
+          : getValidUserName(currentMatch, user.id, user.name || user.username),
         user.email
       );
     }
