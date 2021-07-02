@@ -29,6 +29,7 @@ import {
 } from "components/material-ui";
 import { RoundStatus } from "constant";
 import { getRoundStateString, isAdmin } from "utils/common";
+import { Standings } from "./components";
 import { CustomPaper } from "./styles";
 
 export const Pairings = (props) => {
@@ -99,6 +100,7 @@ export const Pairings = (props) => {
           {tournament.rounds.map((round, index) => (
             <Tab key={index} label={`Round ${index + 1}`} />
           ))}
+          <Tab key={tournament.rounds.length} label="Standings" />
         </Tabs>
         {tournament.rounds.map((round, index) => (
           <TabPanel key={index} value={tabValue} index={index}>
@@ -298,6 +300,13 @@ export const Pairings = (props) => {
             />
           </TabPanel>
         ))}
+        <TabPanel
+          key={tournament.rounds.length}
+          value={tabValue}
+          index={tournament.rounds.length}
+        >
+          <Standings tournament={tournament} />
+        </TabPanel>
       </Box>
     </CustomPaper>
   );

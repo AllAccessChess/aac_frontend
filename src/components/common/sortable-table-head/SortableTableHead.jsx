@@ -3,15 +3,15 @@ import React from "react";
 import { TableCell, TableSortLabel, Typography } from "components/material-ui";
 
 export const SortableTableHead = (props) => {
-  const { align, order, orderBy, headCell, onRequestSort } = props;
+  const { order, orderBy, headCell, onRequestSort, ...tableCellProps } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
 
   return (
     <TableCell
-      align={align === "right" ? "right" : "left"}
       sortDirection={orderBy === headCell.id ? order : false}
+      {...tableCellProps}
     >
       <TableSortLabel
         active={orderBy === headCell.id}
