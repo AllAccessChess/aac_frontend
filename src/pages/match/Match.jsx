@@ -144,7 +144,8 @@ export const Match = () => {
     dispatch(setHistory([]));
     dispatch(setCurrentMatch(null));
     dispatch(getTournament(currentTournament.id));
-    history.goBack();
+    // history.goBack();
+    history.push(`/tournament/${currentTournament.id}`);
     zoomClient.leaveMeeting();
   }, [dispatch, history, zoomClient, currentTournament]);
 
