@@ -172,6 +172,12 @@ export const Pairings = (props) => {
                       const blackPlayer = tournament.players.find(
                         (player) => player.id === match.playerIds[1]
                       );
+                      const isOwner =
+                        user &&
+                        whitePlayer &&
+                        blackPlayer &&
+                        (whitePlayer.id === user.id ||
+                          blackPlayer.id === user.id);
 
                       return (
                         <TableRow tabIndex={-1} key={index}>
@@ -256,10 +262,10 @@ export const Pairings = (props) => {
                                   to={`/spectate/${match.gameId}`}
                                 >
                                   <Typography variant="body1">
-                                    {getRoundStateString(round.state)}
+                                    {getRoundStateString(round.state, isOwner)}
                                   </Typography>
                                 </Link>
-                                {isAdmin(user) && (
+                                {isAdmin(user) && !isOwner && (
                                   <Box display="flex">
                                     <Typography>&nbsp;|&nbsp;</Typography>
                                     <Link
@@ -281,7 +287,7 @@ export const Pairings = (props) => {
                             )}
                           </TableCell>
                           <TableCell align="center">
-                            {match.result !== GameResults.ONGOING ? (
+                            {match.state === GameResults.FINISHED ? (
                               <IconButton
                                 onClick={() =>
                                   onDownloadPGN(

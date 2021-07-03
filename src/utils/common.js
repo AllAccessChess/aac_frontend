@@ -222,10 +222,10 @@ export const isAdmin = (user) => {
   return user && user.permissions && user.permissions.includes("admin");
 };
 
-export const getRoundStateString = (state) => {
+export const getRoundStateString = (state, isOwner = false) => {
   const roundStateString = {
     [RoundStatus.FINISHED]: "Finished",
-    [RoundStatus.PLAYING]: "Watch Live",
+    [RoundStatus.PLAYING]: isOwner ? "Play Now" : "Watch Live",
     [RoundStatus.PREP]: "Waiting for players",
     [RoundStatus.SETUP]: "Scheduled",
   };
