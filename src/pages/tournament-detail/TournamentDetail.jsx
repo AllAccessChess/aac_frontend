@@ -67,7 +67,7 @@ export const TournamentDetail = () => {
       console.log("Polling Tournament Round");
       dispatch(getTournament(currentTournament.id));
     }
-  }, [pollingTournamentRoundCondition ? 5000 : null]);
+  }, [pollingTournamentRoundCondition ? 10000 : null]);
 
   const handleBack = () => {
     dispatch(clearCurrentTournament());
@@ -92,7 +92,7 @@ export const TournamentDetail = () => {
   };
 
   const handleJoinLobby = () => {
-    history.push("/match");
+    history.push(`/match/${currentTournament.id}`);
   };
 
   const handleStartRound = () => {

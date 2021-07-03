@@ -11,6 +11,13 @@ export const gameLayoutRoutes = [
     guarded: true,
   },
   {
+    id: "match",
+    path: "/match/:id",
+    name: "Match",
+    component: Match,
+    guarded: true,
+  },
+  {
     id: "spectate",
     path: "/spectate/:id",
     name: "Spectate",

@@ -357,19 +357,23 @@ export const Match = () => {
           game: currentMatchRef.current.id,
         });
       } else {
-        console.log("Seeking/Joining now");
-        gameClientRef.current.sendData({
-          action: GameActions.SEEK,
-        });
-        setGameStatus(GameStatus.SEEKING);
-        // gameClientRef.current.sendData({
-        //   action: GameActions.JOIN,
-        // });
-        // setGameStatus(GameStatus.JOINING);
+        if (params.id) {
+          console.log("Joining now");
+          gameClientRef.current.sendData({
+            action: GameActions.JOIN,
+          });
+          setGameStatus(GameStatus.JOINING);
+        } else {
+          console.log("Seeking now");
+          gameClientRef.current.sendData({
+            action: GameActions.SEEK,
+          });
+          setGameStatus(GameStatus.SEEKING);
+        }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [isSpectator]
+    [isSpectator, params]
   );
 
   const setUpHandlers = useCallback(() => {
