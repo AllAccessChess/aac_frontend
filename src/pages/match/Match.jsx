@@ -358,14 +358,14 @@ export const Match = () => {
         });
       } else {
         console.log("Seeking/Joining now");
-        // gameClientRef.current.sendData({
-        //   action: GameActions.SEEK,
-        // });
-        // setGameStatus(GameStatus.SEEKING);
         gameClientRef.current.sendData({
-          action: GameActions.JOIN,
+          action: GameActions.SEEK,
         });
-        setGameStatus(GameStatus.JOINING);
+        setGameStatus(GameStatus.SEEKING);
+        // gameClientRef.current.sendData({
+        //   action: GameActions.JOIN,
+        // });
+        // setGameStatus(GameStatus.JOINING);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
