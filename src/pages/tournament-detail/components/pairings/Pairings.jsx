@@ -27,7 +27,7 @@ import {
   Tabs,
   Typography,
 } from "components/material-ui";
-import { RoundStatus } from "constant";
+import { GameResults, RoundStatus } from "constant";
 import { getRoundStateString, isAdmin } from "utils/common";
 import { Standings } from "./components";
 import { CustomPaper } from "./styles";
@@ -281,18 +281,22 @@ export const Pairings = (props) => {
                             )}
                           </TableCell>
                           <TableCell align="center">
-                            <IconButton
-                              onClick={() =>
-                                onDownloadPGN(
-                                  match.gameId,
-                                  `${tournament.title}: Round ${index + 1}(${
-                                    whitePlayer.name
-                                  } vs ${blackPlayer.name})`
-                                )
-                              }
-                            >
-                              <FontAwesomeIcon icon={faFileDownload} />
-                            </IconButton>
+                            {match.result !== GameResults.ONGOING ? (
+                              <IconButton
+                                onClick={() =>
+                                  onDownloadPGN(
+                                    match.gameId,
+                                    `${tournament.title}: Round ${index + 1}(${
+                                      whitePlayer.name
+                                    } vs ${blackPlayer.name})`
+                                  )
+                                }
+                              >
+                                <FontAwesomeIcon icon={faFileDownload} />
+                              </IconButton>
+                            ) : (
+                              <Typography variant="body1">-</Typography>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
