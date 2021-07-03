@@ -287,7 +287,7 @@ export const Pairings = (props) => {
                             )}
                           </TableCell>
                           <TableCell align="center">
-                            {match.state === GameResults.FINISHED ? (
+                            {match.result !== GameResults.ONGOING ? (
                               <IconButton
                                 onClick={() =>
                                   onDownloadPGN(
