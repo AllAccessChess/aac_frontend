@@ -75,8 +75,8 @@ export const TournamentDetail = () => {
   };
 
   const handleDownloadPGN = (gameID, roundTitle) => {
-    // dispatch(downloadPGN(gameID, roundTitle));
-    dispatch(downloadPGN("60c8a855a2f4807757ce30cb", roundTitle));
+    dispatch(downloadPGN(gameID, roundTitle));
+    // dispatch(downloadPGN("60c8a855a2f4807757ce30cb", roundTitle));
   };
 
   const handleRegister = () => {
