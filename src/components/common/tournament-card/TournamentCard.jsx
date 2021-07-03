@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import moment from "moment";
 
-import { useSelector } from "react-redux";
 import useInterval from "react-useinterval";
 import { Box, Button, Typography } from "components/material-ui";
 import { CustomIcon } from "./styles";
@@ -14,38 +13,59 @@ import {
   faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { authSelector } from "redux/reducers";
 import { getRemainingTimeString } from "utils/common";
+import { RoundStatus } from "constant";
 
 export const TournamentCard = (props) => {
   const {
     tournament,
+    currentRoundIndex,
     onViewDetails,
     onRegister,
     onUnRegister,
-    onFindMatch,
+    // onFindMatch,
+    onJoinLobby,
+    onStartRound,
   } = props;
-  const { user } = useSelector(authSelector);
   const offsetInMileSeconds = 300000;
+
   const [remainTimeForTournament, setRemainTimeForTournament] = useState(
     tournament.start
       ? tournament.start - new Date().getTime() - offsetInMileSeconds
       : 0
   );
+  const [remainTimeForRound, setRemainTimeForRound] = useState(-1);
+
+  const currentRound = useMemo(
+    () =>
+      tournament && currentRoundIndex >= 0
+        ? tournament.rounds[currentRoundIndex]
+        : null,
+    [tournament, currentRoundIndex]
+  );
+  const tournamentTimerCondition =
+    tournament.start &&
+    tournament.start - offsetInMileSeconds > new Date().getTime();
+  const roundTimerCondition =
+    currentRound &&
+    currentRound.state === RoundStatus.PLAYING &&
+    currentRound.start > 0 &&
+    currentRound.start > new Date().getTime();
 
   useInterval(
     () => {
-      setRemainTimeForTournament(
-        tournament.start
-          ? tournament.start - new Date().getTime() - offsetInMileSeconds
-          : 0
-      );
+      if (tournamentTimerCondition)
+        setRemainTimeForTournament(
+          tournament.start - new Date().getTime() - offsetInMileSeconds
+        );
     },
-    tournament.start &&
-      tournament.start - offsetInMileSeconds > new Date().getTime()
-      ? 1000
-      : null
+    tournamentTimerCondition ? 1000 : null
   );
+
+  useInterval(() => {
+    if (roundTimerCondition)
+      setRemainTimeForRound(currentRound.start - new Date().getTime());
+  }, [roundTimerCondition ? 1000 : null]);
 
   return (
     <Box
@@ -139,7 +159,7 @@ export const TournamentCard = (props) => {
               View Details
             </Button>
           )}
-          {onRegister && user && remainTimeForTournament > 0 && (
+          {onRegister && remainTimeForTournament > 0 && (
             <Button
               variant="contained"
               color="primary"
@@ -149,7 +169,7 @@ export const TournamentCard = (props) => {
               Register Now
             </Button>
           )}
-          {onUnRegister && user && remainTimeForTournament > 0 && (
+          {onUnRegister && remainTimeForTournament > 0 && (
             <Button
               variant="contained"
               color="primary"
@@ -159,7 +179,7 @@ export const TournamentCard = (props) => {
               UnRegister
             </Button>
           )}
-          {onFindMatch && user && (
+          {/* {onFindMatch && (
             <Button
               variant="contained"
               color="primary"
@@ -168,10 +188,47 @@ export const TournamentCard = (props) => {
             >
               Find Match
             </Button>
+          )} */}
+          {onStartRound && (
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => onStartRound()}
+            >
+              Start Round
+            </Button>
+          )}
+
+          {onJoinLobby && (
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => onJoinLobby()}
+            >
+              Join Lobby
+            </Button>
           )}
           {tournament.start && remainTimeForTournament > 0 ? (
             <Typography variant="body2" color="textSecondary" mt={2}>
               Closing in {getRemainingTimeString(remainTimeForTournament)}
+            </Typography>
+          ) : currentRound && currentRound.state < RoundStatus.PLAYING ? (
+            <Typography variant="body2" color="textSecondary" mt={2}>
+              Waiting to start the round
+            </Typography>
+          ) : currentRound &&
+            currentRound.state === RoundStatus.PLAYING &&
+            remainTimeForRound > 0 ? (
+            <Typography variant="body2" color="textSecondary" mt={2}>
+              Round starts in {getRemainingTimeString(remainTimeForRound)}
+            </Typography>
+          ) : currentRound &&
+            currentRound.state === RoundStatus.PLAYING &&
+            currentRound.start <= new Date().getTime() ? (
+            <Typography variant="body2" color="textSecondary" mt={2}>
+              Round started
             </Typography>
           ) : (
             <></>

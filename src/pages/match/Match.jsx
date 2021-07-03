@@ -40,6 +40,7 @@ import {
   setCurrent as setCurrentMatch,
   getMatch,
 } from "redux/reducers/matchReducer";
+import { getTournament } from "redux/reducers/tournamentReducer";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/game-client";
 import { Chat, ChessBoard, Info, MoveList, Videos, Timer } from "./components";
@@ -142,9 +143,10 @@ export const Match = () => {
   const handleGoBack = useCallback(() => {
     dispatch(setHistory([]));
     dispatch(setCurrentMatch(null));
+    dispatch(getTournament(currentTournament.id));
     history.goBack();
     zoomClient.leaveMeeting();
-  }, [dispatch, history, zoomClient]);
+  }, [dispatch, history, zoomClient, currentTournament]);
 
   const handleShowPast = useCallback(
     (index) => {
@@ -186,6 +188,7 @@ export const Match = () => {
   const onExitSpectating = useCallback(() => {
     gameClientRef.current.sendData({
       action: GameActions.STOPSPECTATE,
+      game: gameClientRef.current.gameId,
     });
     setGameStatus(GameStatus.EXITED);
   }, [setGameStatus]);

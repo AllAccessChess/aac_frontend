@@ -1,18 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useHistory, useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
+import useInterval from "react-useinterval";
 
 import { ChevronLeft as BackIcon } from "@material-ui/icons";
 import { Box, Button } from "components/material-ui";
 import { LoadingScreen, TournamentCard } from "components/common";
 import { Pairings, Members, Byes } from "./components";
 
-import { TournamentStatus } from "constant";
+import { TournamentStatus, RoundStatus, GameResults } from "constant";
+import { isAdmin } from "utils/common";
 import {
   getTournament,
   clearCurrent as clearCurrentTournament,
   registerTournament,
   unRegisterTournament,
+  startRound,
 } from "redux/reducers/tournamentReducer";
 import { downloadPGN } from "redux/reducers/matchReducer";
 
@@ -27,13 +30,52 @@ export const TournamentDetail = () => {
   const byeSaving = useSelector((state) => state.tournamentReducer.byeSaving);
   const user = useSelector((state) => state.authReducer.user);
 
+  const tournamentStarted = useMemo(
+    () =>
+      currentTournament &&
+      currentTournament.start < new Date().getTime() &&
+      currentTournament.rounds.some(
+        (round) => round.state < RoundStatus.FINISHED
+      ),
+    [currentTournament]
+  );
+  const currentRoundIndex = useMemo(
+    () =>
+      currentTournament
+        ? currentTournament.rounds.findIndex(
+            (round) => round.state < RoundStatus.FINISHED
+          )
+        : -1,
+    [currentTournament]
+  );
+  const pollingTournamentRoundCondition = useMemo(
+    () => currentTournament && tournamentStarted && currentRoundIndex >= 0,
+    [currentTournament, tournamentStarted, currentRoundIndex]
+  );
+  const joinedRoundBoardIndex = useMemo(
+    () =>
+      currentTournament && currentRoundIndex > -1
+        ? currentTournament.rounds[currentRoundIndex].boards.findIndex(
+            (board) => board.playerIds.findIndex((id) => id === user.id) > -1
+          )
+        : -1,
+    [currentTournament, currentRoundIndex, user]
+  );
+
+  useInterval(() => {
+    if (pollingTournamentRoundCondition) {
+      console.log("Polling Tournament Round");
+      dispatch(getTournament(currentTournament.id));
+    }
+  }, [pollingTournamentRoundCondition ? 5000 : null]);
+
   const handleBack = () => {
     dispatch(clearCurrentTournament());
     history.push("/tournaments");
   };
 
   const handleDownloadPGN = (gameID, roundTitle) => {
-    // dispatch(downloadPGN(gameID));
+    // dispatch(downloadPGN(gameID, roundTitle));
     dispatch(downloadPGN("60c8a855a2f4807757ce30cb", roundTitle));
   };
 
@@ -47,6 +89,14 @@ export const TournamentDetail = () => {
 
   const handleFindMatch = () => {
     history.push("/match");
+  };
+
+  const handleJoinLobby = () => {
+    history.push("/match");
+  };
+
+  const handleStartRound = () => {
+    dispatch(startRound(currentTournament.id));
   };
 
   const handleManagePairings = (roundId) => {
@@ -75,27 +125,55 @@ export const TournamentDetail = () => {
       <Box width="100%" my={5}>
         <TournamentCard
           tournament={currentTournament}
+          currentRoundIndex={currentRoundIndex}
           onRegister={
+            user &&
             currentTournament.state === TournamentStatus.SCHEDULED &&
             !currentTournament.players.find((item) => item.id === user.id)
               ? handleRegister
               : undefined
           }
           onUnRegister={
+            user &&
             currentTournament.state === TournamentStatus.SCHEDULED &&
             currentTournament.players.find((item) => item.id === user.id)
               ? handleUnRegister
               : undefined
           }
           onFindMatch={
-            currentTournament.state === TournamentStatus.ONGOING
+            user && currentTournament.state === TournamentStatus.ONGOING
               ? handleFindMatch
+              : undefined
+          }
+          onJoinLobby={
+            user &&
+            currentTournament.state === TournamentStatus.ONGOING &&
+            currentRoundIndex > -1 &&
+            currentTournament.rounds[currentRoundIndex].state ===
+              RoundStatus.PLAYING &&
+            currentTournament.rounds[currentRoundIndex].start <=
+              new Date().getTime() &&
+            joinedRoundBoardIndex > -1 &&
+            currentTournament.rounds[currentRoundIndex].boards[
+              joinedRoundBoardIndex
+            ].result === GameResults.ONGOING
+              ? handleJoinLobby
+              : undefined
+          }
+          onStartRound={
+            user &&
+            isAdmin(user) &&
+            currentRoundIndex > -1 &&
+            currentTournament.rounds[currentRoundIndex].state ===
+              RoundStatus.SETUP
+              ? handleStartRound
               : undefined
           }
         />
       </Box>
       <Pairings
         tournament={currentTournament}
+        currentRoundIndex={currentRoundIndex}
         onDownloadPGN={handleDownloadPGN}
         onManagePairings={handleManagePairings}
       />

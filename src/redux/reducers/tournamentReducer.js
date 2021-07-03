@@ -109,6 +109,17 @@ export const unRegisterTournament = (id) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
+export const startRound = (id) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const { tournament } = await TournamentService.startRound(id);
+    dispatch(setCurrent(tournament));
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+  }
+  dispatch(setLoading(false));
+};
+
 export const getPairings = (tournamentId, roundId) => async (dispatch) => {
   dispatch(setLoading(true));
   try {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,14 +33,25 @@ import { Standings } from "./components";
 import { CustomPaper } from "./styles";
 
 export const Pairings = (props) => {
-  const { tournament, onManagePairings, onDownloadPGN } = props;
+  const {
+    tournament,
+    currentRoundIndex,
+    onManagePairings,
+    onDownloadPGN,
+  } = props;
   const user = useSelector((state) => state.authReducer.user);
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(
+    currentRoundIndex >= 0 ? currentRoundIndex : 0
+  );
   const [page, setPage] = useState(0);
   const [matchFilter, setMatchFilter] = useState(1200);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [editingGameId, setEditingGameId] = useState(null);
   const [editedResult, setEditedResult] = useState();
+
+  useEffect(() => {
+    if (currentRoundIndex >= 0) setTabValue(currentRoundIndex);
+  }, [currentRoundIndex]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
