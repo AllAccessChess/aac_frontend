@@ -13,8 +13,8 @@ const Layout = (props) => {
 
   return (
     <Wrapper>
-      <TopBar user={user} />
-      <Box display="flex" mx="5%" my="20px">
+      <TopBar user={user} /> {/* Topbar is 127px in height */}
+      <Box display="flex" mx="5%" my="20px" height="calc(100vh - 127px)">
         <SideBar user={user} routes={props.routes} />
         <Box display="flex" width="100%">
           {props.children}

@@ -99,6 +99,16 @@ export const signInWithToken = (
   dispatch(setLoading(false));
 };
 
+export const updateMe = (payload) => async (dispatch) => {
+  try {
+    const { user } = await UserService.updateUser(payload);
+    dispatch(setUser(user));
+  } catch (error) {
+    console.log(error);
+    dispatch(showError(error.message));
+  }
+};
+
 export const logOut = () => (dispatch) => {
   clearTokens();
   dispatch(setUser(null));

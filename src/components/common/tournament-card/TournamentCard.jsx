@@ -2,8 +2,8 @@ import React, { useState, useMemo } from "react";
 import moment from "moment";
 
 import useInterval from "react-useinterval";
-import { Box, Button, Typography } from "components/material-ui";
-import { CustomIcon } from "./styles";
+import { Box, Typography } from "components/material-ui";
+import { CustomIcon, CustomButton } from "./styles";
 
 import Bishop from "assets/images/bishop.svg";
 import {
@@ -30,9 +30,7 @@ export const TournamentCard = (props) => {
   const offsetInMileSeconds = 300000;
 
   const [remainTimeForTournament, setRemainTimeForTournament] = useState(
-    tournament.start
-      ? tournament.start - new Date().getTime() - offsetInMileSeconds
-      : 0
+    tournament.start ? tournament.start - new Date().getTime() : 0
   );
   const [remainTimeForRound, setRemainTimeForRound] = useState(-1);
 
@@ -44,8 +42,7 @@ export const TournamentCard = (props) => {
     [tournament, currentRoundIndex]
   );
   const tournamentTimerCondition =
-    tournament.start &&
-    tournament.start - offsetInMileSeconds > new Date().getTime();
+    tournament.start && tournament.start > new Date().getTime();
   const roundTimerCondition =
     currentRound &&
     currentRound.state === RoundStatus.PLAYING &&
@@ -55,9 +52,7 @@ export const TournamentCard = (props) => {
   useInterval(
     () => {
       if (tournamentTimerCondition)
-        setRemainTimeForTournament(
-          tournament.start - new Date().getTime() - offsetInMileSeconds
-        );
+        setRemainTimeForTournament(tournament.start - new Date().getTime());
     },
     tournamentTimerCondition ? 1000 : null
   );
@@ -135,7 +130,7 @@ export const TournamentCard = (props) => {
         flexDirection="column"
         justifyContent="space-between"
         alignItems="flex-end"
-        width="20%"
+        width="25%"
       >
         <Typography variant="body2" color="textSecondary">
           Organized by{" "}
@@ -150,34 +145,39 @@ export const TournamentCard = (props) => {
           alignItems="flex-end"
         >
           {onViewDetails && (
-            <Button
+            <CustomButton
               variant="contained"
-              color="primary"
-              fullWidth
+              color={
+                tournament.start > new Date().getTime()
+                  ? "primary"
+                  : "secondary"
+              }
               onClick={() => onViewDetails(tournament)}
             >
-              View Details
-            </Button>
+              {tournament.start > new Date().getTime()
+                ? "Enter Lobby"
+                : "View Details"}
+            </CustomButton>
           )}
           {onRegister && remainTimeForTournament > 0 && (
-            <Button
+            <CustomButton
               variant="contained"
               color="primary"
               fullWidth
               onClick={() => onRegister()}
             >
               Register Now
-            </Button>
+            </CustomButton>
           )}
           {onUnRegister && remainTimeForTournament > 0 && (
-            <Button
+            <CustomButton
               variant="contained"
               color="primary"
               fullWidth
               onClick={() => onUnRegister()}
             >
               UnRegister
-            </Button>
+            </CustomButton>
           )}
           {/* {onFindMatch && (
             <Button
@@ -190,29 +190,33 @@ export const TournamentCard = (props) => {
             </Button>
           )} */}
           {onStartRound && (
-            <Button
+            <CustomButton
               variant="contained"
               color="primary"
               fullWidth
               onClick={() => onStartRound()}
             >
               Start Round
-            </Button>
+            </CustomButton>
           )}
 
           {onJoinLobby && (
-            <Button
+            <CustomButton
               variant="contained"
               color="primary"
               fullWidth
               onClick={() => onJoinLobby()}
             >
               Join Lobby
-            </Button>
+            </CustomButton>
           )}
-          {tournament.start && remainTimeForTournament > 0 ? (
+          {tournament.start &&
+          remainTimeForTournament - offsetInMileSeconds > 0 ? (
             <Typography variant="body2" color="textSecondary" mt={2}>
-              Closing in {getRemainingTimeString(remainTimeForTournament)}
+              Closing in{" "}
+              {getRemainingTimeString(
+                remainTimeForTournament - offsetInMileSeconds
+              )}
             </Typography>
           ) : currentRound && currentRound.state < RoundStatus.PLAYING ? (
             <Typography variant="body2" color="textSecondary" mt={2}>
