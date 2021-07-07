@@ -1,14 +1,16 @@
-import React, { useEffect, useMemo } from "react";
-import { useHistory, useParams } from "react-router";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useHistory, useParams } from "react-router";
 import useInterval from "react-useinterval";
-
-import { ChevronLeft as BackIcon } from "@material-ui/icons";
-import { Box, Button } from "components/material-ui";
-import { LoadingScreen, TournamentCard } from "components/common";
-import { Pairings, Members, Byes } from "./components";
+import {
+  ChevronLeft as BackIcon,
+  Close as CloseIcon,
+  Comment as MessageIcon,
+} from "@material-ui/icons";
 
 import { TournamentStatus, RoundStatus, GameResults } from "constant";
+import { LoadingScreen, TournamentCard } from "components/common";
+import { Box, Button, Fab } from "components/material-ui";
 import { isAdmin } from "utils/common";
 import {
   getTournament,
@@ -18,6 +20,9 @@ import {
   startRound,
 } from "redux/reducers/tournamentReducer";
 import { downloadPGN } from "redux/reducers/matchReducer";
+
+import { Byes, Chat, Members, Pairings } from "./components";
+import { useStyles } from "./styles";
 
 export const TournamentDetail = () => {
   const history = useHistory();
@@ -29,6 +34,8 @@ export const TournamentDetail = () => {
   );
   const byeSaving = useSelector((state) => state.tournamentReducer.byeSaving);
   const user = useSelector((state) => state.authReducer.user);
+  const [showChat, setShowChat] = useState(false);
+  const classes = useStyles();
 
   const tournamentStarted = useMemo(
     () =>
@@ -101,6 +108,14 @@ export const TournamentDetail = () => {
 
   const handleManagePairings = (roundId) => {
     history.push(`/tournament/${params.id}/round/${roundId}/pairing`);
+  };
+
+  const handleClickChatIcon = () => {
+    setShowChat((showChat) => !showChat);
+  };
+
+  const handleCloseChat = () => {
+    setShowChat(false);
   };
 
   useEffect(() => {
@@ -177,7 +192,7 @@ export const TournamentDetail = () => {
         onDownloadPGN={handleDownloadPGN}
         onManagePairings={handleManagePairings}
       />
-      {currentTournament.state === TournamentStatus.SCHEDULED ? (
+      {currentTournament.state === TournamentStatus.SCHEDULED && (
         <Byes
           tournament={currentTournament}
           byeSaving={byeSaving}
@@ -185,15 +200,23 @@ export const TournamentDetail = () => {
             round.byes.includes(user.id)
           )}
         />
-      ) : (
-        <></>
       )}
-
-      <Members
-        user={user}
-        members={currentTournament.players}
-        rounds={currentTournament.rounds}
-      />
+      <Box width="100%" my={5}>
+        <Members
+          user={user}
+          members={currentTournament.players}
+          rounds={currentTournament.rounds}
+        />
+      </Box>
+      <Fab
+        className={classes.fab}
+        color="primary"
+        aria-label={"Chat"}
+        onClick={handleClickChatIcon}
+      >
+        {showChat ? <CloseIcon /> : <MessageIcon />}
+      </Fab>
+      {showChat && <Chat onClose={handleCloseChat} />}
     </Box>
   );
 };
