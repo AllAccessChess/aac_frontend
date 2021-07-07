@@ -1,19 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import {
+  ExpandLess as ExpandLessIcon,
+  ExpandMore as ExpandMoreIcon,
+  Telegram as TelegramIcon,
+} from "@material-ui/icons";
 
 import { config } from "config";
 import { ChatEvents } from "constant";
+import { Badge, Box, Fab, Typography } from "components/material-ui";
 import { ChatClient } from "utils/chat-client";
 import { getAuthToken } from "utils/storage";
-
-import {
-  Box,
-  Button,
-  Paper,
-  TextField,
-  Typography,
-} from "components/material-ui";
-import { useStyles } from "./styles";
+import { ChatItem } from "./components";
+import { MessageField, useStyles } from "./styles";
 
 export const Chat = (props) => {
   const chatClientRef = useRef(null);
@@ -25,6 +24,9 @@ export const Chat = (props) => {
   const [messages, setMessages] = useState([]);
   const [participants, setParticipants] = useState([]);
   const [joined, setJoined] = useState(false);
+  const [minimized, setMinimized] = useState(true);
+  const minimizedRef = useRef(null);
+  const [unreadMessages, setUnreadMessages] = useState(0);
   const classes = useStyles();
 
   useEffect(() => {
@@ -41,6 +43,10 @@ export const Chat = (props) => {
 
     chatClient.on(ChatEvents.MESSAGE, (message) => {
       setMessages((messages) => [...messages, message]);
+
+      if (minimizedRef.current) {
+        setUnreadMessages((unreadMessages) => unreadMessages + 1);
+      }
     });
 
     chatClient.on(ChatEvents.STATUS, (status) => {
@@ -65,6 +71,17 @@ export const Chat = (props) => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    minimizedRef.current = minimized;
+    if (!minimized) {
+      setUnreadMessages(0);
+
+      if (chatBoxEndRef.current) {
+        chatBoxEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [minimized]);
+
   const handleChangeMessage = (e) => {
     setMessage(e.target.value);
   };
@@ -85,57 +102,69 @@ export const Chat = (props) => {
     }
   };
 
+  const toggleMinimized = () => {
+    setMinimized((minimized) => !minimized);
+  };
+
   return (
-    <React.Fragment>
-      <Box className={classes.backDrop} onClick={props.onClose} />
-      <Paper round="true" className={classes.wrapper}>
-        <Box p={6} height="100%" display="flex" flexDirection="column">
-          <Box mv={3}>
-            <Typography variant="h4">Lobby Chat</Typography>
-          </Box>
-          <Box my={3} flexGrow={1} className={classes.chatBox}>
-            {messages.map((message, index) => {
-              const participant = participants.find(
-                (p) => p.id === message.sender
-              );
-              return (
-                <Box
-                  key={`chat-${index}`}
-                  display="flex"
-                  alignItems="flex-start"
-                >
-                  <Box minWidth={120} mr={2}>
-                    <Typography variant="body1" className={classes.sender}>
-                      {participant ? participant.name : message.sender}:
-                    </Typography>
-                  </Box>
-                  <Typography variant="body1">{message.message}</Typography>
-                </Box>
-              );
-            })}
-            <Box float="left" clear="both" ref={chatBoxEndRef}></Box>
-          </Box>
+    <Box className={classes.wrapper}>
+      <Box height="100%" display="flex" flexDirection="column">
+        <Box
+          px={6}
+          py={4}
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          className={classes.titleBar}
+          onClick={toggleMinimized}
+        >
           <Box display="flex" alignItems="center">
-            <Box flexGrow={1} mr={3}>
-              <TextField
-                value={message}
-                onChange={handleChangeMessage}
-                onKeyDown={handleKeyDown}
-                placeholder="Message..."
-                className={classes.textField}
-              />
+            <Box mr={4}>
+              <Typography variant="h5">Community Chat</Typography>
             </Box>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleClickSend}
-              disabled={!joined}
-            >
-              Send
-            </Button>
+            <Badge
+              badgeContent={unreadMessages}
+              color="secondary"
+              invisible={!minimized || !unreadMessages}
+            />
           </Box>
+          {minimized ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Box>
-      </Paper>
-    </React.Fragment>
+        {!minimized && (
+          <React.Fragment>
+            <Box p={4} flexGrow={1} className={classes.chatBox}>
+              {messages.map((message, index) => (
+                <ChatItem
+                  key={`chat-${index}`}
+                  participants={participants}
+                  message={message}
+                />
+              ))}
+              <Box float="left" clear="both" ref={chatBoxEndRef}></Box>
+            </Box>
+            <Box p={4} display="flex" alignItems="center">
+              <Box flexGrow={1} mr={3}>
+                <MessageField
+                  variant="outlined"
+                  value={message}
+                  onChange={handleChangeMessage}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Enter Message"
+                />
+              </Box>
+              <Fab
+                aria-label="Send"
+                color="secondary"
+                size="small"
+                onClick={handleClickSend}
+                disabled={!joined}
+              >
+                <TelegramIcon />
+              </Fab>
+            </Box>
+          </React.Fragment>
+        )}
+      </Box>
+    </Box>
   );
 };

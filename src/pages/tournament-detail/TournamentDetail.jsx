@@ -1,16 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import useInterval from "react-useinterval";
-import {
-  ChevronLeft as BackIcon,
-  Close as CloseIcon,
-  Comment as MessageIcon,
-} from "@material-ui/icons";
+import { ChevronLeft as BackIcon } from "@material-ui/icons";
 
 import { TournamentStatus, RoundStatus, GameResults } from "constant";
 import { LoadingScreen, TournamentCard } from "components/common";
-import { Box, Button, Fab } from "components/material-ui";
+import { Box, Button } from "components/material-ui";
 import { isAdmin } from "utils/common";
 import {
   getTournament,
@@ -22,7 +18,6 @@ import {
 import { downloadPGN } from "redux/reducers/matchReducer";
 
 import { Byes, Chat, Members, Pairings } from "./components";
-import { useStyles } from "./styles";
 
 export const TournamentDetail = () => {
   const history = useHistory();
@@ -34,8 +29,6 @@ export const TournamentDetail = () => {
   );
   const byeSaving = useSelector((state) => state.tournamentReducer.byeSaving);
   const user = useSelector((state) => state.authReducer.user);
-  const [showChat, setShowChat] = useState(false);
-  const classes = useStyles();
 
   const tournamentStarted = useMemo(
     () =>
@@ -108,14 +101,6 @@ export const TournamentDetail = () => {
 
   const handleManagePairings = (roundId) => {
     history.push(`/tournament/${params.id}/round/${roundId}/pairing`);
-  };
-
-  const handleClickChatIcon = () => {
-    setShowChat((showChat) => !showChat);
-  };
-
-  const handleCloseChat = () => {
-    setShowChat(false);
   };
 
   useEffect(() => {
@@ -208,15 +193,7 @@ export const TournamentDetail = () => {
           rounds={currentTournament.rounds}
         />
       </Box>
-      <Fab
-        className={classes.fab}
-        color="primary"
-        aria-label={"Chat"}
-        onClick={handleClickChatIcon}
-      >
-        {showChat ? <CloseIcon /> : <MessageIcon />}
-      </Fab>
-      {showChat && <Chat onClose={handleCloseChat} />}
+      <Chat />
     </Box>
   );
 };
