@@ -115,3 +115,11 @@ export const RoundStatus = Object.freeze({
   PLAYING: 2,
   FINISHED: 3,
 });
+
+export const ChatEvents = Object.freeze({
+  OPEN: "OPEN",
+  MESSAGE: "MESSAGE",
+  STATUS: "STATUS",
+  ERROR: "ERROR",
+  JOINED: "JOINED",
+});
