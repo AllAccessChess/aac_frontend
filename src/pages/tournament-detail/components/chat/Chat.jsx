@@ -28,6 +28,10 @@ export const Chat = (props) => {
   const classes = useStyles();
 
   useEffect(() => {
+    if (!config.chatSocketURL) {
+      return;
+    }
+
     const chatClient = new ChatClient(config.chatSocketURL);
     chatClient.connect(currentTournament.id, getAuthToken().token);
 
