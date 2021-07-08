@@ -136,15 +136,6 @@ const overrides = {
       fontSize: "0.9rem",
     },
   },
-  MuiTabs: {
-    indicator: {
-      backgroundColor: "#0366D0",
-      height: "3px",
-    },
-    flexContainer: {
-      borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
-    },
-  },
   MuiTab: {
     textColorInherit: {
       "&.Mui-selected": {

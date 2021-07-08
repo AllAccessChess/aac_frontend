@@ -19,6 +19,15 @@ const Dashboard = loadable(() => import("pages/dashboard"));
 // Main Layout Routes
 export const mainLayoutRoutes = [
   {
+    id: "account",
+    path: "/account",
+    name: "Account",
+    icon: AccountIcon,
+    component: Account,
+    guarded: true,
+    redirectToSignIn: true,
+  },
+  {
     id: "admin",
     path: "/admin",
     name: "Admin Panel",
@@ -39,7 +48,7 @@ export const mainLayoutRoutes = [
   {
     id: "tournament-list",
     path: "/tournaments",
-    name: "Tournament List",
+    name: "Tournaments",
     component: Tournaments,
     icon: TournamentIcon,
     guarded: true,
@@ -50,15 +59,6 @@ export const mainLayoutRoutes = [
     name: "My Prizes",
     icon: PrizeIcon,
     component: Prizes,
-    guarded: true,
-    redirectToSignIn: true,
-  },
-  {
-    id: "account",
-    path: "/account",
-    name: "Account",
-    icon: AccountIcon,
-    component: Account,
     guarded: true,
     redirectToSignIn: true,
   },

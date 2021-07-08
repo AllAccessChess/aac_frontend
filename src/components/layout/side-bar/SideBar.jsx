@@ -1,13 +1,8 @@
 import React, { useMemo } from "react";
 import { useHistory, useLocation } from "react-router";
 
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from "components/material-ui";
+import { Box, List, ListItemIcon, ListItemText } from "components/material-ui";
+import { CustomListItem } from "./styles";
 import { mainLayoutRoutes } from "routes/mainLayoutRoutes";
 
 export const SideBar = (props) => {
@@ -26,7 +21,7 @@ export const SideBar = (props) => {
     <Box width="250px" mr={4}>
       <List>
         {filteredRoutes.map(({ id, path, name, icon: Icon }) => (
-          <ListItem
+          <CustomListItem
             key={id}
             button
             selected={location.pathname === path}
@@ -36,7 +31,7 @@ export const SideBar = (props) => {
               <Icon />
             </ListItemIcon>
             <ListItemText primary={name} />
-          </ListItem>
+          </CustomListItem>
         ))}
       </List>
     </Box>

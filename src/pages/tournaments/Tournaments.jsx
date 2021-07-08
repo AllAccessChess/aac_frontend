@@ -5,7 +5,8 @@ import { useTheme } from "@material-ui/core";
 
 import { TournamentStatus } from "constant";
 import { TabPanel, TournamentCard } from "components/common";
-import { Box, Tab, Tabs, Typography } from "components/material-ui";
+import { Box } from "components/material-ui";
+import { CustomTab, CustomTabs } from "./styles";
 
 import { getTournamentList } from "redux/reducers/tournamentReducer";
 
@@ -36,22 +37,39 @@ export const Tournaments = () => {
       display="flex"
       flexDirection="column"
       borderRadius={10}
-      p={5}
-      m={4}
-      bgcolor={theme.palette.background.paper}
+      bgcolor="transparent"
     >
-      <Typography variant="h3">Tournaments</Typography>
-      <Tabs
+      <CustomTabs
         value={tabValue}
         onChange={handleTabChange}
         aria-label="tournaments"
+        indicatorColor="secondary"
       >
-        <Tab label="Registered tournaments" value={TournamentStatus.ONGOING} />
-        <Tab label="Upcoming tournaments" value={TournamentStatus.SCHEDULED} />
-        <Tab label="Past tournaments" value={TournamentStatus.FINISHED} />
-      </Tabs>
+        <CustomTab
+          label="Upcoming"
+          value={TournamentStatus.SCHEDULED}
+          bgcolor={theme.palette.background.paper}
+        />
+        <CustomTab
+          label="Registered"
+          value={TournamentStatus.ONGOING}
+          bgcolor={theme.palette.background.paper}
+        />
+        <CustomTab
+          label="Past Events"
+          value={TournamentStatus.FINISHED}
+          bgcolor={theme.palette.background.paper}
+        />
+      </CustomTabs>
       {Object.values(TournamentStatus).map((status) => (
-        <TabPanel value={tabValue} index={status} key={status}>
+        <TabPanel
+          value={tabValue}
+          index={status}
+          key={status}
+          p={5}
+          bgcolor={theme.palette.background.paper}
+          borderRadius="10px"
+        >
           {tournamentList
             .filter((tournament) => tournament.state === status)
             .map((tournament) => (

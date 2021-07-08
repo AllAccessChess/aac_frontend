@@ -2,19 +2,23 @@ import React, { useState, useMemo } from "react";
 import moment from "moment";
 
 import useInterval from "react-useinterval";
-import { Box, Typography } from "components/material-ui";
-import { CustomIcon, CustomButton } from "./styles";
+import { Button, Box, Typography } from "components/material-ui";
+import { CustomIcon } from "./styles";
 
-import Bishop from "assets/images/bishop.svg";
+import regularIcon from "assets/icons/regular.png";
+import blitzIcon from "assets/icons/blitz.png";
+import quickIcon from "assets/icons/quick.png";
 import {
   faGamepad,
   faClock,
-  faPoll,
+  faDollarSign,
   faCalendarAlt,
+  faHouseUser,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { getRemainingTimeString } from "utils/common";
+import { getRemainingTimeString, capitalizeFirstLetter } from "utils/common";
 import { RoundStatus } from "constant";
+import { GreenButton } from "../green-button";
 
 export const TournamentCard = (props) => {
   const {
@@ -68,170 +72,208 @@ export const TournamentCard = (props) => {
       display="flex"
       bgcolor="#15375C"
       justifyContent="space-between"
+      alignItems="center"
+      height="140px"
     >
-      <Box display="flex">
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          bgcolor="#134378"
-          width="140px"
-          height="140px"
-          borderRadius={5}
-        >
-          <img src={Bishop} alt="Bishop" />
-        </Box>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        bgcolor="#134378"
+        width="140px"
+        borderRadius={5}
+      >
+        <img
+          src={
+            tournament.timeCategory === "blitz"
+              ? blitzIcon
+              : tournament.timeCategory === "quick"
+              ? quickIcon
+              : regularIcon
+          }
+          width="100%"
+          alt={tournament.timeCategory}
+        />
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        flexGrow="1"
+        height="100%"
+      >
         <Box
           display="flex"
           flexDirection="column"
           px={5}
           py={4}
+          height="100%"
           justifyContent="space-between"
+          flexGrow="1"
+          maxWidth="800px"
         >
           <Typography variant="h4">{tournament.title}</Typography>
-          <Box display="flex" alignItems="center">
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Box display="flex" alignItems="center" mr={4}>
               <CustomIcon icon={faGamepad} />
               <Typography variant="body1" color="textSecondary">
-                {tournament.settings.variant}
+                {tournament.rounds.length} Round{" "}
+                {capitalizeFirstLetter(tournament.settings.type)}
               </Typography>
             </Box>
             <Box display="flex" alignItems="center" mr={4}>
               <CustomIcon icon={faClock} />
               <Typography variant="body1" color="textSecondary">
-                {tournament.settings.startTime || 30} +{" "}
+                G{tournament.settings.startTime || 30} +{" "}
                 {tournament.settings.increment || 0}
               </Typography>
             </Box>
             <Box display="flex" alignItems="center">
-              <CustomIcon icon={faPoll} />
+              <CustomIcon icon={faDollarSign} />
               <Typography variant="body1" color="textSecondary">
                 ${tournament.prize || 300}
               </Typography>
             </Box>
           </Box>
-          <Box display="flex" alignItems="center">
-            <CustomIcon icon={faCalendarAlt} />
-            <Typography variant="body1" color="textSecondary">
-              {tournament.start
-                ? moment(new Date(tournament.start)).format(
-                    "MMMM Do YYYY @ h:mm a"
-                  )
-                : "-"}
-              {tournament.end
-                ? " - " + moment(new Date(tournament.end)).format("h:mm a")
-                : ""}
-            </Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Box display="flex" alignItems="center" mr={4}>
+              <CustomIcon icon={faCalendarAlt} />
+              <Typography variant="body1" color="textSecondary">
+                {tournament.start
+                  ? moment(new Date(tournament.start)).format(
+                      "MMMM Do YYYY @ h:mm a"
+                    )
+                  : "-"}
+                {tournament.end
+                  ? " - " + moment(new Date(tournament.end)).format("h:mm a")
+                  : ""}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center">
+              <CustomIcon icon={faHouseUser} />
+              <Typography variant="body1" color="textSecondary">
+                {tournament.organiser || "-"}
+              </Typography>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="space-between"
-        alignItems="flex-end"
-        width="25%"
-      >
-        <Typography variant="body2" color="textSecondary">
-          Organized by{" "}
-          <Typography variant="body1" component="span" color="textPrimary">
-            {tournament.organiser || "USCF"}
-          </Typography>
-        </Typography>
         <Box
           display="flex"
           flexDirection="column"
-          justifyContent="space-between"
+          justifyContent="flex-end"
           alignItems="flex-end"
+          height="100%"
+          width="25%"
+          maxWidth="200px"
+          py={4}
         >
-          {onViewDetails && (
-            <CustomButton
+          {onViewDetails && tournament.start > new Date().getTime() && (
+            <GreenButton
               variant="contained"
-              color={
-                tournament.start > new Date().getTime()
-                  ? "primary"
-                  : "secondary"
-              }
+              color={"primary"}
+              mb={2}
+              fullWidth
               onClick={() => onViewDetails(tournament)}
             >
-              {tournament.start > new Date().getTime()
-                ? "Enter Lobby"
-                : "View Details"}
-            </CustomButton>
+              Enter Lobby
+            </GreenButton>
+          )}
+          {onViewDetails && tournament.start <= new Date().getTime() && (
+            <Button
+              variant="contained"
+              color={"secondary"}
+              mb={2}
+              fullWidth
+              onClick={() => onViewDetails(tournament)}
+            >
+              View Details
+            </Button>
           )}
           {onRegister && remainTimeForTournament > 0 && (
-            <CustomButton
+            <Button
               variant="contained"
               color="primary"
+              mb={2}
               fullWidth
               onClick={() => onRegister()}
             >
               Register Now
-            </CustomButton>
+            </Button>
           )}
           {onUnRegister && remainTimeForTournament > 0 && (
-            <CustomButton
+            <Button
               variant="contained"
               color="primary"
+              mb={2}
               fullWidth
               onClick={() => onUnRegister()}
             >
               UnRegister
-            </CustomButton>
+            </Button>
           )}
           {/* {onFindMatch && (
             <Button
               variant="contained"
               color="primary"
-              fullWidth
+              mb={2}
               onClick={() => onFindMatch()}
             >
               Find Match
             </Button>
           )} */}
           {onStartRound && (
-            <CustomButton
+            <Button
               variant="contained"
               color="primary"
+              mb={2}
               fullWidth
               onClick={() => onStartRound()}
             >
               Start Round
-            </CustomButton>
+            </Button>
           )}
 
           {onJoinLobby && (
-            <CustomButton
+            <Button
               variant="contained"
               color="primary"
+              mb={2}
               fullWidth
               onClick={() => onJoinLobby()}
             >
               Join Lobby
-            </CustomButton>
+            </Button>
           )}
           {tournament.start &&
           remainTimeForTournament - offsetInMileSeconds > 0 ? (
-            <Typography variant="body2" color="textSecondary" mt={2}>
+            <Typography variant="body2" color="textSecondary">
               Closing in{" "}
               {getRemainingTimeString(
                 remainTimeForTournament - offsetInMileSeconds
               )}
             </Typography>
           ) : currentRound && currentRound.state < RoundStatus.PLAYING ? (
-            <Typography variant="body2" color="textSecondary" mt={2}>
+            <Typography variant="body2" color="textSecondary">
               Waiting to start the round
             </Typography>
           ) : currentRound &&
             currentRound.state === RoundStatus.PLAYING &&
             remainTimeForRound > 0 ? (
-            <Typography variant="body2" color="textSecondary" mt={2}>
+            <Typography variant="body2" color="textSecondary">
               Round starts in {getRemainingTimeString(remainTimeForRound)}
             </Typography>
           ) : currentRound &&
             currentRound.state === RoundStatus.PLAYING &&
             currentRound.start <= new Date().getTime() ? (
-            <Typography variant="body2" color="textSecondary" mt={2}>
+            <Typography variant="body2" color="textSecondary">
               Round started
             </Typography>
           ) : (

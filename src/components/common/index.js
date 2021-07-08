@@ -7,3 +7,4 @@ export { SortableTableHead } from "./sortable-table-head";
 export { Spinner } from "./spinner";
 export { TabPanel } from "./tab-panel";
 export { TournamentCard } from "./tournament-card";
+export { GreenButton } from "./green-button";

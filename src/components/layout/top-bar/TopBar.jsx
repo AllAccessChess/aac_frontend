@@ -11,12 +11,12 @@ import backgroundImg from "assets/images/background.svg";
 
 import { logOut } from "redux/reducers/authReducer";
 
-const menus = [
-  {
-    label: "Tournaments",
-    url: "/tournaments",
-  },
-];
+// const menus = [
+//   {
+//     label: "Tournaments",
+//     url: "/tournaments",
+//   },
+// ];
 
 export const TopBar = () => {
   const dispatch = useDispatch();
@@ -34,7 +34,7 @@ export const TopBar = () => {
           <Logo src={logoImg} />
         </Link>
         <Box display="flex" justifyContent="space-around" alignItems="center">
-          {menus.map((menu, index) => (
+          {/* {menus.map((menu, index) => (
             <Link
               component={RouterLink}
               to={menu.url}
@@ -45,7 +45,7 @@ export const TopBar = () => {
             >
               {menu.label}
             </Link>
-          ))}
+          ))} */}
           {user ? (
             <AccountMenu user={user} onLogOut={handleLogout} />
           ) : (

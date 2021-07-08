@@ -90,32 +90,34 @@ export const Account = () => {
         Account
       </Typography>
 
-      <Formik
-        enableReinitialize
-        initialValues={initialValues}
-        validationSchema={Yup.object().shape({
-          email: Yup.string().email("Please enter a valid email").max(255),
-          name: Yup.string().max(255).required("Name is required"),
-          username: Yup.string().max(255).required("UserName is required"),
-          uscf: Yup.string().test(
-            "Invalid USCF ID",
-            "Invalid USCF ID",
-            validateUSCFID
-          ),
-        })}
-        onSubmit={handleSubmit}
-      >
-        {(formProps) => (
-          <InnerForm
-            {...formProps}
-            initialValues={initialValues}
-            uscfData={uscfData}
-            uscfSubmitting={uscfSubmitting}
-            setUscfData={setUscfData}
-            onUSCFSubmit={handleUSCFSubmit}
-          />
-        )}
-      </Formik>
+      <Box pr={5} overflow="auto">
+        <Formik
+          enableReinitialize
+          initialValues={initialValues}
+          validationSchema={Yup.object().shape({
+            email: Yup.string().email("Please enter a valid email").max(255),
+            name: Yup.string().max(255).required("Name is required"),
+            username: Yup.string().max(255).required("UserName is required"),
+            uscf: Yup.string().test(
+              "Invalid USCF ID",
+              "Invalid USCF ID",
+              validateUSCFID
+            ),
+          })}
+          onSubmit={handleSubmit}
+        >
+          {(formProps) => (
+            <InnerForm
+              {...formProps}
+              initialValues={initialValues}
+              uscfData={uscfData}
+              uscfSubmitting={uscfSubmitting}
+              setUscfData={setUscfData}
+              onUSCFSubmit={handleUSCFSubmit}
+            />
+          )}
+        </Formik>
+      </Box>
     </Box>
   );
 };
