@@ -256,28 +256,39 @@ export const Pairings = (props) => {
                                 alignItems="center"
                                 justifyContent="center"
                               >
-                                <Link
-                                  component={RouterLink}
-                                  color="primary"
-                                  to={`/spectate/${match.gameId}`}
-                                >
+                                {!match.gameId || !user ? (
                                   <Typography variant="body1">
-                                    {getRoundStateString(round.state, isOwner)}
+                                    Playing
                                   </Typography>
-                                </Link>
-                                {isAdmin(user) && !isOwner && (
-                                  <Box display="flex">
-                                    <Typography>&nbsp;|&nbsp;</Typography>
+                                ) : (
+                                  <React.Fragment>
                                     <Link
                                       component={RouterLink}
                                       color="primary"
-                                      to={`/spectate/${match.gameId}/td`}
+                                      to={`/spectate/${match.gameId}`}
                                     >
                                       <Typography variant="body1">
-                                        Join as Director
+                                        {getRoundStateString(
+                                          round.state,
+                                          isOwner
+                                        )}
                                       </Typography>
                                     </Link>
-                                  </Box>
+                                    {isAdmin(user) && !isOwner && (
+                                      <Box display="flex">
+                                        <Typography>&nbsp;|&nbsp;</Typography>
+                                        <Link
+                                          component={RouterLink}
+                                          color="primary"
+                                          to={`/spectate/${match.gameId}/td`}
+                                        >
+                                          <Typography variant="body1">
+                                            Join as Director
+                                          </Typography>
+                                        </Link>
+                                      </Box>
+                                    )}
+                                  </React.Fragment>
                                 )}
                               </Box>
                             ) : (

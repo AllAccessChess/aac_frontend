@@ -25,6 +25,7 @@ export const gameLayoutRoutes = [
     name: "Spectate",
     component: Match,
     guarded: true,
+    redirectToSignIn: true,
   },
   {
     id: "spectate-td",
