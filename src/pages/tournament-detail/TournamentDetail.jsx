@@ -122,7 +122,8 @@ export const TournamentDetail = () => {
       user &&
       user.id &&
       currentTournament &&
-      currentTournament.state === TournamentStatus.SCHEDULED,
+      currentTournament.state === TournamentStatus.SCHEDULED &&
+      currentTournament.players.find((item) => item.id === user.id),
     [user, currentTournament]
   );
   const chatCondition = useMemo(() => user && user.id && currentTournament, [

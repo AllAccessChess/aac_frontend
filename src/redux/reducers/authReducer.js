@@ -44,7 +44,7 @@ export const signIn = (credentials) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
-export const signUp = (payload) => async (dispatch) => {
+export const signUp = (payload, callback, fallback) => async (dispatch) => {
   dispatch(setLoading(true));
 
   try {
@@ -59,11 +59,12 @@ export const signUp = (payload) => async (dispatch) => {
     } else {
       dispatch(showSuccess("Successfully registered!"));
     }
+    if (callback) callback();
   } catch (error) {
     console.log(error);
     dispatch(showError(error.message));
+    if (fallback) fallback();
   }
-
   dispatch(setLoading(false));
 };
 

@@ -32,14 +32,14 @@ export const SignUp = () => {
     return /^\d+$/.test(value);
   }, []);
   const handleSubmit = useCallback(
-    (values) => {
+    (values, actions) => {
       let formData = {
         name: values.name,
         email: values.email,
         password: values.password,
       };
       if (uscfData) formData.uscf = values.uscf;
-      dispatch(signUp(formData));
+      dispatch(signUp(formData, null, () => actions.setSubmitting(false)));
     },
     [dispatch, uscfData]
   );
