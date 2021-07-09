@@ -51,7 +51,7 @@ export const capitalizeFirstLetter = (string) => {
 
 export const getRemainingTimeString = (remaining) => {
   let string = "";
-  if (remaining > 1000 * 60 * 60) {
+  if (remaining > 1000 * 60 * 60 * 24) {
     string += Math.floor(remaining / (1000 * 60 * 60) / 24) + "d ";
   }
   if (remaining > 1000 * 60 * 60) {
