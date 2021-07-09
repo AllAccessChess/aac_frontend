@@ -33,7 +33,7 @@ export const Members = (props) => {
       },
       {
         id: "rating",
-        label: "Online Blitz rating",
+        label: "Online Blitz Rating",
       },
       {
         id: "byes",
