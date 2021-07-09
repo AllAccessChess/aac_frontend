@@ -56,7 +56,8 @@ export const TournamentDetail = () => {
     () =>
       currentTournament && currentRoundIndex > -1
         ? currentTournament.rounds[currentRoundIndex].boards.findIndex(
-            (board) => board.playerIds.findIndex((id) => id === user.id) > -1
+            (board) =>
+              board.playerIds.findIndex((id) => id === user && user.id) > -1
           )
         : -1,
     [currentTournament, currentRoundIndex, user]
@@ -177,7 +178,7 @@ export const TournamentDetail = () => {
         onDownloadPGN={handleDownloadPGN}
         onManagePairings={handleManagePairings}
       />
-      {currentTournament.state === TournamentStatus.SCHEDULED && (
+      {currentTournament.state === TournamentStatus.SCHEDULED && user && (
         <Byes
           tournament={currentTournament}
           byeSaving={byeSaving}
@@ -193,7 +194,7 @@ export const TournamentDetail = () => {
           rounds={currentTournament.rounds}
         />
       </Box>
-      <Chat />
+      {user && <Chat />}
     </Box>
   );
 };
