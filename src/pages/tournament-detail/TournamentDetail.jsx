@@ -194,11 +194,11 @@ export const TournamentDetail = () => {
         <TournamentCard
           tournament={currentTournament}
           currentRoundIndex={currentRoundIndex}
-          onRegister={registerCondition ? handleRegister : undefined}
-          onUnRegister={unRegisterCondition ? handleUnRegister : undefined}
-          onFindMatch={findMatchCondition ? handleFindMatch : undefined}
-          onJoinLobby={joinLobbyCondition ? handleJoinLobby : undefined}
-          onStartRound={startRoundCondition ? handleStartRound : undefined}
+          onRegister={registerCondition && handleRegister}
+          onUnRegister={unRegisterCondition && handleUnRegister}
+          onFindMatch={findMatchCondition && handleFindMatch}
+          onJoinLobby={joinLobbyCondition && handleJoinLobby}
+          onStartRound={startRoundCondition && handleStartRound}
         />
       </Box>
       <Pairings
