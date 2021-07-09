@@ -12,12 +12,14 @@ import {
   Paper,
 } from "components/material-ui";
 import { CellItem, EndActions } from "./components";
+import { GameStatus } from "constant";
 
 export const MoveList = (props) => {
   const {
     playerColor,
     isSpectator,
     moveList,
+    gameStatus,
     askingDraw,
     pastMoveIndex,
     onOfferDraw,
@@ -37,7 +39,13 @@ export const MoveList = (props) => {
       flexDirection="column"
       py={3}
     >
-      <TableContainer component={Paper} style={{ height: `calc(100% - 70px)` }}>
+      <TableContainer
+        component={Paper}
+        style={{
+          height:
+            gameStatus !== GameStatus.EXITED ? `calc(100% - 70px)` : "100%",
+        }}
+      >
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -79,19 +87,25 @@ export const MoveList = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box my={3}>
-        <Divider />
-      </Box>
-      <EndActions
-        isSpectator={isSpectator}
-        playerColor={playerColor}
-        askingDraw={askingDraw}
-        onOfferDraw={onOfferDraw}
-        onResign={onResign}
-        onAcceptDraw={onAcceptDraw}
-        onDeclineDraw={onDeclineDraw}
-        onExitSpectating={onExitSpectating}
-      />
+      {gameStatus !== GameStatus.EXITED ? (
+        <>
+          <Box my={3}>
+            <Divider />
+          </Box>
+          <EndActions
+            isSpectator={isSpectator}
+            playerColor={playerColor}
+            askingDraw={askingDraw}
+            onOfferDraw={onOfferDraw}
+            onResign={onResign}
+            onAcceptDraw={onAcceptDraw}
+            onDeclineDraw={onDeclineDraw}
+            onExitSpectating={onExitSpectating}
+          />
+        </>
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };
