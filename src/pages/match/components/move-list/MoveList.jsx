@@ -39,7 +39,13 @@ export const MoveList = (props) => {
       flexDirection="column"
       py={3}
     >
-      <TableContainer component={Paper} style={{ height: `calc(100% - 70px)` }}>
+      <TableContainer
+        component={Paper}
+        style={{
+          height:
+            gameStatus !== GameStatus.EXITED ? `calc(100% - 70px)` : "100%",
+        }}
+      >
         <Table stickyHeader>
           <TableHead>
             <TableRow>
