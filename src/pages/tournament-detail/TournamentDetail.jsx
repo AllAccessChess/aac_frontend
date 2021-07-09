@@ -63,6 +63,73 @@ export const TournamentDetail = () => {
     [currentTournament, currentRoundIndex, user]
   );
 
+  const registerCondition = useMemo(
+    () =>
+      user &&
+      user.id &&
+      currentTournament &&
+      currentTournament.state === TournamentStatus.SCHEDULED &&
+      !currentTournament.players.find((item) => item.id === user.id),
+    [user, currentTournament]
+  );
+  const unRegisterCondition = useMemo(
+    () =>
+      user &&
+      user.id &&
+      currentTournament &&
+      currentTournament.state === TournamentStatus.SCHEDULED &&
+      currentTournament.players.find((item) => item.id === user.id),
+    [user, currentTournament]
+  );
+  const findMatchCondition = useMemo(
+    () =>
+      user &&
+      user.id &&
+      currentTournament &&
+      currentTournament.state === TournamentStatus.ONGOING,
+    [user, currentTournament]
+  );
+  const joinLobbyCondition = useMemo(
+    () =>
+      user &&
+      user.id &&
+      currentTournament &&
+      currentTournament.state === TournamentStatus.ONGOING &&
+      currentRoundIndex > -1 &&
+      currentTournament.rounds[currentRoundIndex].state ===
+        RoundStatus.PLAYING &&
+      currentTournament.rounds[currentRoundIndex].start <=
+        new Date().getTime() &&
+      joinedRoundBoardIndex > -1 &&
+      currentTournament.rounds[currentRoundIndex].boards[joinedRoundBoardIndex]
+        .result === GameResults.ONGOING,
+    [user, currentTournament, currentRoundIndex, joinedRoundBoardIndex]
+  );
+  const startRoundCondition = useMemo(
+    () =>
+      user &&
+      user.id &&
+      isAdmin(user) &&
+      currentRoundIndex > -1 &&
+      currentTournament &&
+      currentTournament.rounds[currentRoundIndex].start <=
+        new Date().getTime() &&
+      currentTournament.rounds[currentRoundIndex].state === RoundStatus.SETUP,
+    [user, currentRoundIndex, currentTournament]
+  );
+  const byeCondition = useMemo(
+    () =>
+      user &&
+      user.id &&
+      currentTournament &&
+      currentTournament.state === TournamentStatus.SCHEDULED,
+    [user, currentTournament]
+  );
+  const chatCondition = useMemo(() => user && user.id && currentTournament, [
+    user,
+    currentTournament,
+  ]);
+
   useInterval(() => {
     if (pollingTournamentRoundCondition) {
       console.log("Polling Tournament Round");
@@ -127,49 +194,11 @@ export const TournamentDetail = () => {
         <TournamentCard
           tournament={currentTournament}
           currentRoundIndex={currentRoundIndex}
-          onRegister={
-            user &&
-            currentTournament.state === TournamentStatus.SCHEDULED &&
-            !currentTournament.players.find((item) => item.id === user.id)
-              ? handleRegister
-              : undefined
-          }
-          onUnRegister={
-            user &&
-            currentTournament.state === TournamentStatus.SCHEDULED &&
-            currentTournament.players.find((item) => item.id === user.id)
-              ? handleUnRegister
-              : undefined
-          }
-          onFindMatch={
-            user && currentTournament.state === TournamentStatus.ONGOING
-              ? handleFindMatch
-              : undefined
-          }
-          onJoinLobby={
-            user &&
-            currentTournament.state === TournamentStatus.ONGOING &&
-            currentRoundIndex > -1 &&
-            currentTournament.rounds[currentRoundIndex].state ===
-              RoundStatus.PLAYING &&
-            currentTournament.rounds[currentRoundIndex].start <=
-              new Date().getTime() &&
-            joinedRoundBoardIndex > -1 &&
-            currentTournament.rounds[currentRoundIndex].boards[
-              joinedRoundBoardIndex
-            ].result === GameResults.ONGOING
-              ? handleJoinLobby
-              : undefined
-          }
-          onStartRound={
-            user &&
-            isAdmin(user) &&
-            currentRoundIndex > -1 &&
-            currentTournament.rounds[currentRoundIndex].state ===
-              RoundStatus.SETUP
-              ? handleStartRound
-              : undefined
-          }
+          onRegister={registerCondition && handleRegister}
+          onUnRegister={unRegisterCondition && handleUnRegister}
+          onFindMatch={findMatchCondition && handleFindMatch}
+          onJoinLobby={joinLobbyCondition && handleJoinLobby}
+          onStartRound={startRoundCondition && handleStartRound}
         />
       </Box>
       <Pairings
@@ -178,7 +207,7 @@ export const TournamentDetail = () => {
         onDownloadPGN={handleDownloadPGN}
         onManagePairings={handleManagePairings}
       />
-      {currentTournament.state === TournamentStatus.SCHEDULED && user && (
+      {byeCondition && (
         <Byes
           tournament={currentTournament}
           byeSaving={byeSaving}
@@ -194,7 +223,7 @@ export const TournamentDetail = () => {
           rounds={currentTournament.rounds}
         />
       </Box>
-      {user && <Chat />}
+      {chatCondition && <Chat />}
     </Box>
   );
 };
