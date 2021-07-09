@@ -91,6 +91,7 @@ export const registerTournament = (id) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const { tournament } = await TournamentService.registerTournament(id);
+    dispatch(updateListItem(tournament));
     dispatch(setCurrent(tournament));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
@@ -102,6 +103,7 @@ export const unRegisterTournament = (id) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const { tournament } = await TournamentService.unregisterTournament(id);
+    dispatch(updateListItem(tournament));
     dispatch(setCurrent(tournament));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
