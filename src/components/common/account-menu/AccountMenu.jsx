@@ -1,31 +1,29 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router";
 import { ArrowDropDown as ArrowDropDownIcon } from "@material-ui/icons";
 
 import { Menu, MenuItem } from "components/material-ui";
 import { LargeButton } from "./styles";
 
 export const AccountMenu = (props) => {
-  const history = useHistory();
-  const { user, onLogOut } = props;
+  const { user, onLogOut, onMyAccount } = props;
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = () => {
+    setAnchorEl(null);
+    onLogOut();
+  };
+
+  const handleClickMyAccount = () => {
+    setAnchorEl(null);
+    onMyAccount();
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleMyAccount = () => {
-    handleClose();
-    history.push("/account");
-  };
-
-  const handleLogout = () => {
-    handleClose();
-    onLogOut();
   };
 
   if (!user) return null;
@@ -57,7 +55,9 @@ export const AccountMenu = (props) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {user.id && <MenuItem onClick={handleMyAccount}>My account</MenuItem>}
+        {user.id && (
+          <MenuItem onClick={handleClickMyAccount}>My account</MenuItem>
+        )}
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </React.Fragment>

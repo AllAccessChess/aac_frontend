@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
+import { useHistory } from "react-router";
 
 import { AccountMenu, Spinner } from "components/common";
 import { Box, Button, Link } from "components/material-ui";
@@ -20,11 +21,17 @@ import { logOut } from "redux/reducers/authReducer";
 
 export const TopBar = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const authLoading = useSelector((state) => state.authReducer.loading);
   const user = useSelector((state) => state.authReducer.user);
 
   const handleLogout = () => {
     dispatch(logOut());
+    history.push("/tournaments");
+  };
+
+  const handleMyAccount = () => {
+    history.push("/account");
   };
 
   return (
@@ -47,7 +54,11 @@ export const TopBar = () => {
             </Link>
           ))} */}
           {user ? (
-            <AccountMenu user={user} onLogOut={handleLogout} />
+            <AccountMenu
+              user={user}
+              onLogOut={handleLogout}
+              onMyAccount={handleMyAccount}
+            />
           ) : (
             <>
               {authLoading ? (

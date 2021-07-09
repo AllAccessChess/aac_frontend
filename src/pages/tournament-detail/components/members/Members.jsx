@@ -140,7 +140,9 @@ export const Members = (props) => {
                             <Box display="flex">
                               <NumberCell
                                 variant="body1"
-                                state={member.id === user.id ? "owner" : ""}
+                                state={
+                                  user && member.id === user.id ? "owner" : ""
+                                }
                               >
                                 {page * rowsPerPage + index + 1}
                               </NumberCell>
@@ -163,7 +165,7 @@ export const Members = (props) => {
                                   key={index}
                                   variant="body2"
                                   state={
-                                    member.id === user.id && bye
+                                    user && member.id === user.id && bye
                                       ? "owneractive"
                                       : bye
                                       ? "active"
