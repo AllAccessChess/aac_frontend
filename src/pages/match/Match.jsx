@@ -597,6 +597,7 @@ export const Match = () => {
           <Box flexGrow={1} mt={5} height={`calc(100% - 718px)`}>
             <MoveList
               playerColor={playerColor}
+              gameStatus={gameStatus}
               isSpectator={isSpectator}
               moveList={actionHistory}
               askingDraw={askingDraw}
