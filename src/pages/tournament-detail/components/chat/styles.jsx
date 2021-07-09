@@ -37,4 +37,10 @@ export const useStyles = makeStyles((theme) => ({
   textField: {
     width: "100%",
   },
+  onlineIndicator: {
+    backgroundColor: "green",
+  },
+  offlineIndicator: {
+    backgroundColor: "grey",
+  },
 }));

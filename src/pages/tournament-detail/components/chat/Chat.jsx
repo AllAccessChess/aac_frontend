@@ -8,6 +8,7 @@ import {
 
 import { config } from "config";
 import { ChatEvents } from "constant";
+import { Spinner } from "components/common";
 import { Badge, Box, Fab, Typography } from "components/material-ui";
 import { ChatClient } from "utils/chat-client";
 import { getAuthToken } from "utils/storage";
@@ -60,7 +61,17 @@ export const Chat = (props) => {
 
     chatClientRef.current = chatClient;
 
+    // Interval for Ping-Pong ;)
+    const pingInteral = setInterval(() => {
+      if (chatClientRef.current) {
+        chatClientRef.current.sendData({
+          action: "ping",
+        });
+      }
+    }, 10000);
+
     return () => {
+      clearInterval(pingInteral);
       chatClientRef.current.disconnect();
     };
   }, [currentTournament.id]);
@@ -120,6 +131,17 @@ export const Chat = (props) => {
         >
           <Box display="flex" alignItems="center">
             <Box mr={4}>
+              <Badge
+                color="secondary"
+                variant="dot"
+                classes={{
+                  badge: joined
+                    ? classes.onlineIndicator
+                    : classes.offlineIndicator,
+                }}
+              />
+            </Box>
+            <Box mr={4}>
               <Typography variant="h5">Community Chat</Typography>
             </Box>
             <Badge
@@ -133,6 +155,16 @@ export const Chat = (props) => {
         {!minimized && (
           <React.Fragment>
             <Box p={4} flexGrow={1} className={classes.chatBox}>
+              {!joined && (
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  height="100%"
+                >
+                  <Spinner />
+                </Box>
+              )}
               {messages.map((message, index) => (
                 <ChatItem
                   key={`chat-${index}`}
