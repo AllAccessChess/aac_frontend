@@ -27,7 +27,7 @@ import {
   Tabs,
   Typography,
 } from "components/material-ui";
-import { GameResults, RoundStatus } from "constant";
+import { GameResults, RoundStatus, TournamentStatus } from "constant";
 import { getRoundStateString, isAdmin } from "utils/common";
 import { Standings } from "./components";
 import { CustomPaper } from "./styles";
@@ -115,17 +115,19 @@ export const Pairings = (props) => {
         </Tabs>
         {tournament.rounds.map((round, index) => (
           <TabPanel key={index} value={tabValue} index={index}>
-            {isAdmin(user) && round.state === RoundStatus.SETUP && (
-              <Box my={5} display="flex" justifyContent="flex-end">
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => onManagePairings(index)}
-                >
-                  Manage Pairings
-                </Button>
-              </Box>
-            )}
+            {isAdmin(user) &&
+              tournament.state === TournamentStatus.ONGOING &&
+              round.state === RoundStatus.SETUP && (
+                <Box my={5} display="flex" justifyContent="flex-end">
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => onManagePairings(index)}
+                  >
+                    Manage Pairings
+                  </Button>
+                </Box>
+              )}
             <TableContainer>
               <Table stickyHeader aria-label="members table">
                 <TableHead>

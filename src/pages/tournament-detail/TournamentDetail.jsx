@@ -112,6 +112,7 @@ export const TournamentDetail = () => {
       isAdmin(user) &&
       currentRoundIndex > -1 &&
       currentTournament &&
+      currentTournament.state === TournamentStatus.ONGOING &&
       currentTournament.rounds[currentRoundIndex].start <=
         new Date().getTime() &&
       currentTournament.rounds[currentRoundIndex].state === RoundStatus.SETUP,
