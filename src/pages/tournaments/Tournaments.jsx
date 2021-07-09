@@ -23,6 +23,10 @@ export const Tournaments = () => {
   const getFilteredTournaments = useCallback(
     (status) =>
       tournamentList.filter((tournament) => {
+        if (tournament.hidden) {
+          return false;
+        }
+
         if (
           status === TournamentStatus.SCHEDULED ||
           status === TournamentStatus.FINISHED
