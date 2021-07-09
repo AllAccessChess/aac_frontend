@@ -10,7 +10,8 @@ import Chess from "chess.js";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import useInterval from "react-useinterval";
-import { useHistory, useParams } from "react-router";
+// import { useHistory, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useTheme } from "@material-ui/core";
 
 import { config } from "config";
@@ -36,11 +37,11 @@ import { useZoomContext } from "lib/zoom";
 import { generateSignature, getValidUserName } from "lib/zoom/client/helpers";
 import {
   addHistoryItem,
-  setHistory,
+  // setHistory,
   setCurrent as setCurrentMatch,
   getMatch,
 } from "redux/reducers/matchReducer";
-import { getTournament } from "redux/reducers/tournamentReducer";
+// import { getTournament } from "redux/reducers/tournamentReducer";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/game-client";
 import { Chat, ChessBoard, Info, MoveList, Videos, Timer } from "./components";
@@ -50,7 +51,7 @@ export const Match = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const params = useParams();
-  const history = useHistory();
+  // const history = useHistory();
 
   const [chess] = useState(new Chess());
   const [fen, setFen] = useState("");
@@ -141,13 +142,13 @@ export const Match = () => {
   }, []);
 
   const handleGoBack = useCallback(() => {
-    dispatch(setHistory([]));
-    dispatch(setCurrentMatch(null));
-    dispatch(getTournament(currentTournament.id));
+    // dispatch(setHistory([]));
+    // dispatch(setCurrentMatch(null));
+    // dispatch(getTournament(currentTournament.id));
     // history.goBack();
-    history.push(`/tournament/${currentTournament.id}`);
+    // history.push(`/tournament/${currentTournament.id}`);
     zoomClient.leaveMeeting();
-  }, [dispatch, history, zoomClient, currentTournament]);
+  }, [zoomClient]);
 
   const handleShowPast = useCallback(
     (index) => {
