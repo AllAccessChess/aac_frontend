@@ -155,9 +155,11 @@ const overrides = {
     stickyHeader: {
       border: "none",
     },
-    // body: {
-    //   border: "none",
-    // },
+    body: {
+      border: "none",
+      paddingTop: "5px",
+      paddingBottom: "5px",
+    },
   },
 };
 

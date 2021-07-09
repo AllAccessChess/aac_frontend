@@ -3,7 +3,7 @@ import React, { useState, useCallback, useMemo } from "react";
 import { SortableTableHead, TabPanel } from "components/common";
 import {
   Box,
-  Tab,
+  // Tab,
   Table,
   TableBody,
   TableCell,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Tabs,
+  // Tabs,
   Typography,
 } from "components/material-ui";
 import { CustomPaper, ByeCell, NumberCell } from "./styles";
@@ -21,7 +21,8 @@ import { stableSort, tableComparator } from "utils/common";
 export const Members = (props) => {
   const { user, members, rounds } = props;
   const tabs = useMemo(
-    () => ["Open", "Under 2200", "Under 1800", "Under 1400"],
+    // () => ["Open", "Under 2200", "Under 1800", "Under 1400"],
+    () => ["Open"],
     []
   );
   const sortableCells = useMemo(
@@ -41,7 +42,7 @@ export const Members = (props) => {
     ],
     []
   );
-  const [tabValue, setTabValue] = useState(0);
+  // const [tabValue, setTabValue] = useState(0);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState("desc");
@@ -56,13 +57,13 @@ export const Members = (props) => {
     setPage(0);
   };
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
+  // const handleTabChange = (event, newValue) => {
+  //   setTabValue(newValue);
+  // };
   const memberFilter = (item, tabValue) => {
-    if (tabValue === 1 && item.rating >= 2200) return false;
-    if (tabValue === 2 && item.rating >= 1800) return false;
-    if (tabValue === 3 && item.rating >= 1400) return false;
+    // if (tabValue === 1 && item.rating >= 2200) return false;
+    // if (tabValue === 2 && item.rating >= 1800) return false;
+    // if (tabValue === 3 && item.rating >= 1400) return false;
     return true;
   };
   const getFilterMembers = useCallback(
@@ -96,15 +97,17 @@ export const Members = (props) => {
         >
           <Typography variant="h4">Members Playing</Typography>
         </Box>
-        <Tabs value={tabValue} onChange={handleTabChange} aria-label="members">
+        {/* <Tabs value={tabValue} onChange={handleTabChange} aria-label="members">
           {tabs.map((tab) => (
             <Tab key={tab} label={tab} />
           ))}
-        </Tabs>
+        </Tabs> */}
         {tabs.map((tab, tabIndex) => {
-          const filteredMembers = getFilterMembers(tabValue);
+          // const filteredMembers = getFilterMembers(tabValue);
+          const filteredMembers = getFilterMembers(0);
           return (
-            <TabPanel key={tab} value={tabValue} index={tabIndex}>
+            // <TabPanel key={tab} value={tabValue} index={tabIndex}>
+            <TabPanel key={tab} value={0} index={tabIndex}>
               <TableContainer>
                 <Table stickyHeader aria-label="members table">
                   <TableHead>
@@ -135,7 +138,7 @@ export const Members = (props) => {
                         page * rowsPerPage + rowsPerPage
                       )
                       .map((member, index) => (
-                        <TableRow hover tabIndex={-1} key={index}>
+                        <TableRow tabIndex={-1} key={index}>
                           <TableCell>
                             <Box display="flex">
                               <NumberCell
