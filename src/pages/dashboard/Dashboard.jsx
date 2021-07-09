@@ -140,7 +140,7 @@ export const Dashboard = () => {
               </Box>
               <Box mb={3}>
                 <Typography variant="h1" component="p">
-                  $4,500.00
+                  $0.00
                 </Typography>
               </Box>
               <TextLabel>Available prizes</TextLabel>
