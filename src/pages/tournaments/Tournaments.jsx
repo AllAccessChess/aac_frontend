@@ -9,22 +9,48 @@ import { Box } from "components/material-ui";
 import { CustomTab, CustomTabs } from "./styles";
 
 import { getTournamentList } from "redux/reducers/tournamentReducer";
+import { useCallback } from "react";
 
 export const Tournaments = () => {
   const history = useHistory();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const [tabValue, setTabValue] = useState(TournamentStatus.ONGOING);
+  const [tabValue, setTabValue] = useState(TournamentStatus.SCHEDULED);
 
+  const user = useSelector((state) => state.authReducer.user);
   const tournamentList = useSelector((state) => state.tournamentReducer.list);
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
+  const getFilteredTournaments = useCallback(
+    (status) =>
+      tournamentList.filter((tournament) => {
+        if (
+          status === TournamentStatus.SCHEDULED ||
+          status === TournamentStatus.FINISHED
+        ) {
+          return tournament.state === status;
+        }
 
-  const handleViewTounamentDetail = (tournament) => {
-    history.push(`/tournament/${tournament.id}`);
-  };
+        if (user && user.id) {
+          return (
+            tournament.players.findIndex((player) => player.id === user.id) !==
+            -1
+          ); // status === TournamentStatus.ONGOING
+        }
+        return 0;
+      }),
+    [tournamentList, user]
+  );
+
+  const handleTabChange = useCallback((event, newValue) => {
+    setTabValue(newValue);
+  }, []);
+
+  const handleViewTounamentDetail = useCallback(
+    (tournament) => {
+      history.push(`/tournament/${tournament.id}`);
+    },
+    [history]
+  );
 
   useEffect(() => {
     if (!tournamentList.length) dispatch(getTournamentList());
@@ -50,11 +76,14 @@ export const Tournaments = () => {
           value={TournamentStatus.SCHEDULED}
           bgcolor={theme.palette.background.paper}
         />
-        <CustomTab
-          label="Registered"
-          value={TournamentStatus.ONGOING}
-          bgcolor={theme.palette.background.paper}
-        />
+        {user && user.id && (
+          <CustomTab
+            label="Registered"
+            value={TournamentStatus.ONGOING}
+            bgcolor={theme.palette.background.paper}
+          />
+        )}
+
         <CustomTab
           label="Past Events"
           value={TournamentStatus.FINISHED}
@@ -70,23 +99,21 @@ export const Tournaments = () => {
           bgcolor={theme.palette.background.paper}
           borderRadius="10px"
         >
-          {tournamentList
-            .filter((tournament) => tournament.state === status)
-            .map((tournament) => (
-              <Box
-                width="100%"
-                bgcolor="#15375C"
-                p={5}
-                mb={5}
-                borderRadius={10}
-                key={tournament.id}
-              >
-                <TournamentCard
-                  tournament={tournament}
-                  onViewDetails={handleViewTounamentDetail}
-                />
-              </Box>
-            ))}
+          {getFilteredTournaments(status).map((tournament) => (
+            <Box
+              width="100%"
+              bgcolor="#15375C"
+              p={5}
+              mb={5}
+              borderRadius={10}
+              key={tournament.id}
+            >
+              <TournamentCard
+                tournament={tournament}
+                onViewDetails={handleViewTounamentDetail}
+              />
+            </Box>
+          ))}
         </TabPanel>
       ))}
     </Box>
