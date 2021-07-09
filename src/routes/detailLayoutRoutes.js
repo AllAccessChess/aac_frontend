@@ -20,5 +20,6 @@ export const detailLayoutRoutes = [
     component: Pairing,
     icon: TournamentIcon,
     guarded: true,
+    redirectToSignIn: true,
   },
 ];

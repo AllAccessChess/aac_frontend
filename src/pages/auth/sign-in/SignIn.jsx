@@ -14,7 +14,7 @@ import { BackgroundWrapper, Logo } from "./styles";
 import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/auth_background.png";
 
-import { signIn, setUser } from "redux/reducers/authReducer";
+import { signIn } from "redux/reducers/authReducer";
 
 export const SignIn = () => {
   const dispatch = useDispatch();
@@ -41,9 +41,11 @@ export const SignIn = () => {
       setSubmitting(false);
     }
   };
+
   const handleGuestLogin = useCallback(() => {
-    dispatch(setUser({ name: "Guest" }));
-  }, [dispatch]);
+    history.push("/tournaments");
+  }, [history]);
+
   return (
     <>
       <Helmet title="Sign In" />

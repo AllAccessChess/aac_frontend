@@ -9,6 +9,7 @@ export const gameLayoutRoutes = [
     name: "Match",
     component: Match,
     guarded: true,
+    redirectToSignIn: true,
   },
   {
     id: "match",
@@ -16,6 +17,7 @@ export const gameLayoutRoutes = [
     name: "Match",
     component: Match,
     guarded: true,
+    redirectToSignIn: true,
   },
   {
     id: "spectate",
@@ -30,5 +32,6 @@ export const gameLayoutRoutes = [
     name: "Director",
     component: Match,
     guarded: true,
+    redirectToSignIn: true,
   },
 ];
