@@ -216,7 +216,7 @@ export const TournamentCard = (props) => {
               fullWidth
               onClick={() => onUnRegister()}
             >
-              UnRegister
+              Unregister
             </Button>
           )}
           {/* {onFindMatch && (
