@@ -85,9 +85,9 @@ export const TournamentCard = (props) => {
       >
         <img
           src={
-            tournament.timeCategory === "blitz"
+            tournament.settings.timeCategory === "blitz"
               ? blitzIcon
-              : tournament.timeCategory === "quick"
+              : tournament.settings.timeCategory === "quick"
               ? quickIcon
               : regularIcon
           }

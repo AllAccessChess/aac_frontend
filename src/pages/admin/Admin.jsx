@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 
 import { useTheme } from "@material-ui/core";
 import {
@@ -19,6 +19,7 @@ import { getLiveGameIDs } from "redux/reducers/matchReducer";
 import { isAdmin } from "utils/common";
 
 export const Admin = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const theme = useTheme();
   const liveGameIDs = useSelector((state) => state.matchReducer.liveIDs);
@@ -30,6 +31,12 @@ export const Admin = () => {
     }
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (user && user.id && !isAdmin(user)) {
+      history.push("/tournaments");
+    }
+  }, [user, history]);
 
   return (
     <Box

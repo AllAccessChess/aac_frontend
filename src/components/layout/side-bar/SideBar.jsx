@@ -4,6 +4,7 @@ import { useHistory, useLocation } from "react-router";
 import { Box, List, ListItemIcon, ListItemText } from "components/material-ui";
 import { CustomListItem } from "./styles";
 import { mainLayoutRoutes } from "routes/mainLayoutRoutes";
+import { isAdmin } from "utils/common";
 
 export const SideBar = (props) => {
   const history = useHistory();
@@ -12,7 +13,7 @@ export const SideBar = (props) => {
   const filteredRoutes = useMemo(
     () =>
       user && user.id
-        ? mainLayoutRoutes
+        ? mainLayoutRoutes.filter((item) => !item.adminAccess || isAdmin(user))
         : mainLayoutRoutes.filter((item) => !item.redirectToSignIn),
     [user]
   );

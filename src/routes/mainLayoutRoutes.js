@@ -35,6 +35,7 @@ export const mainLayoutRoutes = [
     component: Admin,
     guarded: true,
     redirectToSignIn: true,
+    adminAccess: true,
   },
   {
     id: "dashboard",
