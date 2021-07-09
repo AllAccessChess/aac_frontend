@@ -5,7 +5,7 @@ import { Menu, MenuItem } from "components/material-ui";
 import { LargeButton } from "./styles";
 
 export const AccountMenu = (props) => {
-  const { user, onLogOut } = props;
+  const { user, onLogOut, onMyAccount } = props;
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -15,6 +15,11 @@ export const AccountMenu = (props) => {
   const handleLogout = () => {
     setAnchorEl(null);
     onLogOut();
+  };
+
+  const handleClickMyAccount = () => {
+    setAnchorEl(null);
+    onMyAccount();
   };
 
   const handleClose = () => {
@@ -50,7 +55,9 @@ export const AccountMenu = (props) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {user.id && <MenuItem onClick={handleClose}>My account</MenuItem>}
+        {user.id && (
+          <MenuItem onClick={handleClickMyAccount}>My account</MenuItem>
+        )}
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </React.Fragment>

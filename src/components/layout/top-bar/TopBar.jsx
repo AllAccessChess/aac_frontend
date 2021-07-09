@@ -30,6 +30,10 @@ export const TopBar = () => {
     history.push("/tournaments");
   };
 
+  const handleMyAccount = () => {
+    history.push("/account");
+  };
+
   return (
     <Wrapper position="static" background={backgroundImg}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -50,7 +54,11 @@ export const TopBar = () => {
             </Link>
           ))} */}
           {user ? (
-            <AccountMenu user={user} onLogOut={handleLogout} />
+            <AccountMenu
+              user={user}
+              onLogOut={handleLogout}
+              onMyAccount={handleMyAccount}
+            />
           ) : (
             <>
               {authLoading ? (
