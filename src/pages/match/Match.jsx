@@ -143,9 +143,12 @@ export const Match = () => {
   const handleGoBack = useCallback(() => {
     dispatch(setHistory([]));
     dispatch(setCurrentMatch(null));
-    dispatch(getTournament(currentTournament.id));
-    // history.goBack();
-    history.push(`/tournament/${currentTournament.id}`);
+    if (currentTournament) {
+      dispatch(getTournament(currentTournament.id));
+      history.push(`/tournament/${currentTournament.id}`);
+    } else {
+      history.push(`/tournaments`);
+    }
     zoomClient.leaveMeeting();
   }, [dispatch, history, zoomClient, currentTournament]);
 
