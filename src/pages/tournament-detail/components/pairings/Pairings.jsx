@@ -267,7 +267,11 @@ export const Pairings = (props) => {
                                     <Link
                                       component={RouterLink}
                                       color="primary"
-                                      to={`/spectate/${match.gameId}`}
+                                      to={
+                                        isOwner
+                                          ? `/match/${match.gameId}`
+                                          : `/spectate/${match.gameId}`
+                                      }
                                     >
                                       <Typography variant="body1">
                                         {getRoundStateString(
