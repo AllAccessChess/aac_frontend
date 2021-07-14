@@ -1,9 +1,9 @@
 const STOCKFISH = window.STOCKFISH;
 
-export default class StockFishClient {
-  constructor(game, setFen, playerColor) {
+export default class StockFishClient extends EventTarget {
+  constructor(game, playerColor) {
+    super();
     this.game = game;
-    this.setFen = setFen;
     this.playerColor = playerColor;
     this.engine =
       typeof STOCKFISH === "function"
@@ -15,7 +15,6 @@ export default class StockFishClient {
         : new Worker("stockfish.js");
     this.engineStatus = {};
     this.time = { wtime: 3000, btime: 3000, winc: 1500, binc: 1500 };
-    this.clockTimeoutID = null;
     this.uciCmd("uci");
 
     this.initHandlers();
@@ -23,43 +22,6 @@ export default class StockFishClient {
 
   uciCmd = (cmd, which) => {
     (which || this.engine).postMessage(cmd);
-  };
-
-  clockTick = () => {
-    let t =
-      (this.time.clockColor === "white" ? this.time.wtime : this.time.btime) +
-      this.time.startTime -
-      Date.now();
-    let timeToNextSecond = (t % 1000) + 1;
-    this.clockTimeoutID = setTimeout(this.clockTick, timeToNextSecond);
-  };
-
-  stopClock = () => {
-    if (this.clockTimeoutID !== null) {
-      clearTimeout(this.clockTimeoutID);
-      this.clockTimeoutID = null;
-    }
-    if (this.time.startTime > 0) {
-      let elapsed = Date.now() - this.time.startTime;
-      this.time.startTime = null;
-      if (this.time.clockColor === "white") {
-        this.time.wtime = Math.max(0, this.time.wtime - elapsed);
-      } else {
-        this.time.btime = Math.max(0, this.time.btime - elapsed);
-      }
-    }
-  };
-
-  startClock = () => {
-    if (this.game.turn() === "w") {
-      this.time.wtime += this.time.winc;
-      this.time.clockColor = "white";
-    } else {
-      this.time.btime += this.time.binc;
-      this.time.clockColor = "black";
-    }
-    this.time.startTime = Date.now();
-    this.clockTick();
   };
 
   get_moves = () => {
@@ -76,7 +38,6 @@ export default class StockFishClient {
   };
 
   prepareMove = () => {
-    this.stopClock();
     let turn = this.game.turn() === "w" ? "white" : "black";
     if (!this.game.game_over()) {
       if (turn !== this.playerColor) {
@@ -103,13 +64,6 @@ export default class StockFishClient {
           );
         }
         // isEngineRunning = true;
-      }
-      if (
-        this.game.history().length >= 2 &&
-        !this.time.depth &&
-        !this.time.nodes
-      ) {
-        this.startClock();
       }
     }
   };
@@ -155,7 +109,7 @@ export default class StockFishClient {
         if (match) {
           // isEngineRunning = false;
           this.game.move({ from: match[1], to: match[2], promotion: match[3] });
-          this.setFen(this.game.fen());
+          this.triggerEvent("setFen", this.game.fen());
           this.prepareMove();
           this.uciCmd("eval", this.evaler);
           //uciCmd("eval");
@@ -197,5 +151,24 @@ export default class StockFishClient {
     this.engineStatus.engineReady = false;
     this.engineStatus.search = null;
     this.prepareMove();
+  };
+
+  /***************************
+   * Custom Event Management *
+   ***************************/
+  on = (event, handler) => {
+    this.addEventListener(event, (e) => {
+      if (handler) {
+        handler(e.detail);
+      }
+    });
+  };
+
+  off = (event, handler) => {
+    this.removeEventListener(event, handler);
+  };
+
+  triggerEvent = (name, payload) => {
+    this.dispatchEvent(new CustomEvent(name, { detail: payload }));
   };
 }

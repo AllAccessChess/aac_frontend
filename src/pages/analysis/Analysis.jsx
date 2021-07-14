@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useState,
   useCallback,
+  useMemo,
   useRef,
 } from "react";
 import { Helmet } from "react-helmet";
@@ -18,29 +19,40 @@ import { ChessBoard } from "components/common";
 export const Analysis = () => {
   const theme = useTheme();
   const windowSize = useWindowSize();
-  const playerColor = 0; // white
 
-  const [chess] = useState(new Chess());
+  const playerColor = 0; // white
   const [chessBoardSize, setChessBoardSize] = useState(0);
   const [fen, setFen] = useState("start");
-  const botRef = useRef(
-    new StockFishClient(chess, setFen, playerColor === 0 ? "white" : "black")
-  );
   const [premove, setPremove] = useState(null);
   const [lastMove, setLastMove] = useState();
 
+  const chess = useRef(new Chess());
   const chessContainerRef = createRef(null);
+
+  const bot = useMemo(
+    () =>
+      new StockFishClient(chess.current, playerColor === 0 ? "white" : "black"),
+    [playerColor]
+  );
 
   const handleMove = useCallback(
     (from, to, promot = "x") => {
-      const move = chess.move({ from, to, promotion: promot });
+      const move = chess.current.move({ from, to, promotion: promot });
       if (!move) return;
-      setFen(chess.fen());
+      setFen(chess.current.fen());
       setLastMove([from, to]);
-      botRef.current.prepareMove();
+      bot.prepareMove();
     },
-    [chess, setFen, setLastMove]
+    [bot, setFen, setLastMove]
   );
+
+  useEffect(() => {
+    bot.on("setFen", setFen);
+    return () => {
+      bot.off("setFen", setFen);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (chessContainerRef.current) {
@@ -74,7 +86,7 @@ export const Analysis = () => {
         <ChessBoard
           width={chessBoardSize}
           height={chessBoardSize}
-          chess={chess}
+          chess={chess.current}
           fen={fen}
           playerColor={playerColor}
           isPlaying={true}
