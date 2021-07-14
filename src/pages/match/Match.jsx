@@ -32,8 +32,9 @@ import {
   Typography,
 } from "components/material-ui";
 import { useWindowSize } from "hooks";
-import { useZoomContext } from "lib/zoom";
-import { generateSignature, getValidUserName } from "lib/zoom/client/helpers";
+import { useJitsiContext } from "lib/jitsi";
+// import { useZoomContext } from "lib/zoom";
+// import { generateSignature, getValidUserName } from "lib/zoom/client/helpers";
 import {
   addHistoryItem,
   setHistory,
@@ -41,6 +42,7 @@ import {
   getMatch,
 } from "redux/reducers/matchReducer";
 import { getTournament } from "redux/reducers/tournamentReducer";
+import { getValidUserName } from "utils/common";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/game-client";
 import { ChessBoard } from "components/common";
@@ -59,7 +61,7 @@ export const Match = () => {
   const [gameMessage, setGameMessage] = useState("");
   const [gameStatus, setGameStatus] = useState(GameStatus.IDLE);
   const [players, setPlayers] = useState([]);
-  const [meetingJoining, setMeetingJoining] = useState(false);
+  // const [meetingJoining, setMeetingJoining] = useState(false);
   const [chessBoardSize, setChessBoardSize] = useState(0);
   const [askingDraw, setAskingDraw] = useState(false);
   const [whiteClock, setWhiteClock] = useState(300);
@@ -98,10 +100,10 @@ export const Match = () => {
     [user, players, isSpectator]
   );
 
-  const gameClientRef = useRef(null);
-  const zoomPreviewRef = useRef(null);
-  const zoomChatRef = useRef(null);
-  const userCountRef = useRef(1);
+  const gameClientRef = useRef(new GameClient(config.socketURL));
+  // const zoomPreviewRef = useRef(null);
+  // const zoomChatRef = useRef(null);
+  // const userCountRef = useRef(1);
   const chessContainerRef = createRef(null);
   const historyRef = useRef(actionHistory);
   const playersRef = useRef(players);
@@ -110,7 +112,9 @@ export const Match = () => {
   const premoveRef = useRef(premove);
   const currentMatchRef = useRef(currentMatch);
 
-  const { zoomClient } = useZoomContext();
+  // const { zoomClient } = useZoomContext();
+  const { jitsiClient } = useJitsiContext();
+
   const classes = useStyles();
   const theme = useTheme();
   const windowSize = useWindowSize();
@@ -148,8 +152,8 @@ export const Match = () => {
     } else {
       history.push(`/tournaments`);
     }
-    zoomClient.leaveMeeting();
-  }, [dispatch, history, zoomClient, currentTournament]);
+    // zoomClient.leaveMeeting();
+  }, [dispatch, history, currentTournament]);
 
   const handleShowPast = useCallback(
     (index) => {
@@ -420,50 +424,50 @@ export const Match = () => {
   // }, [user]);
 
   useEffect(() => {
-    const joinMeeting = async (id, password, userName, email) => {
-      const meetingNumber = id;
-      const passWord = password;
+    // const joinMeeting = async (id, password, userName, email) => {
+    //   const meetingNumber = id;
+    //   const passWord = password;
 
-      const signature = await generateSignature(
-        meetingNumber,
-        config.zoom.apiKey,
-        config.zoom.apiSecret
-      );
+    //   const signature = await generateSignature(
+    //     meetingNumber,
+    //     config.zoom.apiKey,
+    //     config.zoom.apiSecret
+    //   );
 
-      zoomClient.setUserData({
-        userName: userName,
-        userEmail: email,
-      });
+    //   zoomClient.setUserData({
+    //     userName: userName,
+    //     userEmail: email,
+    //   });
 
-      zoomClient.on("onUserJoin", (data) => {
-        console.log(`## Zoom SDK ## - User ${data.userId} joined`);
-      });
+    //   zoomClient.on("onUserJoin", (data) => {
+    //     console.log(`## Zoom SDK ## - User ${data.userId} joined`);
+    //   });
 
-      zoomClient.on("joinClicked", () => {
-        setMeetingJoining(false);
-        userCountRef.current = 1;
-      });
+    //   zoomClient.on("joinClicked", () => {
+    //     setMeetingJoining(false);
+    //     userCountRef.current = 1;
+    //   });
 
-      await zoomClient.joinMeeting(
-        {
-          meetingNumber,
-          passWord,
-          signature,
-          leaveUrl: currentTournament
-            ? `/tournament/${currentTournament.id}`
-            : "/tournaments",
-        },
-        {
-          chatDOM: zoomChatRef.current,
-          previewDOM: zoomPreviewRef.current,
-          title: "Start Game",
-          joinButtonText: "Start",
-          autoJoin: isDirector,
-        }
-      );
+    //   await zoomClient.joinMeeting(
+    //     {
+    //       meetingNumber,
+    //       passWord,
+    //       signature,
+    //       leaveUrl: currentTournament
+    //         ? `/tournament/${currentTournament.id}`
+    //         : "/tournaments",
+    //     },
+    //     {
+    //       chatDOM: zoomChatRef.current,
+    //       previewDOM: zoomPreviewRef.current,
+    //       title: "Start Game",
+    //       joinButtonText: "Start",
+    //       autoJoin: isDirector,
+    //     }
+    //   );
 
-      zoomClient.renderUserVideo();
-    };
+    //   zoomClient.renderUserVideo();
+    // };
 
     if (isSpectator && !currentMatch && params.id) {
       dispatch(getMatch(params.id));
@@ -473,16 +477,29 @@ export const Match = () => {
       currentMatch &&
       currentMatch.meeting
     ) {
-      setMeetingJoining(true);
+      // setMeetingJoining(true);
 
-      joinMeeting(
-        currentMatch.meeting.id,
-        currentMatch.meeting.password,
-        isDirector
-          ? `${user.name || user.username}(Tournament Director)`
-          : getValidUserName(currentMatch, user.id, user.name || user.username),
-        user.email
-      );
+      // joinMeeting(
+      //   currentMatch.meeting.id,
+      //   currentMatch.meeting.password,
+      //   isDirector
+      //     ? `${user.name || user.username}(Tournament Director)`
+      //     : getValidUserName(currentMatch, user.id, user.name || user.username),
+      //   user.email
+      // );
+
+      if (jitsiClient) {
+        jitsiClient.joinMeeting({
+          meetingId: currentMatch.meeting.id,
+          userName: isDirector
+            ? `${user.name || user.username}(Tournament Director)`
+            : getValidUserName(
+                currentMatch,
+                user.id,
+                user.name || user.username
+              ),
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameStatus]);
@@ -496,10 +513,10 @@ export const Match = () => {
 
   useEffect(() => {
     if (usingVideo) {
-      zoomClient.enableCustomRendering();
-      zoomClient.renderUserVideo();
+      // zoomClient.enableCustomRendering();
+      // zoomClient.renderUserVideo();
     } else {
-      zoomClient.disableCustomRendering();
+      // zoomClient.disableCustomRendering();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usingVideo]);
@@ -595,7 +612,7 @@ export const Match = () => {
               <Divider />
             </Box>
             <Chat message={gameMessage} />
-            <Box className={classes.zoomChatWrapper} ref={zoomChatRef} />
+            {/* <Box className={classes.zoomChatWrapper} ref={zoomChatRef} /> */}
           </Paper>
           <Box flexGrow={1} mt={5} height={`calc(100% - 718px)`}>
             <MoveList
@@ -708,19 +725,6 @@ export const Match = () => {
           />
         </Box>
       </Grid>
-      <Box
-        display={meetingJoining ? "flex" : "none"}
-        alignItems="center"
-        justifyContent="center"
-        ref={zoomPreviewRef}
-        position="fixed"
-        top={0}
-        left={0}
-        bottom={0}
-        right={0}
-        bgcolor={theme.palette.background.paper}
-        zIndex={3}
-      />
     </Grid>
   );
 };

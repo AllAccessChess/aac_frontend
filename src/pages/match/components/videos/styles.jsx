@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const VideoCanvas = styled.canvas`
+export const UserVideo = styled.video`
   border-radius: 8px;
   background: black;
   transform: scaleX(-1);
