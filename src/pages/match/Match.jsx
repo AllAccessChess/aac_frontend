@@ -98,7 +98,7 @@ export const Match = () => {
     [user, players, isSpectator]
   );
 
-  const gameClient = useMemo(() => new GameClient(config.socketURL), []);
+  const gameClientRef = useRef(null);
   const zoomPreviewRef = useRef(null);
   const zoomChatRef = useRef(null);
   const userCountRef = useRef(1);
@@ -117,27 +117,27 @@ export const Match = () => {
 
   const handleOfferDraw = useCallback(() => {
     console.log("Offering Draw");
-    gameClient.sendData({
+    gameClientRef.current.sendData({
       action: GameActions.DRAWOFFER,
     });
-  }, [gameClient]);
+  }, []);
   const handleRespondToDraw = useCallback(
     (accept = true) => {
       console.log("Responding to Draw: ", accept);
-      gameClient.sendData({
+      gameClientRef.current.sendData({
         action: GameActions.DRAWRESPONSE,
         accept: accept,
       });
       setAskingDraw(false);
     },
-    [gameClient, setAskingDraw]
+    [setAskingDraw]
   );
 
   const handleResign = useCallback(() => {
-    gameClient.sendData({
+    gameClientRef.current.sendData({
       action: GameActions.RESIGN,
     });
-  }, [gameClient]);
+  }, []);
 
   const handleGoBack = useCallback(() => {
     dispatch(setHistory([]));
@@ -189,12 +189,12 @@ export const Match = () => {
   );
 
   const onExitSpectating = useCallback(() => {
-    gameClient.sendData({
+    gameClientRef.current.sendData({
       action: GameActions.STOPSPECTATE,
-      game: gameClient.gameId,
+      game: gameClientRef.current.gameId,
     });
     setGameStatus(GameStatus.EXITED);
-  }, [gameClient, setGameStatus]);
+  }, [setGameStatus]);
 
   const addMoveStringToHistory = useCallback(
     (move) => {
@@ -235,9 +235,9 @@ export const Match = () => {
         promot === "x" ? from + to : from + to + promot
       );
       setAskingDraw(false);
-      gameClient.sendData({
+      gameClientRef.current.sendData({
         action: GameActions.MOVE,
-        game: gameClient.gameId,
+        game: gameClientRef.current.gameId,
         move: promot === "x" ? from + to : from + to + promot,
       });
     },
@@ -321,7 +321,7 @@ export const Match = () => {
       "Opened Socket, authenticating with token: ",
       getAuthToken().token
     );
-    gameClient.sendData({
+    gameClientRef.current.sendData({
       action: GameActions.AUTH,
       token: getAuthToken().token,
     });
@@ -330,7 +330,7 @@ export const Match = () => {
   const onAuthenticatedSocket = useCallback(
     (data) => {
       console.log("Authenticated Socket");
-      // gameClient.sendData({
+      // gameClientRef.current.sendData({
       //   action: GameActions.STATUS,
       // });
       if (data.state === GameStatus.PLAYING) setGameStatus(GameStatus.PLAYING);
@@ -339,20 +339,20 @@ export const Match = () => {
           return;
         }
         console.log("Spectating now", currentMatchRef.current.id);
-        gameClient.sendData({
+        gameClientRef.current.sendData({
           action: GameActions.SPECTATE,
           game: currentMatchRef.current.id,
         });
       } else {
         if (params.id) {
           console.log("Joining now");
-          gameClient.sendData({
+          gameClientRef.current.sendData({
             action: GameActions.JOIN,
           });
           setGameStatus(GameStatus.JOINING);
         } else {
           console.log("Seeking now");
-          gameClient.sendData({
+          gameClientRef.current.sendData({
             action: GameActions.SEEK,
           });
           setGameStatus(GameStatus.SEEKING);
@@ -360,16 +360,16 @@ export const Match = () => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [gameClient, isSpectator, params]
+    [isSpectator, params]
   );
 
   const setUpHandlers = useCallback(() => {
-    if (gameClient) {
-      gameClient.on(GameEvents.GET_RESPONSE, getResponse);
-      gameClient.on(GameEvents.OPENED, onOpenedSocket);
-      gameClient.on(GameEvents.AUTHENTICATED, onAuthenticatedSocket);
-      gameClient.on(GameEvents.OFFEREDDRAW, onOfferedDraw);
-      gameClient.on(GameEvents.EXITGAME, onExitGame);
+    if (gameClientRef.current) {
+      gameClientRef.current.on(GameEvents.GET_RESPONSE, getResponse);
+      gameClientRef.current.on(GameEvents.OPENED, onOpenedSocket);
+      gameClientRef.current.on(GameEvents.AUTHENTICATED, onAuthenticatedSocket);
+      gameClientRef.current.on(GameEvents.OFFEREDDRAW, onOfferedDraw);
+      gameClientRef.current.on(GameEvents.EXITGAME, onExitGame);
     }
     if (isSpectator) {
       window.addEventListener("unload", onExitSpectating);
@@ -386,12 +386,15 @@ export const Match = () => {
   ]);
 
   const endHandlers = useCallback(() => {
-    if (gameClient) {
-      gameClient.off(GameEvents.GET_RESPONSE, getResponse);
-      gameClient.off(GameEvents.OPENED, onOpenedSocket);
-      gameClient.off(GameEvents.AUTHENTICATED, onAuthenticatedSocket);
-      gameClient.off(GameEvents.OFFEREDDRAW, onOfferedDraw);
-      gameClient.off(GameEvents.EXITGAME, onExitGame);
+    if (gameClientRef.current) {
+      gameClientRef.current.off(GameEvents.GET_RESPONSE, getResponse);
+      gameClientRef.current.off(GameEvents.OPENED, onOpenedSocket);
+      gameClientRef.current.off(
+        GameEvents.AUTHENTICATED,
+        onAuthenticatedSocket
+      );
+      gameClientRef.current.off(GameEvents.OFFEREDDRAW, onOfferedDraw);
+      gameClientRef.current.off(GameEvents.EXITGAME, onExitGame);
     }
     if (isSpectator) {
       window.removeEventListener("unload", onExitSpectating);
@@ -502,11 +505,12 @@ export const Match = () => {
   }, [usingVideo]);
 
   useEffect(() => {
-    gameClient.connect();
+    gameClientRef.current = new GameClient(config.socketURL);
+    gameClientRef.current.connect();
     setUpHandlers();
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      gameClient.disconnect();
+      gameClientRef.current.disconnect();
       endHandlers();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -525,7 +529,7 @@ export const Match = () => {
     () => {
       if (gameStatus !== GameStatus.IDLE && gameStatus !== GameStatus.EXITED) {
         console.log(gameStatus);
-        gameClient.sendData({
+        gameClientRef.current.sendData({
           action: GameActions.PING,
         });
       }

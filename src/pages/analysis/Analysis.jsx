@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useState,
   useCallback,
-  useMemo,
   useRef,
 } from "react";
 import { Helmet } from "react-helmet";
@@ -29,11 +28,7 @@ export const Analysis = () => {
   const chess = useRef(new Chess());
   const chessContainerRef = createRef(null);
 
-  const bot = useMemo(
-    () =>
-      new StockFishClient(chess.current, playerColor === 0 ? "white" : "black"),
-    [playerColor]
-  );
+  const botRef = useRef(null);
 
   const handleMove = useCallback(
     (from, to, promot = "x") => {
@@ -41,15 +36,19 @@ export const Analysis = () => {
       if (!move) return;
       setFen(chess.current.fen());
       setLastMove([from, to]);
-      bot.prepareMove();
+      botRef.current.prepareMove();
     },
-    [bot, setFen, setLastMove]
+    [setFen, setLastMove]
   );
 
   useEffect(() => {
-    bot.on("setFen", setFen);
+    botRef.current = new StockFishClient(
+      chess.current,
+      playerColor === 0 ? "white" : "black"
+    );
+    botRef.current.on("setFen", setFen);
     return () => {
-      bot.off("setFen", setFen);
+      botRef.current.off("setFen", setFen);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
