@@ -1,9 +1,15 @@
-import React, { createRef, useEffect, useState, useCallback } from "react";
+import React, {
+  createRef,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import { Helmet } from "react-helmet";
 import Chess from "chess.js";
 
 import { useWindowSize } from "hooks";
-import stockfishClient from "utils/stockfish-client";
+import StockFishClient from "utils/stockfish-client";
 
 import { useTheme } from "@material-ui/core";
 import { Box, Typography } from "components/material-ui";
@@ -17,8 +23,8 @@ export const Analysis = () => {
   const [chess] = useState(new Chess());
   const [chessBoardSize, setChessBoardSize] = useState(0);
   const [fen, setFen] = useState("start");
-  const [bot] = useState(
-    stockfishClient(chess, setFen, playerColor === 0 ? "white" : "black")
+  const botRef = useRef(
+    new StockFishClient(chess, setFen, playerColor === 0 ? "white" : "black")
   );
   const [premove, setPremove] = useState(null);
   const [lastMove, setLastMove] = useState();
@@ -31,17 +37,10 @@ export const Analysis = () => {
       if (!move) return;
       setFen(chess.fen());
       setLastMove([from, to]);
-      bot.prepareMove();
+      botRef.current.prepareMove();
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [chess, setFen, setLastMove, setPremove]
+    [chess, setFen, setLastMove]
   );
-
-  useEffect(() => {
-    setFen(chess.fen());
-    bot.prepareMove();
-    // eslint-disable-next-line
-  }, []);
 
   useEffect(() => {
     if (chessContainerRef.current) {

@@ -1,77 +1,70 @@
 const STOCKFISH = window.STOCKFISH;
 
-const stockfishClient = (game, setFen, playerColor) => {
-  /// We can load Stockfish via Web Workers or via STOCKFISH() if loaded from a <script> tag.
-  let engine =
-    typeof STOCKFISH === "function" ? STOCKFISH() : new Worker("stockfish.js");
-  let evaler =
-    typeof STOCKFISH === "function" ? STOCKFISH() : new Worker("stockfish.js");
-  let engineStatus = {};
-  let time = { wtime: 3000, btime: 3000, winc: 1500, binc: 1500 };
+export default class StockFishClient {
+  constructor(game, setFen, playerColor) {
+    this.game = game;
+    this.setFen = setFen;
+    this.playerColor = playerColor;
+    this.engine =
+      typeof STOCKFISH === "function"
+        ? STOCKFISH()
+        : new Worker("stockfish.js");
+    this.evaler =
+      typeof STOCKFISH === "function"
+        ? STOCKFISH()
+        : new Worker("stockfish.js");
+    this.engineStatus = {};
+    this.time = { wtime: 3000, btime: 3000, winc: 1500, binc: 1500 };
+    this.clockTimeoutID = null;
+    this.uciCmd("uci");
 
-  let clockTimeoutID = null;
-  // let isEngineRunning = false;
-  let announced_game_over;
-  // do not pick up pieces if the game is over
-  // only pick up pieces for White
-
-  setInterval(function () {
-    if (announced_game_over) {
-      return;
-    }
-
-    if (game.game_over()) {
-      announced_game_over = true;
-    }
-  }, 500);
-
-  function uciCmd(cmd, which) {
-    // console.log('UCI: ' + cmd);
-
-    (which || engine).postMessage(cmd);
+    this.initHandlers();
   }
-  uciCmd("uci");
 
-  function clockTick() {
+  uciCmd = (cmd, which) => {
+    (which || this.engine).postMessage(cmd);
+  };
+
+  clockTick = () => {
     let t =
-      (time.clockColor === "white" ? time.wtime : time.btime) +
-      time.startTime -
+      (this.time.clockColor === "white" ? this.time.wtime : this.time.btime) +
+      this.time.startTime -
       Date.now();
     let timeToNextSecond = (t % 1000) + 1;
-    clockTimeoutID = setTimeout(clockTick, timeToNextSecond);
-  }
+    this.clockTimeoutID = setTimeout(this.clockTick, timeToNextSecond);
+  };
 
-  function stopClock() {
-    if (clockTimeoutID !== null) {
-      clearTimeout(clockTimeoutID);
-      clockTimeoutID = null;
+  stopClock = () => {
+    if (this.clockTimeoutID !== null) {
+      clearTimeout(this.clockTimeoutID);
+      this.clockTimeoutID = null;
     }
-    if (time.startTime > 0) {
-      let elapsed = Date.now() - time.startTime;
-      time.startTime = null;
-      if (time.clockColor === "white") {
-        time.wtime = Math.max(0, time.wtime - elapsed);
+    if (this.time.startTime > 0) {
+      let elapsed = Date.now() - this.time.startTime;
+      this.time.startTime = null;
+      if (this.time.clockColor === "white") {
+        this.time.wtime = Math.max(0, this.time.wtime - elapsed);
       } else {
-        time.btime = Math.max(0, time.btime - elapsed);
+        this.time.btime = Math.max(0, this.time.btime - elapsed);
       }
     }
-  }
+  };
 
-  function startClock() {
-    if (game.turn() === "w") {
-      time.wtime += time.winc;
-      time.clockColor = "white";
+  startClock = () => {
+    if (this.game.turn() === "w") {
+      this.time.wtime += this.time.winc;
+      this.time.clockColor = "white";
     } else {
-      time.btime += time.binc;
-      time.clockColor = "black";
+      this.time.btime += this.time.binc;
+      this.time.clockColor = "black";
     }
-    time.startTime = Date.now();
-    clockTick();
-  }
+    this.time.startTime = Date.now();
+    this.clockTick();
+  };
 
-  function get_moves() {
+  get_moves = () => {
     let moves = "";
-    let history = game.history({ verbose: true });
+    let history = this.game.history({ verbose: true });
 
     for (let i = 0; i < history.length; ++i) {
       let move = history[i];
@@ -80,127 +73,129 @@ const stockfishClient = (game, setFen, playerColor) => {
     }
 
     return moves;
-  }
+  };
 
-  const prepareMove = () => {
-    stopClock();
-    let turn = game.turn() === "w" ? "white" : "black";
-    if (!game.game_over()) {
-      // if (turn === playerColor) {
-      if (turn !== playerColor) {
-        // playerColor = playerColor === 'white' ? 'black' : 'white';
-        uciCmd("position startpos moves" + get_moves());
-        uciCmd("position startpos moves" + get_moves(), evaler);
-        uciCmd("eval", evaler);
+  prepareMove = () => {
+    this.stopClock();
+    let turn = this.game.turn() === "w" ? "white" : "black";
+    if (!this.game.game_over()) {
+      if (turn !== this.playerColor) {
+        this.uciCmd("position startpos moves" + this.get_moves());
+        this.uciCmd("position startpos moves" + this.get_moves(), this.evaler);
+        this.uciCmd("eval", this.evaler);
 
-        if (time && time.wtime) {
-          uciCmd(
+        if (this.time && this.time.wtime) {
+          this.uciCmd(
             "go " +
-              (time.depth ? "depth " + time.depth : "") +
+              (this.time.depth ? "depth " + this.time.depth : "") +
               " wtime " +
-              time.wtime +
+              this.time.wtime +
               " winc " +
-              time.winc +
+              this.time.winc +
               " btime " +
-              time.btime +
+              this.time.btime +
               " binc " +
-              time.binc
+              this.time.binc
           );
         } else {
-          uciCmd("go " + (time.depth ? "depth " + time.depth : ""));
+          this.uciCmd(
+            "go " + (this.time.depth ? "depth " + this.time.depth : "")
+          );
         }
         // isEngineRunning = true;
       }
-      if (game.history().length >= 2 && !time.depth && !time.nodes) {
-        startClock();
+      if (
+        this.game.history().length >= 2 &&
+        !this.time.depth &&
+        !this.time.nodes
+      ) {
+        this.startClock();
       }
     }
   };
 
-  evaler.onmessage = function (event) {
-    let line;
+  initHandlers = () => {
+    this.evaler.onmessage = (event) => {
+      let line;
 
-    if (event && typeof event === "object") {
-      line = event.data;
-    } else {
-      line = event;
-    }
-
-    // console.log('evaler: ' + line);
-
-    /// Ignore some output.
-    if (
-      line === "uciok" ||
-      line === "readyok" ||
-      line.substr(0, 11) === "option name"
-    ) {
-      return;
-    }
-  };
-
-  engine.onmessage = (event) => {
-    let line;
-
-    if (event && typeof event === "object") {
-      line = event.data;
-    } else {
-      line = event;
-    }
-    // console.log('Reply: ' + line);
-    if (line === "uciok") {
-      engineStatus.engineLoaded = true;
-    } else if (line === "readyok") {
-      engineStatus.engineReady = true;
-    } else {
-      let match = line.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/);
-      /// Did the AI move?
-      if (match) {
-        // isEngineRunning = false;
-        game.move({ from: match[1], to: match[2], promotion: match[3] });
-        setFen(game.fen());
-        prepareMove();
-        uciCmd("eval", evaler);
-        //uciCmd("eval");
-        /// Is it sending feedback?
-      } else if ((match = line.match(/^info .*\bdepth (\d+) .*\bnps (\d+)/))) {
-        engineStatus.search = "Depth: " + match[1] + " Nps: " + match[2];
+      if (event && typeof event === "object") {
+        line = event.data;
+      } else {
+        line = event;
       }
 
-      /// Is it sending feed back with a score?
-      if ((match = line.match(/^info .*\bscore (\w+) (-?\d+)/))) {
-        let score = parseInt(match[2], 10) * (game.turn() === "w" ? 1 : -1);
-        /// Is it measuring in centipawns?
-        if (match[1] === "cp") {
-          engineStatus.score = (score / 100.0).toFixed(2);
-          /// Did it find a mate?
-        } else if (match[1] === "mate") {
-          engineStatus.score = "Mate in " + Math.abs(score);
+      // console.log('evaler: ' + line);
+
+      /// Ignore some output.
+      if (
+        line === "uciok" ||
+        line === "readyok" ||
+        line.substr(0, 11) === "option name"
+      ) {
+        return;
+      }
+    };
+
+    this.engine.onmessage = (event) => {
+      let line;
+
+      if (event && typeof event === "object") {
+        line = event.data;
+      } else {
+        line = event;
+      }
+      // console.log('Reply: ' + line);
+      if (line === "uciok") {
+        this.engineStatus.engineLoaded = true;
+      } else if (line === "readyok") {
+        this.engineStatus.engineReady = true;
+      } else {
+        let match = line.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/);
+        /// Did the AI move?
+        if (match) {
+          // isEngineRunning = false;
+          this.game.move({ from: match[1], to: match[2], promotion: match[3] });
+          this.setFen(this.game.fen());
+          this.prepareMove();
+          this.uciCmd("eval", this.evaler);
+          //uciCmd("eval");
+          /// Is it sending feedback?
+        } else if (
+          (match = line.match(/^info .*\bdepth (\d+) .*\bnps (\d+)/))
+        ) {
+          this.engineStatus.search = "Depth: " + match[1] + " Nps: " + match[2];
         }
 
-        /// Is the score bounded?
-        if ((match = line.match(/\b(upper|lower)bound\b/))) {
-          engineStatus.score =
-            ((match[1] === "upper") === (game.turn() === "w") ? "<= " : ">= ") +
-            engineStatus.score;
+        /// Is it sending feed back with a score?
+        if ((match = line.match(/^info .*\bscore (\w+) (-?\d+)/))) {
+          let score =
+            parseInt(match[2], 10) * (this.game.turn() === "w" ? 1 : -1);
+          /// Is it measuring in centipawns?
+          if (match[1] === "cp") {
+            this.engineStatus.score = (score / 100.0).toFixed(2);
+            /// Did it find a mate?
+          } else if (match[1] === "mate") {
+            this.engineStatus.score = "Mate in " + Math.abs(score);
+          }
+
+          /// Is the score bounded?
+          if ((match = line.match(/\b(upper|lower)bound\b/))) {
+            this.engineStatus.score =
+              ((match[1] === "upper") === (this.game.turn() === "w")
+                ? "<= "
+                : ">= ") + this.engineStatus.score;
+          }
         }
       }
-    }
-    // displayStatus();
+      // displayStatus();
+    };
   };
 
-  return {
-    start: function () {
-      uciCmd("ucinewgame");
-      uciCmd("isready");
-      engineStatus.engineReady = false;
-      engineStatus.search = null;
-      prepareMove();
-      announced_game_over = false;
-    },
-    prepareMove: function () {
-      prepareMove();
-    },
+  start = () => {
+    this.uciCmd("ucinewgame");
+    this.uciCmd("isready");
+    this.engineStatus.engineReady = false;
+    this.engineStatus.search = null;
+    this.prepareMove();
   };
-};
-
-export default stockfishClient;
+}
