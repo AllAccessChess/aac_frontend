@@ -43,7 +43,8 @@ import {
 import { getTournament } from "redux/reducers/tournamentReducer";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/game-client";
-import { Chat, ChessBoard, Info, MoveList, Videos, Timer } from "./components";
+import { ChessBoard } from "components/common";
+import { Chat, Info, MoveList, Videos, Timer } from "./components";
 import { useStyles } from "./styles";
 
 export const Match = () => {
@@ -55,7 +56,6 @@ export const Match = () => {
   const [chess] = useState(new Chess());
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState();
-  const [pendingMove, setPendingMove] = useState();
   const [gameMessage, setGameMessage] = useState("");
   const [gameStatus, setGameStatus] = useState(GameStatus.IDLE);
   const [players, setPlayers] = useState([]);
@@ -65,7 +65,6 @@ export const Match = () => {
   const [whiteClock, setWhiteClock] = useState(300);
   const [blackClock, setBlackClock] = useState(300);
   const [turn, setTurn] = useState(0);
-  const [showTransformPawn, setShowTransformPawn] = useState(false);
   const [premove, setPremove] = useState(null);
   const [usingVideo, setUsingVideo] = useState(true);
   const [pastMoveIndex, setPastMoveIndex] = useState(-1);
@@ -94,8 +93,8 @@ export const Match = () => {
       !user || !players.length || isSpectator
         ? 0
         : user.id === players[0].id
-        ? 0
-        : 1,
+        ? 0 // white
+        : 1, // black
     [user, players, isSpectator]
   );
 
@@ -220,45 +219,30 @@ export const Match = () => {
   );
 
   const handleMove = useCallback(
-    (from, to) => {
-      setPremove(null);
-      const moves = chess.moves({ verbose: true });
-      for (let i = 0, len = moves.length; i < len; i++) {
-        /* eslint-disable-line */
-        if (moves[i].flags.indexOf("p") !== -1 && moves[i].from === from) {
-          setPendingMove([from, to]);
-          setShowTransformPawn(true);
-          return;
-        }
-      }
-      const move = chess.move({ from, to, promotion: "x" });
-      if (move) {
-        console.log(move);
-        dispatch(
-          addHistoryItem({ action: "move", content: move, fen: chess.fen() })
-        );
-        console.log("***Setting Fen!");
-        setFen(chess.fen());
-        setLastMove([from, to]);
-        console.log("Send Move: ", from + to);
-        setAskingDraw(false);
-        gameClientRef.current.sendData({
-          action: GameActions.MOVE,
-          game: gameClientRef.current.gameId,
-          move: from + to,
-        });
-      }
+    (from, to, promot = "x") => {
+      const move = chess.move({ from, to, promotion: promot });
+      if (!move) return;
+      console.log(move);
+      dispatch(
+        addHistoryItem({ action: "move", content: move, fen: chess.fen() })
+      );
+      console.log("***Setting Fen!");
+      setFen(chess.fen());
+      setLastMove([from, to]);
+      console.log(promot);
+      console.log(
+        "Send Move: ",
+        promot === "x" ? from + to : from + to + promot
+      );
+      setAskingDraw(false);
+      gameClientRef.current.sendData({
+        action: GameActions.MOVE,
+        game: gameClientRef.current.gameId,
+        move: promot === "x" ? from + to : from + to + promot,
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      dispatch,
-      chess,
-      setShowTransformPawn,
-      setFen,
-      setLastMove,
-      setPendingMove,
-      setPremove,
-    ]
+    [dispatch, chess, setFen, setLastMove, setPremove]
   );
 
   const getResponse = useCallback(
@@ -539,6 +523,21 @@ export const Match = () => {
     gameStatus === GameStatus.PLAYING ? 1000 : null
   );
 
+  // Interval for Ping-Pong ;)
+  useInterval(
+    () => {
+      if (gameStatus !== GameStatus.IDLE && gameStatus !== GameStatus.EXITED) {
+        console.log(gameStatus);
+        gameClientRef.current.sendData({
+          action: GameActions.PING,
+        });
+      }
+    },
+    gameStatus !== GameStatus.IDLE && gameStatus !== GameStatus.EXITED
+      ? 10000
+      : null
+  );
+
   // Setting Refs on Change of States
   useEffect(() => {
     historyRef.current = actionHistory;
@@ -652,22 +651,10 @@ export const Match = () => {
               inPast={pastMoveIndex !== -1}
               playerColor={playerColor}
               isSpectator={isSpectator}
-              actionHistory={actionHistory}
-              gameClientRef={gameClientRef}
               lastMove={lastMove}
-              pendingMove={pendingMove}
-              gameStatus={gameStatus}
-              players={players}
-              user={user}
+              isPlaying={gameStatus === GameStatus.PLAYING}
               premove={premove}
-              showTransformPawn={showTransformPawn}
-              setShowTransformPawn={setShowTransformPawn}
               setPremove={setPremove}
-              setFen={setFen}
-              setLastMove={setLastMove}
-              setGameStatus={setGameStatus}
-              setPlayers={setPlayers}
-              setAskingDraw={setAskingDraw}
               onMove={handleMove}
             />
           </Box>

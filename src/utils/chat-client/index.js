@@ -19,10 +19,10 @@ export class ChatClient extends EventTarget {
           if (data.chat) {
             this.triggerEvent(ChatEvents.STATUS, data.chat);
           }
-          if (data.event === "message") {
+          if (data.event === ChatEvents.MESSAGE) {
             this.triggerEvent(ChatEvents.MESSAGE, data.message);
           }
-          if (data.event === "joined") {
+          if (data.event === ChatEvents.JOINED) {
             this.triggerEvent(ChatEvents.JOINED, data.participant);
           }
           break;

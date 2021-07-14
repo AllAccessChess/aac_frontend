@@ -8,3 +8,4 @@ export { Spinner } from "./spinner";
 export { TabPanel } from "./tab-panel";
 export { TournamentCard } from "./tournament-card";
 export { GreenButton } from "./green-button";
+export { ChessBoard } from "./chess-board";

@@ -7,7 +7,7 @@ import {
 } from "@material-ui/icons";
 
 import { config } from "config";
-import { ChatEvents } from "constant";
+import { ChatActions, ChatEvents } from "constant";
 import { Spinner } from "components/common";
 import { Badge, Box, Fab, Typography } from "components/material-ui";
 import { ChatClient } from "utils/chat-client";
@@ -65,7 +65,7 @@ export const Chat = (props) => {
     const pingInteral = setInterval(() => {
       if (chatClientRef.current) {
         chatClientRef.current.sendData({
-          action: "ping",
+          action: ChatActions.PING,
         });
       }
     }, 10000);
@@ -106,7 +106,7 @@ export const Chat = (props) => {
   const handleClickSend = () => {
     if (chatClientRef.current) {
       chatClientRef.current.sendData({
-        action: "message",
+        action: ChatActions.MESSAGE,
         message,
       });
       setMessage("");

@@ -1,16 +1,10 @@
-import React, { useCallback, useMemo } from "react";
-import { useDispatch } from "react-redux";
+import React, { useCallback, useMemo, useState } from "react";
 import Chessground from "react-chessground";
-import useInterval from "react-useinterval";
 import "react-chessground/dist/styles/chessground.css";
 
-import { GameActions, GameStatus } from "constant";
-
 import { TransformPawnDialog } from "components/dialogs";
-import { addHistoryItem } from "redux/reducers/matchReducer";
 
 export const ChessBoard = (props) => {
-  const dispatch = useDispatch();
   const {
     chess,
     fen,
@@ -20,18 +14,14 @@ export const ChessBoard = (props) => {
     playerColor,
     isSpectator,
     premove,
-    showTransformPawn,
-    gameClientRef,
-    setFen,
-    setPremove,
     lastMove,
-    gameStatus,
-    setLastMove,
-    pendingMove,
-    setAskingDraw,
-    setShowTransformPawn,
+    isPlaying,
+    setPremove,
     onMove,
   } = props;
+
+  const [showTransformPawn, setShowTransformPawn] = useState(false);
+  const [pendingMove, setPendingMove] = useState();
   const playerColorName = useMemo(
     () => (playerColor === 0 ? "white" : "black"),
     [playerColor]
@@ -39,29 +29,11 @@ export const ChessBoard = (props) => {
 
   const promotion = useCallback(
     (e) => {
-      const from = pendingMove[0];
-      const to = pendingMove[1];
-      const move = chess.move({ from, to, promotion: e });
-      if (move) {
-        dispatch(
-          addHistoryItem({ action: "move", content: move, fen: chess.fen() })
-        );
-        console.log("***Setting Fen!");
-        setFen(chess.fen());
-        setLastMove([from, to]);
-        setShowTransformPawn(false);
-        // setTimeout(randomMove, 500);
-        console.log("Send Move: ", from + to + e);
-        setAskingDraw(false);
-        gameClientRef.current.sendData({
-          action: GameActions.MOVE,
-          game: gameClientRef.current.gameId,
-          move: from + to + e,
-        });
-      }
+      setShowTransformPawn(false);
+      onMove(pendingMove[0], pendingMove[1], e);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [chess, pendingMove, setFen, setShowTransformPawn, setLastMove]
+    [pendingMove, setShowTransformPawn, onMove]
   );
 
   const turnColor = useCallback(() => {
@@ -70,7 +42,7 @@ export const ChessBoard = (props) => {
 
   const calcMovable = useCallback(() => {
     const dests = new Map();
-    if (gameStatus === GameStatus.PLAYING) {
+    if (isPlaying) {
       chess.SQUARES.forEach((s) => {
         const ms = chess.moves({ square: s, verbose: true });
         if (ms.length)
@@ -85,21 +57,24 @@ export const ChessBoard = (props) => {
       dests,
       color: playerColorName,
     };
-  }, [chess, gameStatus, playerColorName]);
+  }, [chess, isPlaying, playerColorName]);
 
-  // Interval for Ping-Pong ;)
-  useInterval(
-    () => {
-      if (gameStatus !== GameStatus.IDLE && gameStatus !== GameStatus.EXITED) {
-        console.log(gameStatus);
-        gameClientRef.current.sendData({
-          action: GameActions.PING,
-        });
+  const handleMove = useCallback(
+    (from, to) => {
+      setPremove(null);
+      const moves = chess.moves({ verbose: true });
+
+      for (let i = 0, len = moves.length; i < len; i++) {
+        /* eslint-disable-line */
+        if (moves[i].flags.indexOf("p") !== -1 && moves[i].from === from) {
+          setPendingMove([from, to]);
+          setShowTransformPawn(true);
+          return;
+        }
       }
+      onMove(from, to);
     },
-    gameStatus !== GameStatus.IDLE && gameStatus !== GameStatus.EXITED
-      ? 10000
-      : null
+    [chess, setPremove, onMove, setPendingMove, setShowTransformPawn]
   );
 
   return (
@@ -123,7 +98,7 @@ export const ChessBoard = (props) => {
             unset: () => setPremove(null),
           },
         }}
-        onMove={onMove}
+        onMove={handleMove}
         style={{
           marginRight: "20px",
           marginBottom: "20px",

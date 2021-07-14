@@ -6,6 +6,7 @@ import {
   AttachMoney as PrizeIcon,
   Settings as SettingsIcon,
   SupervisorAccount as AdminIcon,
+  Adb as BotIcon,
 } from "@material-ui/icons";
 
 // Main Layout Pages
@@ -15,6 +16,7 @@ const Prizes = loadable(() => import("pages/prizes"));
 const Settings = loadable(() => import("pages/settings"));
 const Tournaments = loadable(() => import("pages/tournaments"));
 const Dashboard = loadable(() => import("pages/dashboard"));
+const Analysis = loadable(() => import("pages/analysis"));
 
 // Main Layout Routes
 export const mainLayoutRoutes = [
@@ -69,6 +71,15 @@ export const mainLayoutRoutes = [
     name: "Settings",
     icon: SettingsIcon,
     component: Settings,
+    guarded: true,
+    redirectToSignIn: true,
+  },
+  {
+    id: "Analysis",
+    path: "/analysis",
+    name: "Analysis",
+    icon: BotIcon,
+    component: Analysis,
     guarded: true,
     redirectToSignIn: true,
   },
