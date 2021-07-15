@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "components/material-ui";
 import { getValidUserName, snakeCaseString } from "lib/zoom/client/helpers";
 
-import { VideoCanvas } from "./styles";
+import { UserVideo } from "./styles";
 
 export const Videos = (props) => {
   const { match, playerColor, usingVideo } = props;
@@ -25,16 +25,26 @@ export const Videos = (props) => {
       >
         {usingVideo ? "Stop Video" : "Start Video"}
       </Button>
-      <VideoCanvas
+      <UserVideo
         width={384}
         height={240}
+        autoPlay
         id={playerColor ? `${player1Id}-video` : `${player2Id}-video`}
-      ></VideoCanvas>
-      <VideoCanvas
+      />
+      <audio
+        autoPlay
+        id={playerColor ? `${player1Id}-audio` : `${player2Id}-audio`}
+      />
+      <UserVideo
         width={384}
         height={240}
+        autoPlay
         id={playerColor ? `${player2Id}-video` : `${player1Id}-video`}
-      ></VideoCanvas>
+      />
+      <audio
+        autoPlay
+        id={playerColor ? `${player2Id}-audio` : `${player1Id}-audio`}
+      />
     </React.Fragment>
   );
 };

@@ -85,7 +85,7 @@ export const ChessBoard = (props) => {
         viewOnly={isSpectator || inPast}
         turnColor={turnColor()}
         movable={calcMovable()}
-        check={chess.in_check() ? true : false}
+        check={chess.in_check() ? "true" : "false"}
         lastMove={lastMove}
         fen={fen}
         orientation={playerColorName}
