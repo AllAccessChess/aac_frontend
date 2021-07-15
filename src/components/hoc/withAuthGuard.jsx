@@ -5,11 +5,14 @@ import { useHistory } from "react-router-dom";
 import { LoadingScreen } from "components/common";
 import { authSelector } from "redux/reducers";
 import { signInWithToken } from "redux/reducers/authReducer";
+import { isAdmin } from "utils/common";
 
 // For routes that can only be accessed by authenticated users
-export const withAuthGuard = (Component, redirectToSignIn = false) => (
-  props
-) => {
+export const withAuthGuard = (
+  Component,
+  redirectToSignIn = false,
+  adminAccess = false
+) => (props) => {
   const dispatch = useDispatch();
   const auth = useSelector(authSelector);
   const history = useHistory();
@@ -17,11 +20,19 @@ export const withAuthGuard = (Component, redirectToSignIn = false) => (
   useEffect(() => {
     if (!auth.user) {
       dispatch(
-        signInWithToken(true, null, () => {
-          if (redirectToSignIn) {
-            history.push("/auth/sign-in");
+        signInWithToken(
+          true,
+          (user) => {
+            if (adminAccess && !isAdmin(user)) {
+              history.push("/");
+            }
+          },
+          () => {
+            if (redirectToSignIn) {
+              history.push("/auth/sign-in");
+            }
           }
-        })
+        )
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

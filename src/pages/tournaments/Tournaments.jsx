@@ -5,11 +5,12 @@ import { useTheme } from "@material-ui/core";
 
 import { TournamentStatus } from "constant";
 import { TabPanel, TournamentCard } from "components/common";
-import { Box } from "components/material-ui";
+import { Box, Button } from "components/material-ui";
 import { CustomTab, CustomTabs } from "./styles";
 
 import { getTournamentList } from "redux/reducers/tournamentReducer";
 import { useCallback } from "react";
+import { isAdmin } from "utils/common";
 
 export const Tournaments = () => {
   const history = useHistory();
@@ -55,6 +56,9 @@ export const Tournaments = () => {
     },
     [history]
   );
+  const handleCreateTournament = useCallback(() => {
+    history.push("/tournament-create");
+  }, [history]);
 
   useEffect(() => {
     if (!tournamentList.length) dispatch(getTournamentList());
@@ -68,6 +72,7 @@ export const Tournaments = () => {
       flexDirection="column"
       borderRadius={10}
       bgcolor="transparent"
+      position="relative"
     >
       <CustomTabs
         value={tabValue}
@@ -120,6 +125,20 @@ export const Tournaments = () => {
           ))}
         </TabPanel>
       ))}
+
+      {isAdmin(user) ? (
+        <Box position="absolute" right={0} top={10}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleCreateTournament}
+          >
+            Create Tournament
+          </Button>
+        </Box>
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };

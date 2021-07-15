@@ -25,7 +25,7 @@ export const slice = createSlice({
       state.list = [...action.payload];
     },
     insertToList: (state, action) => {
-      state.list.push([...action.payload]);
+      state.list.push({ ...action.payload });
     },
     updateListItem: (state, action) => {
       let schemeList = [...state.list];
@@ -179,6 +179,21 @@ export const updateByes = (tournamentId, byes) => async (dispatch) => {
     dispatch(setMessage({ message: err.message }));
   }
   dispatch(setByeSaving(false));
+};
+
+export const createTournament = (payload, callback, fallback) => async (
+  dispatch
+) => {
+  dispatch(setLoading(true));
+  try {
+    const { tournament } = await TournamentService.createTournament(payload);
+    dispatch(insertToList(tournament));
+    if (callback) callback();
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+    if (fallback) fallback();
+  }
+  dispatch(setLoading(false));
 };
 
 export default slice.reducer;

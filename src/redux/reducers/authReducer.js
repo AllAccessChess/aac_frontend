@@ -87,7 +87,7 @@ export const signInWithToken = (
       }
       const meResponse = await UserService.getMe();
       dispatch(setUser(meResponse.user));
-      if (callback) callback();
+      if (callback) callback(meResponse.user);
     } else {
       if (fallback) fallback("Auth Token is expired!");
     }

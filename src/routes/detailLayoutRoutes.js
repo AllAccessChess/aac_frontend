@@ -3,6 +3,7 @@ import { SupervisorAccount as TournamentIcon } from "@material-ui/icons";
 
 const TournamentDetail = loadable(() => import("pages/tournament-detail"));
 const Pairing = loadable(() => import("pages/pairing"));
+const TournamentCreate = loadable(() => import("pages/tournament-create"));
 
 export const detailLayoutRoutes = [
   {
@@ -21,5 +22,15 @@ export const detailLayoutRoutes = [
     icon: TournamentIcon,
     guarded: true,
     redirectToSignIn: true,
+  },
+  {
+    id: "tournament-create",
+    path: "/tournament-create",
+    name: "Tournament Creation",
+    component: TournamentCreate,
+    icon: TournamentIcon,
+    guarded: true,
+    redirectToSignIn: true,
+    adminAccess: true,
   },
 ];

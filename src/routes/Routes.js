@@ -12,11 +12,18 @@ import { mainLayoutRoutes } from "./mainLayoutRoutes";
 const renderChildRoutes = (Layout, routes) =>
   routes.map(
     (
-      { path, component: Component, children, guarded, redirectToSignIn },
+      {
+        path,
+        component: Component,
+        children,
+        guarded,
+        redirectToSignIn,
+        adminAccess,
+      },
       index
     ) => {
       const ComponentLayout = guarded
-        ? withAuthGuard(Layout, redirectToSignIn)
+        ? withAuthGuard(Layout, redirectToSignIn, adminAccess)
         : Layout;
 
       return children ? (
