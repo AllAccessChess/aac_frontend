@@ -77,7 +77,6 @@ export const Rounds = (props) => {
                       <TextField
                         type="number"
                         name={`settings.rounds[${index}]['start']`}
-                        label="Start Time"
                         variant="outlined"
                         color="secondary"
                         value={round.start}
@@ -106,7 +105,6 @@ export const Rounds = (props) => {
                       <TextField
                         type="number"
                         name={`settings.rounds[${index}]['startTime']`}
-                        label="Time"
                         variant="outlined"
                         color="secondary"
                         value={round.startTime}
@@ -135,7 +133,6 @@ export const Rounds = (props) => {
                       <TextField
                         type="number"
                         name={`settings.rounds[${index}]['increment']`}
-                        label="Increment"
                         variant="outlined"
                         color="secondary"
                         value={round.increment}
@@ -165,7 +162,6 @@ export const Rounds = (props) => {
                       <TextField
                         type="text"
                         name={`settings.rounds[${index}]['timeCategory']`}
-                        label="Game Type"
                         variant="outlined"
                         color="secondary"
                         value={round.timeCategory}
