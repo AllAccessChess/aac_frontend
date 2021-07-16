@@ -153,7 +153,10 @@ export const Match = () => {
       history.push(`/tournaments`);
     }
     // zoomClient.leaveMeeting();
-  }, [dispatch, history, currentTournament]);
+    if (jitsiClient) {
+      jitsiClient.leaveMeeting();
+    }
+  }, [dispatch, currentTournament, jitsiClient, history]);
 
   const handleShowPast = useCallback(
     (index) => {

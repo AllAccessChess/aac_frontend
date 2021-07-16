@@ -90,7 +90,7 @@ export default class JitsiClient extends EventTarget {
       hosts: {
         domain: "meet.jitsi",
         muc: "muc.meet.jitsi",
-        anonymousdomain: "guest.meet.jitsi",
+        // anonymousdomain: "guest.meet.jitsi",
       },
       serviceUrl: `wss://${this.domain}/xmpp-websocket`,
       websocketKeepAlive: 0,
@@ -99,7 +99,17 @@ export default class JitsiClient extends EventTarget {
     this.setupConnectionEventListener();
 
     this.handleLog(LogLevel.INFO, "Connecting to Jitsi Server.");
-    this.connection.connect(this.password);
+    // this.connection.connect(this.password);  // meeting with password
+    this.connection.connect();
+  };
+
+  /**
+   * Disconnect
+   */
+  disconnect = () => {
+    this.handleLog(LogLevel.DEBUG, "Leaving the Conference.");
+
+    this.conference.leave();
   };
 
   /**
@@ -125,6 +135,28 @@ export default class JitsiClient extends EventTarget {
   };
 
   /**
+   * Remove Connection Event Handlers
+   */
+  removeConnectionEventListener = () => {
+    this.handleLog(LogLevel.DEBUG, "Removing Connection Event Handlers.");
+
+    this.connection.removeEventListener(
+      JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
+      this.onConnectionSuccess
+    );
+
+    this.connection.removeEventListener(
+      JitsiMeetJS.events.connection.CONNECTION_FAILED,
+      this.onConnectionFailed
+    );
+
+    this.connection.removeEventListener(
+      JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
+      this.onConnectionDisconnected
+    );
+  };
+
+  /**
    * Event Handler for CONNECTION_ESTABLISHED
    * @param {object} evt
    */
@@ -140,6 +172,8 @@ export default class JitsiClient extends EventTarget {
    */
   onConnectionFailed = (evt) => {
     this.handleLog(LogLevel.INFO, "Connection Failed.", evt);
+
+    this.removeConnectionEventListener();
   };
 
   /**
@@ -148,6 +182,8 @@ export default class JitsiClient extends EventTarget {
    */
   onConnectionDisconnected = (evt) => {
     this.handleLog(LogLevel.INFO, "Connection Disconnected.", evt);
+
+    this.removeConnectionEventListener();
   };
 
   /**
@@ -169,6 +205,14 @@ export default class JitsiClient extends EventTarget {
   };
 
   /**
+   * Leave Conference
+   */
+  leaveConference = () => {
+    this.handleLog(LogLevel.INFO, "Leaving Conference:", this.meetingId);
+    this.conference.leave();
+  };
+
+  /**
    * Setup Conference Event Handlers
    */
   setupConferenceEventListener = () => {
@@ -182,6 +226,33 @@ export default class JitsiClient extends EventTarget {
     this.conference.on(
       JitsiMeetJS.events.conference.TRACK_ADDED,
       this.onRemoteTrack
+    );
+
+    this.conference.on(
+      JitsiMeetJS.events.conference.CONFERENCE_LEFT,
+      this.onConferenceLeft
+    );
+  };
+
+  /**
+   * Remove Conference Event Handlers
+   */
+  removeConferenceEventListener = () => {
+    this.handleLog(LogLevel.DEBUG, "Removing Conference Event Handlers.");
+
+    this.conference.off(
+      JitsiMeetJS.events.conference.CONFERENCE_JOINED,
+      this.onConferenceJoined
+    );
+
+    this.conference.off(
+      JitsiMeetJS.events.conference.TRACK_ADDED,
+      this.onRemoteTrack
+    );
+
+    this.conference.off(
+      JitsiMeetJS.events.conference.CONFERENCE_LEFT,
+      this.onConferenceLeft
     );
   };
 
@@ -200,6 +271,18 @@ export default class JitsiClient extends EventTarget {
       .catch((error) => {
         throw error;
       });
+  };
+
+  /**
+   * Event Handler for CONFERENCE_LEFT
+   */
+  onConferenceLeft = () => {
+    this.handleLog(LogLevel.INFO, "Left Conference:", this.meetingId);
+
+    this.isJoined = false;
+    this.removeConferenceEventListener();
+
+    this.connection.disconnect();
   };
 
   /**
@@ -261,10 +344,17 @@ export default class JitsiClient extends EventTarget {
    */
   joinMeeting = ({ meetingId, password, userName }) => {
     this.meetingId = meetingId;
-    this.password = password;
+    // this.password = password;
     this.userName = userName;
 
     this.connect();
+  };
+
+  /**
+   * Leave Meeting
+   */
+  leaveMeeting = () => {
+    this.leaveConference();
   };
 
   //=====================================================================
