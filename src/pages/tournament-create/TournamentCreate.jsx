@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 
 import { useTheme } from "@material-ui/core";
 import { Box, Typography, Button } from "components/material-ui";
-import { ChevronLeft as BackIcon } from "@material-ui/icons";
+import { Close as CloseIcon } from "@material-ui/icons";
 import { InnerForm } from "./components";
 
 import { createTournament } from "redux/reducers/tournamentReducer";
@@ -30,11 +30,9 @@ export const TournamentCreate = () => {
         prepTime: 30000,
         ratingProvider: "uscf",
         rated: false,
+        playup: 0,
         rounds: [],
-        brackets: [
-          [0, 1200],
-          [1200, 1500],
-        ],
+        brackets: [],
       },
       restrictions: {},
       start: 1629318550012,
@@ -68,25 +66,31 @@ export const TournamentCreate = () => {
       flexDirection="column"
       alignItems="flex-start"
     >
-      <Button startIcon={<BackIcon />} onClick={handleBack}>
-        Go Back
+      <Helmet title="Create Tournament" />
+      <Button startIcon={<CloseIcon fontSize="small" />} onClick={handleBack}>
+        <Typography variant="body1">Close</Typography>
       </Button>
 
       <Box
         width="100%"
+        height="calc(100% - 56px)"
         display="flex"
         flexDirection="column"
         borderRadius={10}
-        p={5}
-        m={4}
-        bgcolor={theme.palette.background.paper}
+        my={4}
+        bgcolor="#112C4A"
       >
-        <Helmet title="Account" />
-        <Typography variant="h3" mb={5}>
+        <Typography variant="h4" p={5}>
           Create a new tournament
         </Typography>
 
-        <Box pr={5} overflow="auto">
+        <Box
+          p={5}
+          height="100%"
+          borderRadius="0 0 10px 10px"
+          overflow="auto"
+          bgcolor={theme.palette.background.paper}
+        >
           <Formik
             enableReinitialize
             initialValues={initialValues}
@@ -104,6 +108,7 @@ export const TournamentCreate = () => {
                 prepTime: Yup.number(),
                 ratingProvider: Yup.string().required(),
                 rated: Yup.boolean(),
+                playup: Yup.number(),
                 rounds: Yup.array()
                   .ensure()
                   .compact()

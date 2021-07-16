@@ -18,7 +18,7 @@ import {
 
 import { getRemainingTimeString, capitalizeFirstLetter } from "utils/common";
 import { RoundStatus } from "constant";
-import { GreenButton } from "../green-button";
+import { GreenButton } from "components/common";
 
 export const TournamentCard = (props) => {
   const {

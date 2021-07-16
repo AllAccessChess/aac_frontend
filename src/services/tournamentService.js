@@ -2,10 +2,10 @@ import BaseAPIService from "./baseAPIService";
 
 export default class TournamentService extends BaseAPIService {
   static getAllTournaments = () => {
-    return this.request("/tournaments/all", "GET");
+    return this.requestWithAuth("/tournaments/all", "GET");
   };
   static getTournament = (tournamentID) => {
-    return this.request(`/tournaments/get/${tournamentID}`, "GET");
+    return this.requestWithAuth(`/tournaments/get/${tournamentID}`, "GET");
   };
   static createTournament = (payload) => {
     return this.requestWithAuth(`/tournaments/create`, "POST", payload);

@@ -161,6 +161,13 @@ const overrides = {
       paddingBottom: "5px",
     },
   },
+  MuiAccordionSummary: {
+    content: {
+      "&.Mui-expanded": {
+        margin: "12px 0",
+      },
+    },
+  },
 };
 
 export default overrides;
