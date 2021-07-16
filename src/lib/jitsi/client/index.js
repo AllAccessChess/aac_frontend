@@ -180,8 +180,8 @@ export default class JitsiClient extends EventTarget {
    * Event Handler for CONNECTION_DISCONNECTED
    * @param {object} evt
    */
-  onConnectionDisconnected = (evt) => {
-    this.handleLog(LogLevel.INFO, "Connection Disconnected.", evt);
+  onConnectionDisconnected = () => {
+    this.handleLog(LogLevel.INFO, "Connection Disconnected.");
 
     this.removeConnectionEventListener();
   };
@@ -209,7 +209,14 @@ export default class JitsiClient extends EventTarget {
    */
   leaveConference = () => {
     this.handleLog(LogLevel.INFO, "Leaving Conference:", this.meetingId);
+
+    const localTracks = this.conference.getLocalTracks();
+
     this.conference.leave();
+
+    for (const localTrack of localTracks) {
+      localTrack.dispose();
+    }
   };
 
   /**
