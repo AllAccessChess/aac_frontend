@@ -90,6 +90,7 @@ export default class JitsiClient extends EventTarget {
       hosts: {
         domain: "meet.jitsi",
         muc: "muc.meet.jitsi",
+        anonymousdomain: "guest.meet.jitsi",
       },
       serviceUrl: `wss://${this.domain}/xmpp-websocket`,
       websocketKeepAlive: 0,
@@ -98,7 +99,7 @@ export default class JitsiClient extends EventTarget {
     this.setupConnectionEventListener();
 
     this.handleLog(LogLevel.INFO, "Connecting to Jitsi Server.");
-    this.connection.connect();
+    this.connection.connect(this.password);
   };
 
   /**
@@ -218,7 +219,7 @@ export default class JitsiClient extends EventTarget {
       .getParticipants()
       .find((participant) => participant._id === participantId);
 
-    if (participant) {
+    if (participant && participant._displayName) {
       const dom = document.getElementById(
         `${snakeCaseString(participant._displayName)}-${track.getType()}`
       );
@@ -258,8 +259,9 @@ export default class JitsiClient extends EventTarget {
    * Join Meeting
    * @param {object} options
    */
-  joinMeeting = ({ meetingId, userName }) => {
+  joinMeeting = ({ meetingId, password, userName }) => {
     this.meetingId = meetingId;
+    this.password = password;
     this.userName = userName;
 
     this.connect();
