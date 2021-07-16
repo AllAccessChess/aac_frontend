@@ -538,10 +538,10 @@ export const Match = () => {
 
   useInterval(
     () => {
-      if (turn === 0) setWhiteClock((clock) => clock - 1);
-      else setBlackClock((clock) => clock - 1);
+      if (turn === 0) setWhiteClock((clock) => clock - 0.1);
+      else setBlackClock((clock) => clock - 0.1);
     },
-    gameStatus === GameStatus.PLAYING ? 1000 : null
+    gameStatus === GameStatus.PLAYING ? 100 : null
   );
 
   // Interval for Ping-Pong ;)
