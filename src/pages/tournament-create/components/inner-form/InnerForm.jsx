@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 
-import { Alert, Box } from "components/material-ui";
+import { Alert, Box, Button } from "components/material-ui";
 import { GeneralInformation, Rounds, Steps, Sections } from "./components";
 
 export const InnerForm = (props) => {
@@ -52,6 +52,19 @@ export const InnerForm = (props) => {
             onOpen={() => setActiveStep(2)}
             onVerify={(value) => handleSetVeified(2, value)}
           />
+          {verified[0] && verified[1] && verified[2] ? (
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              variant="contained"
+              color="primary"
+              my={5}
+            >
+              Create Tournament
+            </Button>
+          ) : (
+            <></>
+          )}
         </Box>
         <Steps
           activeStep={activeStep}

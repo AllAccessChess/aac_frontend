@@ -68,10 +68,10 @@ export const Rounds = (props) => {
             render={(arrayHelpers) => (
               <Box width="100%">
                 <Grid container spacing={5} my={3}>
-                  <Grid item sm={2}>
+                  <Grid item sm={1}>
                     <Typography color="textSecondary">Round No.</Typography>
                   </Grid>
-                  <Grid item sm={2}>
+                  <Grid item sm={3}>
                     <Typography color="textSecondary">Start Time</Typography>
                   </Grid>
                   <Grid item sm={2}>
@@ -90,10 +90,10 @@ export const Rounds = (props) => {
                 </Grid>
                 {values.settings.rounds.map((round, index) => (
                   <Grid key={index} container spacing={5} my={3}>
-                    <Grid item sm={2}>
+                    <Grid item sm={1}>
                       <Typography variant="subtitle1">{index + 1}</Typography>
                     </Grid>
-                    <Grid item sm={2}>
+                    <Grid item sm={3}>
                       <SmallTextField
                         type="datetime-local"
                         name={`settings.rounds[${index}]['start']`}

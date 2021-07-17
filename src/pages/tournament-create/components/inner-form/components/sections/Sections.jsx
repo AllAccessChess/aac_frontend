@@ -20,6 +20,7 @@ import {
   CustomAccordion,
   CustomAccordionDetails,
   CustomSelect,
+  CustomSmallTextField,
 } from "./styles";
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
 
@@ -335,11 +336,37 @@ export const Sections = (props) => {
               </Box>
             )}
           />
+          <Typography color="textSecondary">
+            Allow playup within{" "}
+            <CustomSmallTextField
+              type="text"
+              name="settings.playup"
+              variant="outlined"
+              color="secondary"
+              value={values.settings.playup}
+              error={Boolean(
+                touched.settings &&
+                  errors.settings &&
+                  touched.settings.playup &&
+                  errors.settings.playup
+              )}
+              helperText={
+                touched.settings &&
+                errors.settings &&
+                touched.settings.playup &&
+                errors.settings.playup
+              }
+              onBlur={handleBlur}
+              onChange={handleChange}
+            />{" "}
+            rating points
+          </Typography>
           {verified[1] ? (
             <Box width="150px">
               <Button
                 variant="contained"
                 color="primary"
+                mt={5}
                 fullWidth
                 onClick={onNext}
               >
