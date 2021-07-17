@@ -339,7 +339,7 @@ export const Sections = (props) => {
           <Typography color="textSecondary">
             Allow playup within{" "}
             <CustomSmallTextField
-              type="text"
+              type="number"
               name="settings.playup"
               variant="outlined"
               color="secondary"

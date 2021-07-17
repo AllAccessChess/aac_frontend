@@ -25,6 +25,6 @@ export const CustomSelect = styled(Select)`
 export const CustomSmallTextField = styled(TextField)`
   .MuiInputBase-input {
     padding: 5px 14px;
-    width: 10px;
+    width: 30px;
   }
 `;
