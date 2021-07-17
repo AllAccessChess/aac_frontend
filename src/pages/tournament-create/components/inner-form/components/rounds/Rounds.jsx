@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   AccordionSummary,
   Box,
   Button,
-  TextField,
   Typography,
   Grid,
 } from "components/material-ui";
-import { LightBlueTextColorButton, StepNumber } from "components/common";
+import {
+  LightBlueTextColorButton,
+  StepNumber,
+  SmallTextField,
+} from "components/common";
 import { CustomAccordion, CustomAccordionDetails } from "./styles";
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
 import { FieldArray } from "formik";
@@ -21,20 +24,33 @@ export const Rounds = (props) => {
     touched,
     values,
     setFieldValue,
-    status,
+    active,
+    verified,
+    dirty,
     onOpen,
+    onVerify,
   } = props;
+
+  useEffect(() => {
+    onVerify(dirty && (!errors.settings || !errors.settings.rounds));
+    // eslint-disable-next-line
+  }, [errors.settings, dirty]);
 
   return (
     <CustomAccordion
-      expanded={status === "active"}
-      bordercolor={status === "active" ? "white" : "rgba(255, 255, 255, 0.3)"}
-      onChange={onOpen}
+      expanded={active}
+      bordercolor={active ? "white" : "rgba(255, 255, 255, 0.3)"}
+      onChange={verified[0] && verified[1] ? onOpen : null}
     >
       <AccordionSummary>
         <Box px={3}>
           <Box display="flex" alignItems="center">
-            <StepNumber step={3} status={status} mr={2} />
+            <StepNumber
+              step={3}
+              active={active}
+              verified={verified[2]}
+              mr={2}
+            />
             <Typography>Round and Match Settings</Typography>
           </Box>
           <Typography variant="body2" color="textSecondary">
@@ -59,10 +75,14 @@ export const Rounds = (props) => {
                     <Typography color="textSecondary">Start Time</Typography>
                   </Grid>
                   <Grid item sm={2}>
-                    <Typography color="textSecondary">Duration</Typography>
+                    <Typography color="textSecondary">
+                      Game time (min)
+                    </Typography>
                   </Grid>
                   <Grid item sm={2}>
-                    <Typography color="textSecondary">Increment</Typography>
+                    <Typography color="textSecondary">
+                      Increment (sec)
+                    </Typography>
                   </Grid>
                   <Grid item sm={2}>
                     <Typography color="textSecondary">Game Type</Typography>
@@ -74,12 +94,19 @@ export const Rounds = (props) => {
                       <Typography variant="subtitle1">{index + 1}</Typography>
                     </Grid>
                     <Grid item sm={2}>
-                      <TextField
-                        type="number"
+                      <SmallTextField
+                        type="datetime-local"
                         name={`settings.rounds[${index}]['start']`}
                         variant="outlined"
+                        placeholder="To be decided"
                         color="secondary"
-                        value={round.start}
+                        value={
+                          round.start
+                            ? new Date(round.start)
+                                .toISOString()
+                                .replace("Z", "")
+                            : ""
+                        }
                         error={Boolean(
                           touched.settings &&
                             touched.settings.rounds &&
@@ -98,11 +125,16 @@ export const Rounds = (props) => {
                           errors.settings.rounds[index].start
                         }
                         onBlur={handleBlur}
-                        onChange={handleChange}
+                        onChange={(event) =>
+                          setFieldValue(
+                            `settings.rounds[${index}].start`,
+                            new Date(event.target.value).getTime()
+                          )
+                        }
                       />
                     </Grid>
                     <Grid item sm={2}>
-                      <TextField
+                      <SmallTextField
                         type="number"
                         name={`settings.rounds[${index}]['startTime']`}
                         variant="outlined"
@@ -130,7 +162,7 @@ export const Rounds = (props) => {
                       />
                     </Grid>
                     <Grid item sm={2}>
-                      <TextField
+                      <SmallTextField
                         type="number"
                         name={`settings.rounds[${index}]['increment']`}
                         variant="outlined"
@@ -159,7 +191,7 @@ export const Rounds = (props) => {
                     </Grid>
 
                     <Grid item sm={2}>
-                      <TextField
+                      <SmallTextField
                         type="text"
                         name={`settings.rounds[${index}]['timeCategory']`}
                         variant="outlined"

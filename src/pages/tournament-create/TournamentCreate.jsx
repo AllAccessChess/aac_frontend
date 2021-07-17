@@ -23,19 +23,19 @@ export const TournamentCreate = () => {
       organiser: "",
       state: 1,
       settings: {
-        type: "swiss",
-        numRounds: 0,
-        timeCategory: "classical",
+        type: "",
+        timeCategory: "",
+        ratingProvider: "",
+        playup: 0,
         variant: 0,
         prepTime: 30000,
-        ratingProvider: "uscf",
         rated: false,
-        playup: 0,
+        numRounds: 0,
         rounds: [],
         brackets: [],
       },
       restrictions: {},
-      start: 1629318550012,
+      start: 0,
       hidden: false,
     }),
     []
@@ -99,7 +99,7 @@ export const TournamentCreate = () => {
                 .max(255)
                 .required("Tournament Name is Required"),
               organiser: Yup.string().max(255).required(),
-              start: Yup.number().required(),
+              start: Yup.number().min(1, "Invalid Date"),
               settings: Yup.object().shape({
                 type: Yup.string().required(),
                 numRounds: Yup.number().min(1),
@@ -112,6 +112,7 @@ export const TournamentCreate = () => {
                 rounds: Yup.array()
                   .ensure()
                   .compact()
+                  .min(1)
                   .of(
                     Yup.object().shape({
                       start: Yup.number(),
@@ -120,10 +121,9 @@ export const TournamentCreate = () => {
                       increment: Yup.number(),
                     })
                   ),
-                brackets: Yup.array()
-                  .ensure()
-                  .compact()
-                  .of(Yup.array().min(2).max(2).of(Yup.number())),
+                brackets: Yup.array().of(
+                  Yup.array().min(1).max(2).of(Yup.number())
+                ),
               }),
               restrictions: Yup.object(),
               hidden: Yup.boolean(),

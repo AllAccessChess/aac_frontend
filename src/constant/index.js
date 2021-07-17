@@ -109,6 +109,31 @@ export const TournamentStatus = Object.freeze({
   FINISHED: 4,
 });
 
+export const TournamentVariants = Object.freeze({
+  STANDARD: 0,
+  CHESS960: 1,
+});
+export const TimeCategories = Object.freeze({
+  BULLET: "bullet",
+  BLITZ: "blitz",
+  RAPID: "rapid",
+  CLASSIC: "classical",
+  BLITZOTB: "blitz-otb",
+  RAPIDOTB: "rapid-otb",
+  CLASSICOTB: "classical-otb",
+});
+
+export const RatingProviders = Object.freeze({
+  USCF: "uscf",
+  FIDE: "fide",
+  LICHESS: "lichess",
+  AAC: "aac",
+});
+
+export const TournamentTypes = Object.freeze({
+  SWISS: "swiss",
+});
+
 export const RoundStatus = Object.freeze({
   SETUP: 0, // Admin Setup
   PREP: 1, // Player preparation time - count down

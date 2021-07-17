@@ -294,6 +294,7 @@ export const Match = () => {
           console.log("***Setting Fen!");
           setPastMoveIndex(-1);
           setFen(data.game.fen);
+          chess.load(data.game.fen);
         }
         if (premoveRef.current) {
           handleMove(premoveRef.current[0], premoveRef.current[1]);
@@ -302,6 +303,7 @@ export const Match = () => {
     },
     [
       dispatch,
+      chess,
       addMoveStringToHistory,
       setFen,
       setPastMoveIndex,
@@ -340,8 +342,11 @@ export const Match = () => {
       // gameClientRef.current.sendData({
       //   action: GameActions.STATUS,
       // });
-      if (data.state === GameStatus.PLAYING) setGameStatus(GameStatus.PLAYING);
-      else if (isSpectator) {
+      if (data.state === GameStatus.PLAYING) {
+        setGameStatus(GameStatus.PLAYING);
+        chess.load(data.game.fen);
+        setFen(data.game.fen);
+      } else if (isSpectator) {
         if (!currentMatchRef.current) {
           return;
         }
@@ -367,7 +372,7 @@ export const Match = () => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [isSpectator, params]
+    [isSpectator, params, setFen, chess]
   );
 
   const setUpHandlers = useCallback(() => {
