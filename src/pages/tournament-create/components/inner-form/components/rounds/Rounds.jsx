@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import {
   AccordionSummary,
@@ -6,15 +6,21 @@ import {
   Button,
   Typography,
   Grid,
+  MenuItem,
 } from "components/material-ui";
 import {
   LightBlueTextColorButton,
   StepNumber,
   SmallTextField,
 } from "components/common";
-import { CustomAccordion, CustomAccordionDetails } from "./styles";
+import {
+  CustomAccordion,
+  CustomAccordionDetails,
+  CustomSelect,
+} from "./styles";
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
 import { FieldArray } from "formik";
+import { TimeCategories } from "constant";
 
 export const Rounds = (props) => {
   const {
@@ -30,6 +36,40 @@ export const Rounds = (props) => {
     onOpen,
     onVerify,
   } = props;
+
+  const GameTypeList = useMemo(
+    () => [
+      {
+        label: "Bullet",
+        value: TimeCategories.BULLET,
+      },
+      {
+        label: "Blitz",
+        value: TimeCategories.BLITZ,
+      },
+      {
+        label: "Rapid",
+        value: TimeCategories.RAPID,
+      },
+      {
+        label: "Classic",
+        value: TimeCategories.CLASSIC,
+      },
+      {
+        label: "Blitz OTB",
+        value: TimeCategories.BLITZOTB,
+      },
+      {
+        label: "Rapid OTB",
+        value: TimeCategories.RAPIDOTB,
+      },
+      {
+        label: "Classic OTB",
+        value: TimeCategories.CLASSICOTB,
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     onVerify(dirty && (!errors.settings || !errors.settings.rounds));
@@ -101,7 +141,7 @@ export const Rounds = (props) => {
                         placeholder="To be decided"
                         color="secondary"
                         value={
-                          round.start
+                          round.start > 0
                             ? new Date(round.start)
                                 .toISOString()
                                 .replace("Z", "")
@@ -191,32 +231,22 @@ export const Rounds = (props) => {
                     </Grid>
 
                     <Grid item sm={2}>
-                      <SmallTextField
-                        type="text"
-                        name={`settings.rounds[${index}]['timeCategory']`}
+                      <CustomSelect
                         variant="outlined"
-                        color="secondary"
+                        name={`settings.rounds[${index}]['timeCategory']`}
                         value={round.timeCategory}
-                        error={Boolean(
-                          touched.settings &&
-                            touched.settings.rounds &&
-                            errors.settings &&
-                            errors.settings.rounds &&
-                            touched.settings.rounds[index].timeCategory &&
-                            errors.settings.rounds[index].timeCategory
-                        )}
                         fullWidth
-                        helperText={
-                          touched.settings &&
-                          touched.settings.rounds &&
-                          errors.settings &&
-                          errors.settings.rounds &&
-                          touched.settings.rounds[index].timeCategory &&
-                          errors.settings.rounds[index].timeCategory
-                        }
-                        onBlur={handleBlur}
                         onChange={handleChange}
-                      />
+                      >
+                        <MenuItem disabled value="">
+                          <em>Select a game type</em>
+                        </MenuItem>
+                        {GameTypeList.map((item, index) => (
+                          <MenuItem value={item.value} key={index}>
+                            {item.label}
+                          </MenuItem>
+                        ))}
+                      </CustomSelect>
                     </Grid>
 
                     <Grid item sm={2}>

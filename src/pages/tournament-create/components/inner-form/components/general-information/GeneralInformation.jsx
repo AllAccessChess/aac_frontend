@@ -112,7 +112,7 @@ export const GeneralInformation = (props) => {
               color="secondary"
               placeholder="Select Date Time"
               value={
-                values.start
+                values.start > 0
                   ? new Date(values.start).toISOString().replace("Z", "")
                   : ""
               }
