@@ -98,17 +98,22 @@ export const TournamentCreate = () => {
               title: Yup.string()
                 .max(255)
                 .required("Tournament Name is Required"),
-              organiser: Yup.string().max(255).required(),
+              organiser: Yup.string()
+                .max(255)
+                .required("Organiser is Required"),
               start: Yup.number().min(1, "Invalid Date"),
               settings: Yup.object().shape({
-                type: Yup.string().required(),
-                numRounds: Yup.number().min(1),
-                timeCategory: Yup.string().required(),
+                type: Yup.string().required("Required"),
+                numRounds: Yup.number().min(
+                  1,
+                  "Should have at least one round"
+                ),
+                timeCategory: Yup.string().required("Required"),
                 variant: Yup.number(),
                 prepTime: Yup.number(),
-                ratingProvider: Yup.string().required(),
+                ratingProvider: Yup.string().required("Required"),
                 rated: Yup.boolean(),
-                playup: Yup.number(),
+                playup: Yup.number().min(0, "Shouln't be negative"),
                 rounds: Yup.array()
                   .ensure()
                   .compact()
@@ -116,9 +121,9 @@ export const TournamentCreate = () => {
                   .of(
                     Yup.object().shape({
                       start: Yup.number(),
-                      timeCategory: Yup.string().required(),
-                      startTime: Yup.number(),
-                      increment: Yup.number(),
+                      timeCategory: Yup.string().required("Required"),
+                      startTime: Yup.number().min(1, "Must be greater than 0"),
+                      increment: Yup.number().min(0, "Shouldn't be negative"),
                     })
                   ),
                 brackets: Yup.array().of(

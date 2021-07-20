@@ -12,3 +12,4 @@ export { ChessBoard } from "./chess-board";
 export { StepNumber } from "./step-number";
 export { SmallTextField } from "./small-text-field";
 export { SmallHelpIcon } from "./small-help-icon";
+export { FormSelect } from "./form-select";

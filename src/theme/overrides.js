@@ -168,6 +168,13 @@ const overrides = {
       },
     },
   },
+  MuiInputBase: {
+    input: {
+      "&::-webkit-calendar-picker-indicator": {
+        filter: "invert(1)",
+      },
+    },
+  },
 };
 
 export default overrides;

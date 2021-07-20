@@ -6,18 +6,14 @@ import {
   Button,
   Typography,
   Grid,
-  MenuItem,
 } from "components/material-ui";
 import {
   LightBlueTextColorButton,
   StepNumber,
   SmallTextField,
+  FormSelect,
 } from "components/common";
-import {
-  CustomAccordion,
-  CustomAccordionDetails,
-  CustomSelect,
-} from "./styles";
+import { CustomAccordion, CustomAccordionDetails } from "./styles";
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
 import { FieldArray } from "formik";
 import { TimeCategories } from "constant";
@@ -231,22 +227,24 @@ export const Rounds = (props) => {
                     </Grid>
 
                     <Grid item sm={2}>
-                      <CustomSelect
+                      <FormSelect
                         variant="outlined"
                         name={`settings.rounds[${index}]['timeCategory']`}
                         value={round.timeCategory}
+                        placeholder="Select a game type"
+                        displayEmpty
+                        options={GameTypeList}
+                        error={
+                          touched.settings &&
+                          touched.settings.rounds &&
+                          errors.settings &&
+                          errors.settings.rounds &&
+                          touched.settings.rounds[index].timeCategory &&
+                          errors.settings.rounds[index].timeCategory
+                        }
                         fullWidth
                         onChange={handleChange}
-                      >
-                        <MenuItem disabled value="">
-                          <em>Select a game type</em>
-                        </MenuItem>
-                        {GameTypeList.map((item, index) => (
-                          <MenuItem value={item.value} key={index}>
-                            {item.label}
-                          </MenuItem>
-                        ))}
-                      </CustomSelect>
+                      />
                     </Grid>
 
                     <Grid item sm={2}>
