@@ -1,3 +1,4 @@
+import Chess from "chess.js";
 import React, {
   createRef,
   useEffect,
@@ -6,52 +7,68 @@ import React, {
   useRef,
 } from "react";
 import { Helmet } from "react-helmet";
-import Chess from "chess.js";
-
-import { useWindowSize } from "hooks";
-import StockFishClient from "utils/stockfish-client";
-
 import { useTheme } from "@material-ui/core";
-import { Box, Typography } from "components/material-ui";
+import { v4 as uuidv4 } from "uuid";
+
 import { ChessBoard } from "components/common";
+import { Box, Switch, Typography } from "components/material-ui";
+import { useWindowSize } from "hooks";
+import { addToMoveTree, findFromMoveTree } from "utils/common";
+import StockFishClient from "utils/stockfish-client";
+import { MoveTree } from "./components";
 
 export const Analysis = () => {
   const theme = useTheme();
   const windowSize = useWindowSize();
 
-  const playerColor = 0; // white
+  const [playerColor, setPlayerColor] = useState(0);
   const [chessBoardSize, setChessBoardSize] = useState(0);
   const [fen, setFen] = useState("start");
   const [premove, setPremove] = useState(null);
   const [lastMove, setLastMove] = useState();
+  // const [moveHistory, setMoveHistory] = useState([]);
+
+  const [currentMoveId, setCurrentMoveId] = useState(null);
+  const [moveVariation, setMoveVariation] = useState(null);
 
   const chess = useRef(new Chess());
   const chessContainerRef = createRef(null);
 
   const botRef = useRef(null);
 
-  const handleMove = useCallback(
-    (from, to, promot = "x") => {
-      const move = chess.current.move({ from, to, promotion: promot });
-      if (!move) return;
-      setFen(chess.current.fen());
-      setLastMove([from, to]);
-      botRef.current.prepareMove();
-    },
-    [setFen, setLastMove]
-  );
-
   useEffect(() => {
     botRef.current = new StockFishClient(
       chess.current,
       playerColor === 0 ? "white" : "black"
     );
-    botRef.current.on("setFen", setFen);
-    return () => {
-      botRef.current.off("setFen", setFen);
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleMove = useCallback(
+    (from, to, promot = "x") => {
+      const move = chess.current.move({ from, to, promotion: promot });
+      const fen = chess.current.fen();
+
+      if (!move || !fen) return;
+
+      const moveId = uuidv4();
+      const moveTree = addToMoveTree(
+        moveVariation,
+        currentMoveId,
+        moveId,
+        move,
+        fen
+      );
+
+      setMoveVariation(moveTree);
+      setCurrentMoveId(moveId);
+
+      setFen(fen);
+      setLastMove([from, to]);
+      setPlayerColor((playerColor) => 1 - playerColor);
+    },
+    [currentMoveId, moveVariation]
+  );
 
   useEffect(() => {
     if (chessContainerRef.current) {
@@ -59,6 +76,23 @@ export const Analysis = () => {
       setChessBoardSize(Math.min(boundingRect.width, boundingRect.height) - 30);
     }
   }, [windowSize, chessContainerRef]);
+
+  const handleShowPast = useCallback(
+    (moveId) => {
+      setCurrentMoveId(moveId);
+
+      const moveTree = findFromMoveTree(moveVariation, moveId);
+
+      if (moveTree) {
+        chess.current.load(moveTree.fen);
+
+        setFen(moveTree.fen);
+        setLastMove([moveTree.move.from, moveTree.move.to]);
+        setPlayerColor(moveTree.level % 2);
+      }
+    },
+    [moveVariation, setLastMove, setFen]
+  );
 
   return (
     <Box
@@ -75,27 +109,47 @@ export const Analysis = () => {
         Analysis
       </Typography>
 
-      <Box
-        flexGrow={1}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        ref={chessContainerRef}
-      >
-        <ChessBoard
-          width={chessBoardSize}
-          height={chessBoardSize}
-          chess={chess.current}
-          fen={fen}
-          playerColor={playerColor}
-          isPlaying={true}
-          inPast={false}
-          isSpectator={false}
-          lastMove={lastMove}
-          premove={premove}
-          setPremove={setPremove}
-          onMove={handleMove}
-        />
+      <Box flexGrow={1} display="flex">
+        <Box
+          flexGrow={1}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          ref={chessContainerRef}
+        >
+          <ChessBoard
+            width={chessBoardSize}
+            height={chessBoardSize}
+            chess={chess.current}
+            fen={fen}
+            playerColor={playerColor}
+            isPlaying={true}
+            inPast={false}
+            isSpectator={false}
+            lastMove={lastMove}
+            premove={premove}
+            setPremove={setPremove}
+            onMove={handleMove}
+            disableOrientation
+          />
+        </Box>
+        <Box borderRadius={8} bgcolor={theme.palette.background.default}>
+          <Box display="flex" alignItems="center" flexGrow={1} p={2}>
+            <Box display="flex" alignItems="center" flexGrow={1}>
+              <Typography variant="h4">+2.0</Typography>
+              <Box display="flex" flexDirection="column" ml={2}>
+                <Typography variant="body1">Stockfish 13+</Typography>
+                <Typography variant="body2">in local browser</Typography>
+              </Box>
+            </Box>
+            <Switch color="secondary" checked={false} />
+          </Box>
+          <MoveTree
+            moveTree={moveVariation}
+            currentMoveId={currentMoveId}
+            onShowPast={handleShowPast}
+          />
+        </Box>
       </Box>
     </Box>
   );

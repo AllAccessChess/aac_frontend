@@ -301,3 +301,55 @@ export const snakeCaseString = (string) => {
     .map((word) => word.toLowerCase())
     .join("_");
 };
+
+export const findFromMoveTree = (moveTree, moveId) => {
+  if (moveTree.id === moveId) {
+    return moveTree;
+  }
+
+  for (const subTree of moveTree.children) {
+    const moveTree = findFromMoveTree(subTree, moveId);
+    if (moveTree) {
+      return moveTree;
+    }
+  }
+
+  return null;
+};
+
+export const addToMoveTree = (moveTree, parentId, moveId, move, fen) => {
+  if (!moveTree) {
+    return {
+      id: moveId,
+      level: 1,
+      move,
+      fen,
+      children: [],
+      score: 0,
+    };
+  }
+
+  if (moveTree.id === parentId) {
+    moveTree.children.push({
+      id: moveId,
+      level: moveTree.level + 1,
+      move,
+      fen,
+      children: [],
+      score: 0,
+    });
+
+    return moveTree;
+  }
+
+  if (!moveTree.children) {
+    return moveTree;
+  }
+
+  return {
+    ...moveTree,
+    children: moveTree.children.map((subTree) =>
+      addToMoveTree(subTree, parentId, moveId, move, fen)
+    ),
+  };
+};

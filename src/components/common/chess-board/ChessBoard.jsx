@@ -18,6 +18,7 @@ export const ChessBoard = (props) => {
     isPlaying,
     setPremove,
     onMove,
+    disableOrientation = false,
   } = props;
 
   const [showTransformPawn, setShowTransformPawn] = useState(false);
@@ -88,7 +89,7 @@ export const ChessBoard = (props) => {
         check={chess.in_check() ? true : null}
         lastMove={lastMove}
         fen={fen}
-        orientation={playerColorName}
+        orientation={disableOrientation ? "white" : playerColorName}
         premovable={{
           enabled: true,
           showDests: true,

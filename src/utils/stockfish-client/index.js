@@ -108,8 +108,14 @@ export default class StockFishClient extends EventTarget {
         /// Did the AI move?
         if (match) {
           // isEngineRunning = false;
-          this.game.move({ from: match[1], to: match[2], promotion: match[3] });
-          this.triggerEvent("setFen", this.game.fen());
+          const move = this.game.move({
+            from: match[1],
+            to: match[2],
+            promotion: match[3],
+          });
+          const fen = this.game.fen();
+          this.triggerEvent("move", { move, fen });
+
           this.prepareMove();
           this.uciCmd("eval", this.evaler);
           //uciCmd("eval");

@@ -210,12 +210,14 @@ export default class JitsiClient extends EventTarget {
   leaveConference = () => {
     this.handleLog(LogLevel.INFO, "Leaving Conference:", this.meetingId);
 
-    const localTracks = this.conference.getLocalTracks();
+    if (this.conference) {
+      const localTracks = this.conference.getLocalTracks();
 
-    this.conference.leave();
+      this.conference.leave();
 
-    for (const localTrack of localTracks) {
-      localTrack.dispose();
+      for (const localTrack of localTracks) {
+        localTrack.dispose();
+      }
     }
   };
 
@@ -276,6 +278,18 @@ export default class JitsiClient extends EventTarget {
     JitsiMeetJS.createLocalTracks({ devices: ["audio", "video"] })
       .then(this.onLocalTracks)
       .catch((error) => {
+        throw error;
+      });
+
+    this.conference
+      .startRecording({
+        mode: "file",
+      })
+      .then(() => {
+        this.handleLog("Recording Started");
+      })
+      .catch((error) => {
+        this.handleError(error);
         throw error;
       });
   };
