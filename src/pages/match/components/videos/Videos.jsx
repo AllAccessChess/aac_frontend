@@ -33,7 +33,7 @@ export const Videos = (props) => {
         id={playerColor ? `${player1Id}-video` : `${player2Id}-video`}
       />
       <audio
-        autoPlay
+        muted
         id={playerColor ? `${player1Id}-audio` : `${player2Id}-audio`}
       />
       <UserVideo
@@ -43,7 +43,7 @@ export const Videos = (props) => {
         id={playerColor ? `${player2Id}-video` : `${player1Id}-video`}
       />
       <audio
-        autoPlay
+        muted
         id={playerColor ? `${player2Id}-audio` : `${player1Id}-audio`}
       />
     </React.Fragment>
