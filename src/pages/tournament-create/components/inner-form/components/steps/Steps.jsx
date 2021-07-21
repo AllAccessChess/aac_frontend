@@ -4,7 +4,7 @@ import { Box, Button, Typography } from "components/material-ui";
 import { StepNumber } from "components/common";
 
 export const Steps = (props) => {
-  const { isSubmitting, width, activeStep, verified } = props;
+  const { isSubmitting, width, right, top, activeStep, verified } = props;
   const steps = [
     "General Information",
     "Tournament Settings",
@@ -12,7 +12,7 @@ export const Steps = (props) => {
   ];
 
   return (
-    <Box position="absolute" right="0" top="0" width={width}>
+    <Box position="absolute" right={right} top={top} width={width}>
       <Box
         border="2px solid rgba(255, 255, 255, 0.3)"
         borderRadius="10px"

@@ -31,7 +31,7 @@ export const Rounds = (props) => {
     onVerify,
   } = props;
 
-  const getRateCategory = useCallback((startTime, increment) => {
+  const getRatingCategory = useCallback((startTime, increment) => {
     let x = startTime + increment;
     if (x < 3) return "Bullet";
     if (x < 10) return "Blitz";
@@ -213,7 +213,7 @@ export const Rounds = (props) => {
                     <Grid item sm={2}>
                       <Box display="flex" alignItems="center">
                         <Typography>
-                          {getRateCategory(round.startTime, round.increment)}
+                          {getRatingCategory(round.startTime, round.increment)}
                         </Typography>
                       </Box>
                     </Grid>

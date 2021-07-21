@@ -247,16 +247,16 @@ export const Sections = (props) => {
                 </Box>
                 <FormSelect
                   variant="outlined"
-                  name="settings.rateCategory"
-                  value={values.settings.rateCategory}
+                  name="settings.ratingCategory"
+                  value={values.settings.ratingCategory}
                   placeholder="Select a game type"
                   displayEmpty
                   options={GameTypeList}
                   error={
                     touched.settings &&
                     errors.settings &&
-                    touched.settings.rateCategory &&
-                    errors.settings.rateCategory
+                    touched.settings.ratingCategory &&
+                    errors.settings.ratingCategory
                   }
                   fullWidth
                   onChange={handleChange}

@@ -24,7 +24,7 @@ export const TournamentCreate = () => {
       state: 1,
       settings: {
         type: "",
-        rateCategory: "",
+        ratingCategory: "",
         ratingProvider: "",
         playup: 0,
         variant: 0,
@@ -85,10 +85,8 @@ export const TournamentCreate = () => {
         </Typography>
 
         <Box
-          p={5}
-          height="100%"
+          height="calc(100% - 65px)"
           borderRadius="0 0 10px 10px"
-          overflow="auto"
           bgcolor={theme.palette.background.paper}
         >
           <Formik
@@ -108,7 +106,7 @@ export const TournamentCreate = () => {
                   1,
                   "Should have at least one round"
                 ),
-                rateCategory: Yup.string().required("Required"),
+                ratingCategory: Yup.string().required("Required"),
                 variant: Yup.number(),
                 prepTime: Yup.number(),
                 ratingProvider: Yup.string().required("Required"),
