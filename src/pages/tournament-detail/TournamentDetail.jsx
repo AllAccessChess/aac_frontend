@@ -14,6 +14,8 @@ import {
   registerTournament,
   unRegisterTournament,
   startRound,
+  updateTournament,
+  setCurrent as setCurrentTournament,
 } from "redux/reducers/tournamentReducer";
 import { downloadPGN } from "redux/reducers/matchReducer";
 
@@ -173,6 +175,21 @@ export const TournamentDetail = () => {
     history.push(`/tournament/${params.id}/round/${roundId}/pairing`);
   };
 
+  const handleUpdateTournament = (payload, callback) => {
+    dispatch(
+      updateTournament(
+        payload,
+        (updatedTournament) => {
+          dispatch(setCurrentTournament(updatedTournament));
+          if (callback) callback();
+        },
+        () => {
+          if (callback) callback();
+        }
+      )
+    );
+  };
+
   useEffect(() => {
     if (params.id) {
       dispatch(getTournament(params.id));
@@ -208,6 +225,7 @@ export const TournamentDetail = () => {
         currentRoundIndex={currentRoundIndex}
         onDownloadPGN={handleDownloadPGN}
         onManagePairings={handleManagePairings}
+        onUpdateMatchResult={handleUpdateTournament}
       />
       {byeCondition && (
         <Byes

@@ -4,10 +4,17 @@ import { MenuItem, FormControl, FormHelperText } from "components/material-ui";
 
 import { CustomSelect, SmallTypography } from "./styles";
 
-export const FormSelect = ({ options, placeholder, error, ...props }) => {
+export const FormSelect = ({
+  options,
+  placeholder,
+  error,
+  displayEmpty,
+  ...props
+}) => {
   return (
     <FormControl error={error} {...props}>
       <CustomSelect
+        displayEmpty={displayEmpty}
         {...props}
         renderValue={(selected) => {
           if (selected.length === 0) {

@@ -8,7 +8,7 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { InlineFilledSelect, TabPanel } from "components/common";
+import { InlineFilledSelect, Spinner, TabPanel } from "components/common";
 import {
   Box,
   Button,
@@ -38,6 +38,7 @@ export const Pairings = (props) => {
     currentRoundIndex,
     onManagePairings,
     onDownloadPGN,
+    onUpdateMatchResult,
   } = props;
   const user = useSelector((state) => state.authReducer.user);
   const [tabValue, setTabValue] = useState(
@@ -48,6 +49,7 @@ export const Pairings = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [editingGameId, setEditingGameId] = useState(null);
   const [editedResult, setEditedResult] = useState();
+  const [updatingResult, setUpdatingResult] = useState(false);
 
   useEffect(() => {
     if (currentRoundIndex >= 0) setTabValue(currentRoundIndex);
@@ -80,8 +82,22 @@ export const Pairings = (props) => {
   };
 
   const handleClickSaveGameResult = () => {
-    setEditingGameId(null);
-    setEditedResult(null);
+    setUpdatingResult(true);
+    let currentTournament = JSON.parse(JSON.stringify(tournament));
+    let round = currentTournament.rounds[tabValue];
+    let board = round.boards.find((item) => item.gameId === editingGameId);
+    board.result = editedResult;
+    onUpdateMatchResult(
+      {
+        id: currentTournament.id,
+        rounds: currentTournament.rounds,
+      },
+      () => {
+        setUpdatingResult(false);
+        setEditingGameId(null);
+        setEditedResult(null);
+      }
+    );
   };
 
   if (!tournament.rounds.length) return <></>;
@@ -204,7 +220,8 @@ export const Pairings = (props) => {
                               alignItems="center"
                               justifyContent="center"
                             >
-                              {editingGameId === match.gameId ? (
+                              {editingGameId === match.gameId &&
+                              !updatingResult ? (
                                 <React.Fragment>
                                   <Select
                                     value={editedResult}
@@ -227,6 +244,9 @@ export const Pairings = (props) => {
                                     </IconButton>
                                   </Box>
                                 </React.Fragment>
+                              ) : editingGameId === match.gameId &&
+                                updatingResult ? (
+                                <Spinner size={20} />
                               ) : (
                                 <React.Fragment>
                                   <Typography variant="body1">

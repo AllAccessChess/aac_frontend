@@ -10,6 +10,9 @@ export default class TournamentService extends BaseAPIService {
   static createTournament = (payload) => {
     return this.requestWithAuth(`/tournaments/create`, "POST", payload);
   };
+  static updateTournament = (payload) => {
+    return this.requestWithAuth(`/tournaments/update`, "POST", payload);
+  };
   static registerTournament = (tournamentID) => {
     return this.requestWithAuth(
       `/tournaments/register/${tournamentID}`,

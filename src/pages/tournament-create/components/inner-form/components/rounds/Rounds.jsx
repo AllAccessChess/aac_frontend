@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useCallback } from "react";
 
 import {
   AccordionSummary,
@@ -11,12 +11,10 @@ import {
   LightBlueTextColorButton,
   StepNumber,
   SmallTextField,
-  FormSelect,
 } from "components/common";
 import { CustomAccordion, CustomAccordionDetails } from "./styles";
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
 import { FieldArray } from "formik";
-import { TimeCategories } from "constant";
 
 export const Rounds = (props) => {
   const {
@@ -33,39 +31,13 @@ export const Rounds = (props) => {
     onVerify,
   } = props;
 
-  const GameTypeList = useMemo(
-    () => [
-      {
-        label: "Bullet",
-        value: TimeCategories.BULLET,
-      },
-      {
-        label: "Blitz",
-        value: TimeCategories.BLITZ,
-      },
-      {
-        label: "Rapid",
-        value: TimeCategories.RAPID,
-      },
-      {
-        label: "Classic",
-        value: TimeCategories.CLASSIC,
-      },
-      {
-        label: "Blitz OTB",
-        value: TimeCategories.BLITZOTB,
-      },
-      {
-        label: "Rapid OTB",
-        value: TimeCategories.RAPIDOTB,
-      },
-      {
-        label: "Classic OTB",
-        value: TimeCategories.CLASSICOTB,
-      },
-    ],
-    []
-  );
+  const getRatingCategory = useCallback((startTime, increment) => {
+    let x = startTime + increment;
+    if (x < 3) return "Bullet";
+    if (x < 10) return "Blitz";
+    if (x < 30) return "Rapid";
+    return "Classic";
+  }, []);
 
   useEffect(() => {
     onVerify(dirty && (!errors.settings || !errors.settings.rounds));
@@ -117,7 +89,7 @@ export const Rounds = (props) => {
                   </Grid>
                   <Grid item sm={2}>
                     <Typography color="textSecondary">
-                      Increment (sec)
+                      Increment (min)
                     </Typography>
                   </Grid>
                   <Grid item sm={2}>
@@ -145,18 +117,22 @@ export const Rounds = (props) => {
                         }
                         error={Boolean(
                           touched.settings &&
-                            touched.settings.rounds &&
                             errors.settings &&
+                            touched.settings.rounds &&
                             errors.settings.rounds &&
+                            touched.settings.rounds[index] &&
+                            errors.settings.rounds[index] &&
                             touched.settings.rounds[index].start &&
                             errors.settings.rounds[index].start
                         )}
                         fullWidth
                         helperText={
                           touched.settings &&
-                          touched.settings.rounds &&
                           errors.settings &&
+                          touched.settings.rounds &&
                           errors.settings.rounds &&
+                          touched.settings.rounds[index] &&
+                          errors.settings.rounds[index] &&
                           touched.settings.rounds[index].start &&
                           errors.settings.rounds[index].start
                         }
@@ -181,6 +157,8 @@ export const Rounds = (props) => {
                             touched.settings.rounds &&
                             errors.settings &&
                             errors.settings.rounds &&
+                            touched.settings.rounds[index] &&
+                            errors.settings.rounds[index] &&
                             touched.settings.rounds[index].startTime &&
                             errors.settings.rounds[index].startTime
                         )}
@@ -190,6 +168,8 @@ export const Rounds = (props) => {
                           touched.settings.rounds &&
                           errors.settings &&
                           errors.settings.rounds &&
+                          touched.settings.rounds[index] &&
+                          errors.settings.rounds[index] &&
                           touched.settings.rounds[index].startTime &&
                           errors.settings.rounds[index].startTime
                         }
@@ -209,6 +189,8 @@ export const Rounds = (props) => {
                             touched.settings.rounds &&
                             errors.settings &&
                             errors.settings.rounds &&
+                            touched.settings.rounds[index] &&
+                            errors.settings.rounds[index] &&
                             touched.settings.rounds[index].increment &&
                             errors.settings.rounds[index].increment
                         )}
@@ -218,6 +200,8 @@ export const Rounds = (props) => {
                           touched.settings.rounds &&
                           errors.settings &&
                           errors.settings.rounds &&
+                          touched.settings.rounds[index] &&
+                          errors.settings.rounds[index] &&
                           touched.settings.rounds[index].increment &&
                           errors.settings.rounds[index].increment
                         }
@@ -227,24 +211,11 @@ export const Rounds = (props) => {
                     </Grid>
 
                     <Grid item sm={2}>
-                      <FormSelect
-                        variant="outlined"
-                        name={`settings.rounds[${index}]['timeCategory']`}
-                        value={round.timeCategory}
-                        placeholder="Select a game type"
-                        displayEmpty
-                        options={GameTypeList}
-                        error={
-                          touched.settings &&
-                          touched.settings.rounds &&
-                          errors.settings &&
-                          errors.settings.rounds &&
-                          touched.settings.rounds[index].timeCategory &&
-                          errors.settings.rounds[index].timeCategory
-                        }
-                        fullWidth
-                        onChange={handleChange}
-                      />
+                      <Box display="flex" alignItems="center">
+                        <Typography>
+                          {getRatingCategory(round.startTime, round.increment)}
+                        </Typography>
+                      </Box>
                     </Grid>
 
                     <Grid item sm={2}>
@@ -267,7 +238,6 @@ export const Rounds = (props) => {
                   onClick={() => {
                     arrayHelpers.push({
                       start: -1,
-                      timeCategory: "classical",
                       startTime: 0,
                       increment: 0,
                     });
