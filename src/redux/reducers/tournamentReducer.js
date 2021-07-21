@@ -196,4 +196,19 @@ export const createTournament = (payload, callback, fallback) => async (
   dispatch(setLoading(false));
 };
 
+export const updateTournament = (payload, callback, fallback) => async (
+  dispatch
+) => {
+  dispatch(setLoading(true));
+  try {
+    const { tournament } = await TournamentService.updateTournament(payload);
+    dispatch(updateListItem(tournament));
+    if (callback) callback(tournament);
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+    if (fallback) fallback();
+  }
+  dispatch(setLoading(false));
+};
+
 export default slice.reducer;
