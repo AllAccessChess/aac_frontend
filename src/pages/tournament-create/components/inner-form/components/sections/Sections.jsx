@@ -247,16 +247,16 @@ export const Sections = (props) => {
                 </Box>
                 <FormSelect
                   variant="outlined"
-                  name="settings.timeCategory"
-                  value={values.settings.timeCategory}
+                  name="settings.rateCategory"
+                  value={values.settings.rateCategory}
                   placeholder="Select a game type"
                   displayEmpty
                   options={GameTypeList}
                   error={
                     touched.settings &&
                     errors.settings &&
-                    touched.settings.timeCategory &&
-                    errors.settings.timeCategory
+                    touched.settings.rateCategory &&
+                    errors.settings.rateCategory
                   }
                   fullWidth
                   onChange={handleChange}
@@ -320,8 +320,7 @@ export const Sections = (props) => {
                               errors.settings.brackets &&
                               touched.settings.brackets[index] &&
                               touched.settings.brackets[index][0] &&
-                              (errors.settings.brackets[index] ||
-                                errors.settings.brackets[index][0])
+                              errors.settings.brackets[index]
                           )}
                           fullWidth
                           helperText={
@@ -331,8 +330,10 @@ export const Sections = (props) => {
                             errors.settings.brackets &&
                             touched.settings.brackets[index] &&
                             touched.settings.brackets[index][0] &&
-                            (errors.settings.brackets[index] ||
-                              errors.settings.brackets[index][0])
+                            errors.settings.brackets[index] &&
+                            (typeof errors.settings.brackets[index] === "string"
+                              ? errors.settings.brackets[index]
+                              : errors.settings.brackets[index][0])
                           }
                           onBlur={handleBlur}
                           onChange={handleChange}
@@ -362,8 +363,7 @@ export const Sections = (props) => {
                               errors.settings.brackets &&
                               touched.settings.brackets[index] &&
                               touched.settings.brackets[index][1] &&
-                              (errors.settings.brackets[index] ||
-                                errors.settings.brackets[index][1])
+                              errors.settings.brackets[index]
                           )}
                           fullWidth
                           helperText={
@@ -373,8 +373,10 @@ export const Sections = (props) => {
                             errors.settings.brackets &&
                             touched.settings.brackets[index] &&
                             touched.settings.brackets[index][1] &&
-                            (errors.settings.brackets[index] ||
-                              errors.settings.brackets[index][1])
+                            errors.settings.brackets[index] &&
+                            (typeof errors.settings.brackets[index] === "string"
+                              ? errors.settings.brackets[index]
+                              : errors.settings.brackets[index][1])
                           }
                           onBlur={handleBlur}
                           onChange={handleChange}

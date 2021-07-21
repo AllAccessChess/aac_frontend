@@ -24,7 +24,7 @@ export const TournamentCreate = () => {
       state: 1,
       settings: {
         type: "",
-        timeCategory: "",
+        rateCategory: "",
         ratingProvider: "",
         playup: 0,
         variant: 0,
@@ -108,7 +108,7 @@ export const TournamentCreate = () => {
                   1,
                   "Should have at least one round"
                 ),
-                timeCategory: Yup.string().required("Required"),
+                rateCategory: Yup.string().required("Required"),
                 variant: Yup.number(),
                 prepTime: Yup.number(),
                 ratingProvider: Yup.string().required("Required"),
@@ -121,13 +121,24 @@ export const TournamentCreate = () => {
                   .of(
                     Yup.object().shape({
                       start: Yup.number(),
-                      timeCategory: Yup.string().required("Required"),
                       startTime: Yup.number().min(1, "Must be greater than 0"),
                       increment: Yup.number().min(0, "Shouldn't be negative"),
                     })
                   ),
                 brackets: Yup.array().of(
-                  Yup.array().min(1).max(2).of(Yup.number())
+                  Yup.array()
+                    .min(1)
+                    .max(2)
+                    .of(
+                      Yup.number()
+                        .required("Required")
+                        .min(0, "Shouldn't be negative")
+                    )
+                    .test(
+                      "bracket-validator",
+                      "Max Rating should be greater than Min Rating",
+                      (value) => value[1] >= value[0]
+                    )
                 ),
               }),
               restrictions: Yup.object(),
