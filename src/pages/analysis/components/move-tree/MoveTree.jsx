@@ -1,44 +1,54 @@
 import React from "react";
-import { useTheme } from "@material-ui/core";
 
-import { Box } from "components/material-ui";
-
-import { MoveListCell, MoveListIndex, MoveListRow } from "./styles";
+import {
+  MoveListCell,
+  MoveListIndex,
+  MoveListRow,
+  SubTree,
+  SubTreeCell,
+  SubTreeMain,
+  SubTreeMainIndex,
+  SubTreeWrapper,
+  Wrapper,
+} from "./styles";
 
 export const MoveTree = (props) => {
   const { moveTree, currentMoveId, onShowPast } = props;
-  const theme = useTheme();
 
   const renderSubTree = (tree, currentId) => {
     const elements = [];
     let currentTree = tree;
 
     let subElements = [];
-    subElements.push(
-      <div
-        key={`subtree-${currentTree.id}-index`}
-        className={`subtree-${currentTree.id}-index`}
-      >
-        {currentTree.level % 2 === 1
-          ? (currentTree.level + 1) / 2
-          : `${currentTree.level / 2} ...`}
-      </div>
-    );
 
     while (1) {
       if (!currentTree) {
         break;
       }
-      const currentId = currentTree.id;
+      const currentTreeId = currentTree.id;
+
+      if (currentTree.level % 2 === 1 || !subElements.length) {
+        subElements.push(
+          <SubTreeMainIndex
+            key={`subtree-${currentTree.id}-index`}
+            className={`subtree-${currentTree.id}-index`}
+          >
+            {currentTree.level % 2 === 1
+              ? `${(currentTree.level + 1) / 2}.`
+              : `${currentTree.level / 2}...`}
+          </SubTreeMainIndex>
+        );
+      }
 
       subElements.push(
-        <div
-          className={currentTree.id}
+        <SubTreeCell
+          className={currentId === currentTree.id ? "active" : ""}
+          even={(currentTree.level % 2 === 0).toString()}
           key={currentTree.id}
-          onClick={() => onShowPast(currentId)}
+          onClick={() => onShowPast(currentTreeId)}
         >
           {currentTree.move.san}
-        </div>
+        </SubTreeCell>
       );
 
       if (!currentTree.children.length || currentTree.children.length > 1) {
@@ -49,29 +59,29 @@ export const MoveTree = (props) => {
     }
 
     elements.push(
-      <div
+      <SubTreeMain
         key={`subtree-${tree.id}-main`}
         className={`subtree-${tree.id}-main`}
       >
         {subElements}
-      </div>
+      </SubTreeMain>
     );
 
     if (currentTree.children.length) {
       elements.push(
-        <div
+        <SubTreeWrapper
           key={`subtree-${tree.id}-subtree`}
           className={`subtree-${tree.id}-subtree`}
         >
           {currentTree.children.map((subTree) => (
-            <div
+            <SubTree
               key={`subtree-${tree.id}-subtree-${subTree.id}`}
               className={`subtree-${tree.id}-subtree-${subTree.id}`}
             >
               {renderSubTree(subTree, currentId)}
-            </div>
+            </SubTree>
           ))}
-        </div>
+        </SubTreeWrapper>
       );
     }
 
@@ -122,19 +132,20 @@ export const MoveTree = (props) => {
         );
 
         elements.push(
-          <div
+          <SubTreeWrapper
             key={`level-${tree.level}-1-subtree`}
             className={`level-${tree.level}-1-subtree`}
+            root="true"
           >
             {subTrees.map((subTree) => (
-              <div
+              <SubTree
                 key={`level-${tree.level}-1-subtree-${subTree.id}`}
                 className={`level-${tree.level}-1-subtree-${subTree.id}`}
               >
                 {renderSubTree(subTree, currentId)}
-              </div>
+              </SubTree>
             ))}
-          </div>
+          </SubTreeWrapper>
         );
 
         subElements = [];
@@ -181,19 +192,20 @@ export const MoveTree = (props) => {
 
         if (tree.children.length > 1) {
           elements.push(
-            <div
+            <SubTreeWrapper
               key={`level-${tree.level}-subtree`}
               className={`level-${tree.level}-subtree`}
+              root="true"
             >
               {tree.children.slice(1).map((subTree) => (
-                <div
+                <SubTree
                   key={`level-${tree.level}-subtree-${subTree.id}`}
                   className={`level-${tree.level}-subtree-${subTree.id}`}
                 >
                   {renderSubTree(subTree, currentId)}
-                </div>
+                </SubTree>
               ))}
-            </div>
+            </SubTreeWrapper>
           );
         }
 
@@ -219,15 +231,8 @@ export const MoveTree = (props) => {
   };
 
   return (
-    <Box
-      bgcolor={theme.palette.background.default}
-      flexGrow={1}
-      display="flex"
-      flexDirection="column"
-      py={3}
-      width={300}
-    >
+    <Wrapper>
       {moveTree ? renderMoveTree(moveTree, currentMoveId) : null}
-    </Box>
+    </Wrapper>
   );
 };
