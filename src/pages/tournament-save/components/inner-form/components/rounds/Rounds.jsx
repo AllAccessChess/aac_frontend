@@ -26,7 +26,6 @@ export const Rounds = (props) => {
     setFieldValue,
     active,
     verified,
-    dirty,
     onOpen,
     onVerify,
   } = props;
@@ -40,9 +39,9 @@ export const Rounds = (props) => {
   }, []);
 
   useEffect(() => {
-    onVerify(dirty && (!errors.settings || !errors.settings.rounds));
+    onVerify(!errors.settings || !errors.settings.rounds);
     // eslint-disable-next-line
-  }, [errors.settings, dirty]);
+  }, [errors.settings]);
 
   return (
     <CustomAccordion

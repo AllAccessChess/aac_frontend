@@ -30,6 +30,7 @@ export const TournamentCard = (props) => {
     // onFindMatch,
     onJoinLobby,
     onStartRound,
+    onEdit,
   } = props;
   const offsetInMileSeconds = 300000;
 
@@ -175,6 +176,17 @@ export const TournamentCard = (props) => {
           maxWidth="200px"
           py={4}
         >
+          {onEdit && (
+            <Button
+              variant="contained"
+              color="secondary"
+              mb={2}
+              fullWidth
+              onClick={() => onEdit(tournament.id)}
+            >
+              Edit Tournament
+            </Button>
+          )}
           {onViewDetails && tournament.start > new Date().getTime() && (
             <GreenButton
               variant="contained"

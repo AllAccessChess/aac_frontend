@@ -42,7 +42,6 @@ export const Sections = (props) => {
     values,
     active,
     verified,
-    dirty,
     onNext,
     onOpen,
     onVerify,
@@ -127,15 +126,14 @@ export const Sections = (props) => {
 
   useEffect(() => {
     onVerify(
-      dirty &&
-        (!errors.settings ||
-          (!errors.settings.type &&
-            !errors.settings.ratingProvider &&
-            !errors.settings.timeCategory &&
-            !errors.settings.brackets))
+      !errors.settings ||
+        (!errors.settings.type &&
+          !errors.settings.ratingProvider &&
+          !errors.settings.timeCategory &&
+          !errors.settings.brackets)
     );
     // eslint-disable-next-line
-  }, [errors.settings, dirty]);
+  }, [errors.settings]);
 
   return (
     <CustomAccordion

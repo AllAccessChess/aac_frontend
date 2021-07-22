@@ -88,9 +88,11 @@ export const Pairings = (props) => {
     let board = round.boards.find((item) => item.gameId === editingGameId);
     board.result = editedResult;
     onUpdateMatchResult(
+      tournament,
+      tabValue,
       {
-        id: currentTournament.id,
-        rounds: currentTournament.rounds,
+        game: editingGameId,
+        result: editedResult,
       },
       () => {
         setUpdatingResult(false);
