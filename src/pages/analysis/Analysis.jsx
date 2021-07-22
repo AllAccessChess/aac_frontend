@@ -9,16 +9,22 @@ import React, {
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { useTheme } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
+import { useTheme } from "@material-ui/core";
 
 import { ChessBoard } from "components/common";
 import { Box, Switch, Typography } from "components/material-ui";
 import { useWindowSize } from "hooks";
+import { useStockFishClient } from "lib/stock-fish";
 import { getMatch } from "redux/reducers/matchReducer";
-import { addToMoveTree, findFromMoveTree } from "utils/common";
-// import StockFishClient from "utils/stockfish-client";
-import { MoveTree } from "./components";
+import {
+  addToMoveTree,
+  findFromMoveTree,
+  getMovesFromTree,
+  updateScore,
+} from "utils/common";
+import { MoveTree, Progress } from "./components";
+import { MoveTreeHeader, MoveTreeWrapper } from "./styles";
 
 export const Analysis = () => {
   const dispatch = useDispatch();
@@ -32,7 +38,9 @@ export const Analysis = () => {
   const [fen, setFen] = useState("start");
   const [premove, setPremove] = useState(null);
   const [lastMove, setLastMove] = useState();
-  // const [moveHistory, setMoveHistory] = useState([]);
+  const [stockFishEnabled, setStockFishEnabled] = useState(false);
+  const [possibleMoves, setPossibleMoves] = useState("");
+  const [currentScore, setCurrentScore] = useState(null);
 
   const [currentMoveId, setCurrentMoveId] = useState(null);
   const [moveVariation, setMoveVariation] = useState(null);
@@ -40,21 +48,25 @@ export const Analysis = () => {
   const chess = useRef(new Chess());
   const chessContainerRef = createRef(null);
 
-  // const botRef = useRef(null);
+  const { stockFishClient } = useStockFishClient();
+
+  useEffect(() => {
+    if (stockFishClient) {
+      stockFishClient.on("score", onStockFishScore);
+      stockFishClient.on("possible-moves", onStockFishPossibleMoves);
+    }
+
+    return () => {
+      stockFishClient.off("score", onStockFishScore);
+      stockFishClient.off("possible-moves", onStockFishPossibleMoves);
+    };
+  }, [stockFishClient]);
 
   useEffect(() => {
     if (params.id) {
       dispatch(getMatch(params.id));
     }
   }, [dispatch, params.id]);
-
-  useEffect(() => {
-    // botRef.current = new StockFishClient(
-    //   chess.current,
-    //   playerColor === 0 ? "white" : "black"
-    // );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (currentMatch) {
@@ -92,6 +104,36 @@ export const Analysis = () => {
     // eslint-disable-next-line
   }, [currentMatch]);
 
+  useEffect(() => {
+    if (stockFishEnabled) {
+      const moves = getMovesFromTree(moveVariation, currentMoveId);
+      stockFishClient.go(moves, chess.current.turn() === "b" ? "w" : "b");
+    } else {
+      setCurrentScore(null);
+    }
+    // eslint-disable-next-line
+  }, [currentMoveId, stockFishEnabled]);
+
+  useEffect(() => {
+    if (chessContainerRef.current) {
+      const boundingRect = chessContainerRef.current.getBoundingClientRect();
+      setChessBoardSize(Math.min(boundingRect.width, boundingRect.height) - 30);
+    }
+  }, [windowSize, chessContainerRef]);
+
+  useEffect(() => {
+    if (currentScore !== null) {
+      setMoveVariation(
+        updateScore(
+          moveVariation,
+          currentMoveId,
+          currentScore > 0 ? `+${currentScore}` : currentScore.toString()
+        )
+      );
+    }
+    // eslint-disable-next-line
+  }, [currentScore]);
+
   const handleMove = useCallback(
     (from, to, promot = "x") => {
       const move = chess.current.move({ from, to, promotion: promot });
@@ -118,13 +160,6 @@ export const Analysis = () => {
     [currentMoveId, moveVariation]
   );
 
-  useEffect(() => {
-    if (chessContainerRef.current) {
-      const boundingRect = chessContainerRef.current.getBoundingClientRect();
-      setChessBoardSize(Math.min(boundingRect.width, boundingRect.height) - 30);
-    }
-  }, [windowSize, chessContainerRef]);
-
   const handleShowPast = useCallback(
     (moveId) => {
       setCurrentMoveId(moveId);
@@ -141,6 +176,18 @@ export const Analysis = () => {
     },
     [moveVariation, setLastMove, setFen]
   );
+
+  const toggleStockFishEnabled = () => {
+    setStockFishEnabled((stockFishEnabled) => !stockFishEnabled);
+  };
+
+  const onStockFishScore = (score) => {
+    setCurrentScore(score);
+  };
+
+  const onStockFishPossibleMoves = (pv) => {
+    setPossibleMoves(pv);
+  };
 
   return (
     <Box
@@ -181,23 +228,47 @@ export const Analysis = () => {
             disableOrientation
           />
         </Box>
-        <Box borderRadius={8} bgcolor={theme.palette.background.default}>
-          <Box display="flex" alignItems="center" flexGrow={1} p={2}>
+        <MoveTreeWrapper>
+          <MoveTreeHeader p={2}>
             <Box display="flex" alignItems="center" flexGrow={1}>
-              <Typography variant="h4">+2.0</Typography>
+              <Box mx={2}>
+                <Typography variant="h4">
+                  {currentScore
+                    ? currentScore > 0
+                      ? `+${currentScore}`
+                      : currentScore.toString()
+                    : ""}
+                </Typography>
+              </Box>
               <Box display="flex" flexDirection="column" ml={2}>
                 <Typography variant="body1">Stockfish 13+</Typography>
                 <Typography variant="body2">in local browser</Typography>
               </Box>
             </Box>
-            <Switch color="secondary" checked={false} />
-          </Box>
+            <Switch
+              color="secondary"
+              checked={stockFishEnabled}
+              onChange={toggleStockFishEnabled}
+            />
+          </MoveTreeHeader>
+          {stockFishEnabled && (
+            <Box p={2}>
+              <Typography variant="body2">{possibleMoves}</Typography>
+            </Box>
+          )}
+          <Progress
+            score={
+              currentScore
+                ? currentScore * (chess.current.turn() === "w" ? -1 : 1)
+                : 0
+            }
+          />
           <MoveTree
             moveTree={moveVariation}
             currentMoveId={currentMoveId}
             onShowPast={handleShowPast}
           />
-        </Box>
+        </MoveTreeWrapper>
       </Box>
     </Box>
   );

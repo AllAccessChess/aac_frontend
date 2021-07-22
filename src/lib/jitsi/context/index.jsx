@@ -28,7 +28,7 @@ export const JitsiProvider = (props) => {
   );
 };
 
-export const useJitsiContext = () => {
+export const useJitsiClient = () => {
   const { jitsiClient } = useContext(JitsiContext);
 
   return {

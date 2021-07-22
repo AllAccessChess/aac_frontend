@@ -6,6 +6,6 @@
 // 0      0  0      0    00000
 
 import ZoomClient from "./client";
-import { ZoomProvider, useZoomContext } from "./context";
+import { ZoomProvider, useZoomClient } from "./context";
 
-export { ZoomClient, ZoomProvider, useZoomContext };
+export { ZoomClient, ZoomProvider, useZoomClient };

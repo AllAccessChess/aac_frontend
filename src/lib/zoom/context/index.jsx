@@ -40,7 +40,7 @@ export const ZoomProvider = (props) => {
   );
 };
 
-export const useZoomContext = () => {
+export const useZoomClient = () => {
   const { zoomClient } = useContext(ZoomContext);
 
   return {

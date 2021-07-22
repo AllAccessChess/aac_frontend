@@ -317,15 +317,22 @@ export const findFromMoveTree = (moveTree, moveId) => {
   return null;
 };
 
-export const addToMoveTree = (moveTree, parentId, moveId, move, fen) => {
+export const addToMoveTree = (
+  moveTree,
+  parentId,
+  moveId,
+  move,
+  fen,
+  score = null
+) => {
   if (!moveTree) {
     return {
       id: moveId,
       level: 1,
       move,
       fen,
+      score,
       children: [],
-      score: 0,
     };
   }
 
@@ -335,8 +342,8 @@ export const addToMoveTree = (moveTree, parentId, moveId, move, fen) => {
       level: moveTree.level + 1,
       move,
       fen,
+      score,
       children: [],
-      score: 0,
     });
 
     return moveTree;
@@ -350,6 +357,43 @@ export const addToMoveTree = (moveTree, parentId, moveId, move, fen) => {
     ...moveTree,
     children: moveTree.children.map((subTree) =>
       addToMoveTree(subTree, parentId, moveId, move, fen)
+    ),
+  };
+};
+
+export const getMovesFromTree = (moveTree, currentMoveId) => {
+  if (!moveTree) {
+    return [];
+  }
+
+  const moves = [];
+
+  if (moveTree.id === currentMoveId) {
+    moves.push(moveTree.move);
+  } else {
+    const subMoves = [];
+    for (const subTree of moveTree.children) {
+      subMoves.push(...getMovesFromTree(subTree, currentMoveId));
+    }
+
+    if (subMoves.length) {
+      moves.push(moveTree.move, ...subMoves);
+    }
+  }
+
+  return moves;
+};
+
+export const updateScore = (moveTree, currentMoveId, score) => {
+  if (!moveTree) {
+    return moveTree;
+  }
+
+  return {
+    ...moveTree,
+    score: moveTree.id === currentMoveId ? score : moveTree.score,
+    children: moveTree.children.map((subTree) =>
+      updateScore(subTree, currentMoveId, score)
     ),
   };
 };

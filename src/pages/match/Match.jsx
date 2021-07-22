@@ -32,7 +32,7 @@ import {
   Typography,
 } from "components/material-ui";
 import { useWindowSize } from "hooks";
-import { useJitsiContext } from "lib/jitsi";
+import { useJitsiClient } from "lib/jitsi";
 // import { useZoomContext } from "lib/zoom";
 // import { generateSignature, getValidUserName } from "lib/zoom/client/helpers";
 import {
@@ -113,7 +113,7 @@ export const Match = () => {
   const currentMatchRef = useRef(currentMatch);
 
   // const { zoomClient } = useZoomContext();
-  const { jitsiClient } = useJitsiContext();
+  const { jitsiClient } = useJitsiClient();
 
   const classes = useStyles();
   const theme = useTheme();

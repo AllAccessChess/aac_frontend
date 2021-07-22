@@ -6,6 +6,6 @@
 // 0      0  0      0    00000
 
 import JitsiClient from "./client";
-import { JitsiProvider, useJitsiContext } from "./context";
+import { JitsiProvider, useJitsiClient } from "./context";
 
-export { JitsiClient, JitsiProvider, useJitsiContext };
+export { JitsiClient, JitsiProvider, useJitsiClient };
