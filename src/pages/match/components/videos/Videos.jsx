@@ -32,20 +32,14 @@ export const Videos = (props) => {
         autoPlay
         id={playerColor ? `${player1Id}-video` : `${player2Id}-video`}
       />
-      <audio
-        muted
-        id={playerColor ? `${player1Id}-audio` : `${player2Id}-audio`}
-      />
+      <audio id={playerColor ? `${player1Id}-audio` : `${player2Id}-audio`} />
       <UserVideo
         width={384}
         height={240}
         autoPlay
         id={playerColor ? `${player2Id}-video` : `${player1Id}-video`}
       />
-      <audio
-        muted
-        id={playerColor ? `${player2Id}-audio` : `${player1Id}-audio`}
-      />
+      <audio id={playerColor ? `${player2Id}-audio` : `${player1Id}-audio`} />
     </React.Fragment>
   );
 };
