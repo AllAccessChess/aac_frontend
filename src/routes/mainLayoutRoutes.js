@@ -28,6 +28,7 @@ export const mainLayoutRoutes = [
     component: Account,
     guarded: true,
     redirectToSignIn: true,
+    sidebar: true,
   },
   {
     id: "admin",
@@ -38,6 +39,7 @@ export const mainLayoutRoutes = [
     guarded: true,
     redirectToSignIn: true,
     adminAccess: true,
+    sidebar: true,
   },
   {
     id: "dashboard",
@@ -47,6 +49,7 @@ export const mainLayoutRoutes = [
     component: Dashboard,
     guarded: true,
     redirectToSignIn: true,
+    sidebar: true,
   },
   {
     id: "tournament-list",
@@ -55,6 +58,7 @@ export const mainLayoutRoutes = [
     component: Tournaments,
     icon: TournamentIcon,
     guarded: true,
+    sidebar: true,
   },
   {
     id: "Prizes",
@@ -64,6 +68,7 @@ export const mainLayoutRoutes = [
     component: Prizes,
     guarded: true,
     redirectToSignIn: true,
+    sidebar: true,
   },
   {
     id: "Settings",
@@ -73,6 +78,7 @@ export const mainLayoutRoutes = [
     component: Settings,
     guarded: true,
     redirectToSignIn: true,
+    sidebar: true,
   },
   {
     id: "Analysis",
@@ -80,7 +86,17 @@ export const mainLayoutRoutes = [
     name: "Analysis",
     icon: BotIcon,
     component: Analysis,
+    guarded: false,
+    sidebar: true,
+  },
+  {
+    id: "Analysis",
+    path: "/analysis/:id",
+    name: "Analysis",
+    icon: BotIcon,
+    component: Analysis,
     guarded: true,
     redirectToSignIn: true,
+    sidebar: false,
   },
 ];

@@ -7,19 +7,25 @@ import React, {
   useRef,
 } from "react";
 import { Helmet } from "react-helmet";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 import { useTheme } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
 
 import { ChessBoard } from "components/common";
 import { Box, Switch, Typography } from "components/material-ui";
 import { useWindowSize } from "hooks";
+import { getMatch } from "redux/reducers/matchReducer";
 import { addToMoveTree, findFromMoveTree } from "utils/common";
-import StockFishClient from "utils/stockfish-client";
+// import StockFishClient from "utils/stockfish-client";
 import { MoveTree } from "./components";
 
 export const Analysis = () => {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const windowSize = useWindowSize();
+  const params = useParams();
+  const currentMatch = useSelector((state) => state.matchReducer.current);
 
   const [playerColor, setPlayerColor] = useState(0);
   const [chessBoardSize, setChessBoardSize] = useState(0);
@@ -34,15 +40,57 @@ export const Analysis = () => {
   const chess = useRef(new Chess());
   const chessContainerRef = createRef(null);
 
-  const botRef = useRef(null);
+  // const botRef = useRef(null);
 
   useEffect(() => {
-    botRef.current = new StockFishClient(
-      chess.current,
-      playerColor === 0 ? "white" : "black"
-    );
+    if (params.id) {
+      dispatch(getMatch(params.id));
+    }
+  }, [dispatch, params.id]);
+
+  useEffect(() => {
+    // botRef.current = new StockFishClient(
+    //   chess.current,
+    //   playerColor === 0 ? "white" : "black"
+    // );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (currentMatch) {
+      let moveTree = moveVariation;
+      let currentPlayerColor = playerColor;
+      let moveId = currentMoveId;
+
+      for (const move of currentMatch.moves) {
+        const from = move.slice(0, 2);
+        const to = move.slice(2, 4);
+        const promotion = move.slice(4) || "x";
+
+        const chessMove = chess.current.move({
+          from,
+          to,
+          promotion,
+        });
+        const fen = chess.current.fen();
+
+        const newMoveId = uuidv4();
+        moveTree = addToMoveTree(moveTree, moveId, newMoveId, chessMove, fen);
+
+        setFen(fen);
+        setLastMove([from, to]);
+
+        currentPlayerColor = 1 - currentPlayerColor;
+        moveId = newMoveId;
+      }
+
+      setPlayerColor(currentPlayerColor);
+
+      setMoveVariation(moveTree);
+      setCurrentMoveId(moveId);
+    }
+    // eslint-disable-next-line
+  }, [currentMatch]);
 
   const handleMove = useCallback(
     (from, to, promot = "x") => {

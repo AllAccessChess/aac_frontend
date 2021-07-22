@@ -12,9 +12,13 @@ export const SideBar = (props) => {
   const { user } = props;
   const filteredRoutes = useMemo(
     () =>
-      user && user.id
-        ? mainLayoutRoutes.filter((item) => !item.adminAccess || isAdmin(user))
-        : mainLayoutRoutes.filter((item) => !item.redirectToSignIn),
+      mainLayoutRoutes.filter(
+        (item) =>
+          item.sidebar &&
+          (user && user.id
+            ? !item.adminAccess || isAdmin(user)
+            : !item.redirectToSignIn)
+      ),
     [user]
   );
 
