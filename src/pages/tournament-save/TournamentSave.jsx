@@ -1,44 +1,63 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import { Formik } from "formik";
 import { Helmet } from "react-helmet";
+import _ from "lodash";
 import * as Yup from "yup";
-import { useHistory } from "react-router";
-import { useDispatch } from "react-redux";
+import { useHistory, useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 
 import { useTheme } from "@material-ui/core";
 import { Box, Typography, Button } from "components/material-ui";
 import { Close as CloseIcon } from "@material-ui/icons";
 import { InnerForm } from "./components";
 
-import { createTournament } from "redux/reducers/tournamentReducer";
+import {
+  createTournament,
+  updateTournament,
+  getTournament,
+  clearCurrent as clearCurrentTournament,
+} from "redux/reducers/tournamentReducer";
 
-export const TournamentCreate = () => {
+export const TournamentSave = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const params = useParams();
   const theme = useTheme();
 
+  const currentTournament = useSelector(
+    (state) => state.tournamentReducer.current
+  );
+
   const initialValues = useMemo(
-    () => ({
-      title: "",
-      organiser: "",
-      state: 1,
-      settings: {
-        type: "",
-        ratingCategory: "",
-        ratingProvider: "",
-        playup: 0,
-        variant: 0,
-        prepTime: 30000,
-        rated: false,
-        numRounds: 0,
-        rounds: [],
-        brackets: [],
-      },
-      restrictions: {},
-      start: 0,
-      hidden: false,
-    }),
-    []
+    () =>
+      currentTournament
+        ? _.omit({ ...currentTournament }, [
+            "rounds",
+            "players",
+            "tds",
+            "owner",
+          ])
+        : {
+            title: "",
+            organiser: "",
+            state: 1,
+            settings: {
+              type: "",
+              ratingCategory: "",
+              ratingProvider: "",
+              playup: 0,
+              variant: 0,
+              prepTime: 30000,
+              rated: false,
+              numRounds: 0,
+              rounds: [],
+              brackets: [],
+            },
+            restrictions: {},
+            start: 0,
+            hidden: false,
+          },
+    [currentTournament]
   );
 
   const handleBack = useCallback(() => {
@@ -46,18 +65,41 @@ export const TournamentCreate = () => {
   }, [history]);
 
   const handleSubmit = (values, { setSubmitting }) => {
-    dispatch(
-      createTournament(
-        values,
-        () => {
-          history.push("/tournaments");
-        },
-        () => {
-          setSubmitting(false);
-        }
-      )
-    );
+    if (currentTournament) {
+      dispatch(
+        updateTournament(
+          values,
+          () => {
+            history.push("/tournaments");
+          },
+          () => {
+            setSubmitting(false);
+          }
+        )
+      );
+    } else {
+      dispatch(
+        createTournament(
+          values,
+          () => {
+            history.push("/tournaments");
+          },
+          () => {
+            setSubmitting(false);
+          }
+        )
+      );
+    }
   };
+
+  useEffect(() => {
+    if (params.id) {
+      dispatch(getTournament(params.id));
+    } else {
+      dispatch(clearCurrentTournament(null));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box
@@ -66,7 +108,9 @@ export const TournamentCreate = () => {
       flexDirection="column"
       alignItems="flex-start"
     >
-      <Helmet title="Create Tournament" />
+      <Helmet
+        title={currentTournament ? "Update Tournament" : "Create Tournament"}
+      />
       <Button startIcon={<CloseIcon fontSize="small" />} onClick={handleBack}>
         <Typography variant="body1">Close</Typography>
       </Button>
@@ -81,7 +125,7 @@ export const TournamentCreate = () => {
         bgcolor="#112C4A"
       >
         <Typography variant="h4" p={5}>
-          Create a new tournament
+          {currentTournament ? "Update tournament" : "Create a new tournament"}
         </Typography>
 
         <Box
@@ -91,6 +135,7 @@ export const TournamentCreate = () => {
         >
           <Formik
             enableReinitialize
+            validateOnMount
             initialValues={initialValues}
             validationSchema={Yup.object().shape({
               title: Yup.string()
@@ -148,7 +193,11 @@ export const TournamentCreate = () => {
             onSubmit={handleSubmit}
           >
             {(formProps) => (
-              <InnerForm {...formProps} initialValues={initialValues} />
+              <InnerForm
+                {...formProps}
+                initialValues={initialValues}
+                isUpdate={!!currentTournament}
+              />
             )}
           </Formik>
         </Box>

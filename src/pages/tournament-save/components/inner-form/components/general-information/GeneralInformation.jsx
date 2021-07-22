@@ -21,15 +21,14 @@ export const GeneralInformation = (props) => {
     verified,
     onNext,
     onOpen,
-    dirty,
     onVerify,
   } = props;
   console.log(errors);
 
   useEffect(() => {
-    onVerify(dirty && !errors.title && !errors.organiser && !errors.start);
+    onVerify(!errors.title && !errors.organiser && !errors.start);
     // eslint-disable-next-line
-  }, [errors.title, errors.organiser, errors.start, dirty]);
+  }, [errors.title, errors.organiser, errors.start]);
 
   return (
     <CustomAccordion

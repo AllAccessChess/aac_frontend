@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { TournamentService } from "services";
+import { TournamentService, GameService } from "services";
 import { validatePairing } from "utils/common";
 import { setMessage } from "./messageReducer";
 
@@ -204,6 +204,29 @@ export const updateTournament = (payload, callback, fallback) => async (
     const { tournament } = await TournamentService.updateTournament(payload);
     dispatch(updateListItem(tournament));
     if (callback) callback(tournament);
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+    if (fallback) fallback();
+  }
+  dispatch(setLoading(false));
+};
+
+export const adjustGameResultInRound = (
+  tournament,
+  roundIndex,
+  gamePayload,
+  callback,
+  fallback
+) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const { game } = await GameService.adjustGame(gamePayload);
+    let currentTournament = JSON.parse(JSON.stringify(tournament));
+    let round = currentTournament.rounds[roundIndex];
+    let board = round.boards.find((item) => item.gameId === game.id);
+    board.result = game.result;
+    dispatch(updateListItem(currentTournament));
+    if (callback) callback(currentTournament);
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
     if (fallback) fallback();

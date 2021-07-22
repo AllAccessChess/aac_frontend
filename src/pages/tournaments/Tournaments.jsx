@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useTheme } from "@material-ui/core";
@@ -20,6 +20,11 @@ export const Tournaments = () => {
 
   const user = useSelector((state) => state.authReducer.user);
   const tournamentList = useSelector((state) => state.tournamentReducer.list);
+
+  const editTournamentPermission = useMemo(
+    () => user && user.id && isAdmin(user),
+    [user]
+  );
 
   const getFilteredTournaments = useCallback(
     (status) =>
@@ -57,8 +62,14 @@ export const Tournaments = () => {
     [history]
   );
   const handleCreateTournament = useCallback(() => {
-    history.push("/tournament-create");
+    history.push("/tournament-save");
   }, [history]);
+  const handleEditTournament = useCallback(
+    (id) => {
+      history.push(`/tournament-save/${id}`);
+    },
+    [history]
+  );
 
   useEffect(() => {
     if (!tournamentList.length) dispatch(getTournamentList());
@@ -120,6 +131,7 @@ export const Tournaments = () => {
               <TournamentCard
                 tournament={tournament}
                 onViewDetails={handleViewTounamentDetail}
+                onEdit={editTournamentPermission ? handleEditTournament : null}
               />
             </Box>
           ))}

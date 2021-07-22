@@ -4,7 +4,15 @@ import { Box, Button, Typography } from "components/material-ui";
 import { StepNumber } from "components/common";
 
 export const Steps = (props) => {
-  const { isSubmitting, width, right, top, activeStep, verified } = props;
+  const {
+    isSubmitting,
+    isUpdate,
+    width,
+    right,
+    top,
+    activeStep,
+    verified,
+  } = props;
   const steps = [
     "General Information",
     "Tournament Settings",
@@ -48,7 +56,7 @@ export const Steps = (props) => {
         color="primary"
         my={5}
       >
-        Create
+        {isUpdate ? "Update" : "Create"}
       </Button>
     </Box>
   );

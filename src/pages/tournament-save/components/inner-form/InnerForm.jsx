@@ -5,7 +5,7 @@ import { GeneralInformation, Rounds, Steps, Sections } from "./components";
 import { FitedForm } from "./styles";
 
 export const InnerForm = (props) => {
-  const { errors, handleSubmit, isSubmitting } = props;
+  const { errors, isUpdate, handleSubmit, isSubmitting } = props;
 
   const [activeStep, setActiveStep] = useState(0);
   const [verified, setVerified] = useState([false, false, false]);
@@ -62,7 +62,7 @@ export const InnerForm = (props) => {
                 color="primary"
                 my={5}
               >
-                Create Tournament
+                {isUpdate ? "Update Tournament" : "Create Tournament"}
               </Button>
             ) : (
               <></>
@@ -71,6 +71,7 @@ export const InnerForm = (props) => {
         </Box>
         <Steps
           activeStep={activeStep}
+          isUpdate={isUpdate}
           verified={verified}
           isSubmitting={isSubmitting}
           width="220px"
