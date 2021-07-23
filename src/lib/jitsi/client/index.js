@@ -345,13 +345,13 @@ export default class JitsiClient extends EventTarget {
         this.conference.addTrack(tracks[i]);
       }
 
-      if (tracks[i].getType() === "video") {
-        tracks[i].attach(
-          document.getElementById(
-            `${snakeCaseString(this.userName)}-${tracks[i].getType()}`
-          )
-        );
-      }
+      // if (tracks[i].getType() === "video") {
+      tracks[i].attach(
+        document.getElementById(
+          `${snakeCaseString(this.userName)}-${tracks[i].getType()}`
+        )
+      );
+      // }
     }
   };
 
