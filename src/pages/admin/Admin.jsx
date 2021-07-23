@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 
 import { useTheme } from "@material-ui/core";
 import {
   Box,
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -25,10 +26,12 @@ export const Admin = () => {
   const liveGameIDs = useSelector((state) => state.matchReducer.liveIDs);
   const user = useSelector((state) => state.authReducer.user);
 
+  const handleCreateGame = useCallback(() => {
+    history.push("/admin-pairing");
+  }, [history]);
+
   useEffect(() => {
-    if (!liveGameIDs.length) {
-      dispatch(getLiveGameIDs());
-    }
+    dispatch(getLiveGameIDs());
     // eslint-disable-next-line
   }, []);
 
@@ -41,6 +44,7 @@ export const Admin = () => {
   return (
     <Box
       width="100%"
+      position="relative"
       display="flex"
       flexDirection="column"
       borderRadius={10}
@@ -98,6 +102,16 @@ export const Admin = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Box position="absolute" right={20} top={15}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleCreateGame}
+        >
+          Create Game
+        </Button>
+      </Box>
     </Box>
   );
 };

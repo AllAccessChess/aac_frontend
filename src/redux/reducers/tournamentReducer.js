@@ -234,4 +234,18 @@ export const adjustGameResultInRound = (
   dispatch(setLoading(false));
 };
 
+export const createGameWithTwoPlayers = (payload, callback, fallback) => async (
+  dispatch
+) => {
+  dispatch(setLoading(true));
+  try {
+    const { game } = await GameService.createWithTwoPlayers(payload);
+    if (callback) callback(game);
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+    if (fallback) fallback();
+  }
+  dispatch(setLoading(false));
+};
+
 export default slice.reducer;

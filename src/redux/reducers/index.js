@@ -6,6 +6,7 @@ import messageReducer from "./messageReducer";
 import themeReducer from "./themeReducer";
 import matchReducer from "./matchReducer";
 import tournamentReducer from "./tournamentReducer";
+import userReducer from "./userReducer";
 
 const reducers = (history) =>
   combineReducers({
@@ -15,6 +16,7 @@ const reducers = (history) =>
     themeReducer,
     matchReducer,
     tournamentReducer,
+    userReducer,
   });
 
 export const authSelector = (state) => state.authReducer;

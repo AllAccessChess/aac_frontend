@@ -4,6 +4,7 @@ import { SupervisorAccount as TournamentIcon } from "@material-ui/icons";
 const TournamentDetail = loadable(() => import("pages/tournament-detail"));
 const Pairing = loadable(() => import("pages/pairing"));
 const TournamentSave = loadable(() => import("pages/tournament-save"));
+const AdminPairing = loadable(() => import("pages/admin-pairing"));
 
 export const detailLayoutRoutes = [
   {
@@ -38,6 +39,16 @@ export const detailLayoutRoutes = [
     path: "/tournament-save/:id",
     name: "Tournament Update",
     component: TournamentSave,
+    icon: TournamentIcon,
+    guarded: true,
+    redirectToSignIn: true,
+    adminAccess: true,
+  },
+  {
+    id: "admin-pairing",
+    path: "/admin-pairing",
+    name: "Admin Pairing",
+    component: AdminPairing,
     icon: TournamentIcon,
     guarded: true,
     redirectToSignIn: true,

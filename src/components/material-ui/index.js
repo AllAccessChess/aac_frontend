@@ -8,12 +8,16 @@ import {
   Paper as MuiPaper,
   Grid as MuiGrid,
 } from "@material-ui/core";
-import { Alert as MuiAlert } from "@material-ui/lab";
+import {
+  Alert as MuiAlert,
+  Autocomplete as MuiAutocomplete,
+} from "@material-ui/lab";
 import { spacing } from "@material-ui/system";
 
 export * from "@material-ui/core";
 
 export const Alert = styled(MuiAlert)(spacing);
+export const Autocomplete = styled(MuiAutocomplete)(spacing);
 export const TextField = styled(MuiTextField)(spacing);
 export const Button = styled(MuiButton)(spacing);
 export const IconButton = styled(MuiIconButton)(spacing);

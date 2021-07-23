@@ -13,4 +13,7 @@ export default class GameService extends BaseAPIService {
   static getPGNData = (gameID) => {
     return this.request(`/games/pgn/${gameID}`, "GET");
   };
+  static createWithTwoPlayers = (payload) => {
+    return this.requestWithAuth(`/games/pair`, "POST", payload);
+  };
 }
