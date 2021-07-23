@@ -5,7 +5,7 @@ import { GameService } from "services";
 const initialState = {
   loading: false,
   current: null,
-  liveIDs: [],
+  liveGames: [],
   history: [],
 };
 
@@ -19,8 +19,8 @@ export const slice = createSlice({
     setCurrent: (state, action) => {
       state.current = action.payload;
     },
-    setLiveIDs: (state, action) => {
-      state.liveIDs = [...action.payload];
+    setLiveGames: (state, action) => {
+      state.liveGames = [...action.payload];
     },
     setHistory: (state, action) => {
       state.history = action.payload;
@@ -39,16 +39,16 @@ export const {
   setLoading,
   setCurrent,
   setHistory,
-  setLiveIDs,
+  setLiveGames,
   addHistoryItem,
   popHistoryItem,
 } = slice.actions;
 
-export const getLiveGameIDs = () => async (dispatch) => {
+export const getLiveGames = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const { games } = await GameService.getLiveGames();
-    dispatch(setLiveIDs(games));
+    dispatch(setLiveGames(games));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
   }

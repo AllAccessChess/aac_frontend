@@ -16,14 +16,14 @@ import {
   Link,
 } from "components/material-ui";
 
-import { getLiveGameIDs } from "redux/reducers/matchReducer";
+import { getLiveGames } from "redux/reducers/matchReducer";
 import { isAdmin } from "utils/common";
 
 export const Admin = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const theme = useTheme();
-  const liveGameIDs = useSelector((state) => state.matchReducer.liveIDs);
+  const liveGames = useSelector((state) => state.matchReducer.liveGames);
   const user = useSelector((state) => state.authReducer.user);
 
   const handleCreateGame = useCallback(() => {
@@ -31,7 +31,7 @@ export const Admin = () => {
   }, [history]);
 
   useEffect(() => {
-    dispatch(getLiveGameIDs());
+    dispatch(getLiveGames());
     // eslint-disable-next-line
   }, []);
 
@@ -66,20 +66,28 @@ export const Admin = () => {
               </TableCell>
               <TableCell>
                 <Typography variant="body1" color="textSecondary">
+                  Title
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body1" color="textSecondary">
                   Action
                 </Typography>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {liveGameIDs.map((gameID) => (
-              <TableRow tabIndex={-1} key={gameID}>
+            {liveGames.map((game) => (
+              <TableRow tabIndex={-1} key={game.id}>
                 <TableCell>
-                  <Typography variant="body1">{gameID}</Typography>
+                  <Typography variant="body1">{game.id}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body1">{game.title}</Typography>
                 </TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <Link component={RouterLink} to={`/spectate/${gameID}`}>
+                    <Link component={RouterLink} to={`/spectate/${game.id}`}>
                       <Typography variant="body1">Spectate</Typography>
                     </Link>
                     {isAdmin(user) && (
@@ -87,7 +95,7 @@ export const Admin = () => {
                         <Typography>&nbsp;|&nbsp;</Typography>
                         <Link
                           component={RouterLink}
-                          to={`/spectate/${gameID}/td`}
+                          to={`/spectate/${game.id}/td`}
                         >
                           <Typography variant="body1">
                             Join as Director
