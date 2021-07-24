@@ -26,6 +26,7 @@ export const AdminPairing = () => {
       settings: {
         startTime: 0,
         increment: 0,
+        variant: 0,
       },
     }),
     []
@@ -110,6 +111,7 @@ export const AdminPairing = () => {
                 increment: Yup.number()
                   .required("Required")
                   .min(0, "Shouldn't be negative"),
+                variant: Yup.number(),
               }),
             })}
             onSubmit={handleSubmit}

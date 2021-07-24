@@ -10,8 +10,9 @@ import {
   FormControl,
   FormHelperText,
 } from "components/material-ui";
-import { SmallTextField } from "components/common";
+import { SmallTextField, FormSelect } from "components/common";
 import { CustomAutocomplete, FitedForm } from "./styles";
+import { TournamentVariants } from "constant";
 
 export const InnerForm = (props) => {
   const {
@@ -29,6 +30,20 @@ export const InnerForm = (props) => {
   const [search, setSearch] = useState();
 
   console.log(values, errors);
+
+  const VariantList = useMemo(
+    () => [
+      {
+        label: "Standard",
+        value: TournamentVariants.STANDARD,
+      },
+      {
+        label: "Fischer random",
+        value: TournamentVariants.CHESS960,
+      },
+    ],
+    []
+  );
 
   const whitePlayer = useMemo(
     () =>
@@ -201,6 +216,29 @@ export const InnerForm = (props) => {
           ) : (
             <></>
           )}
+        </Box>
+        <Box my={3} width="50%">
+          <Box display="flex" alignItems="center">
+            <Typography variant="body1" color="textSecondary">
+              Chess Variant
+            </Typography>
+          </Box>
+          <FormSelect
+            variant="outlined"
+            name="settings.variant"
+            value={values.settings.variant}
+            placeholder="Select a chess variant"
+            displayEmpty
+            options={VariantList}
+            error={
+              touched.settings &&
+              errors.settings &&
+              touched.settings.variant &&
+              errors.settings.variant
+            }
+            fullWidth
+            onChange={handleChange}
+          />
         </Box>
         <Box my={3} width="50%">
           <Grid container spacing={5} my={1}>
