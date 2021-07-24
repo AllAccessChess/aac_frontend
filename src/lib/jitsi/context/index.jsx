@@ -13,7 +13,7 @@ export const JitsiProvider = (props) => {
     // Initialize
     try {
       // Create a new Jitsi Client
-      const client = new JitsiClient("jitsi.allaccesschess.net");
+      const client = new JitsiClient("jitsi.allaccesschess.net", 0);
 
       client.initialize();
 
