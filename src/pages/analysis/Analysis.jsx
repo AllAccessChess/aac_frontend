@@ -43,6 +43,8 @@ export const Analysis = () => {
   const [threatEnabled, setThreatEnabled] = useState(false);
   const [possibleMovesSan, setPossibleMovesSan] = useState("");
   const [currentScore, setCurrentScore] = useState(null);
+  const [bestMove, setBestMove] = useState(null);
+  const [ponder, setPonder] = useState(null);
 
   const [currentMoveId, setCurrentMoveId] = useState(null);
   const [moveVariation, setMoveVariation] = useState(null);
@@ -56,11 +58,15 @@ export const Analysis = () => {
     if (stockFishClient) {
       stockFishClient.on("score", onStockFishScore);
       stockFishClient.on("possible-moves-san", onStockFishPossibleMovesSan);
+      stockFishClient.on("best-move", onStockFishBestMove);
+      stockFishClient.on("ponder", onStockFishPonder);
     }
 
     return () => {
       stockFishClient.off("score", onStockFishScore);
       stockFishClient.off("possible-moves-san", onStockFishPossibleMovesSan);
+      stockFishClient.off("best-move", onStockFishBestMove);
+      stockFishClient.off("ponder", onStockFishPonder);
     };
   }, [stockFishClient]);
 
@@ -195,9 +201,41 @@ export const Analysis = () => {
     setPossibleMovesSan(pvSan);
   };
 
+  const onStockFishBestMove = (bestMove) => {
+    setBestMove(bestMove);
+  };
+
+  const onStockFishPonder = (ponder) => {
+    setPonder(ponder);
+  };
+
   const toggleThreadEnabled = () => {
     setThreatEnabled((threatEnabled) => !threatEnabled);
   };
+
+  const getShapes = useCallback(() => {
+    const shapes = [];
+
+    if (bestMove) {
+      shapes.push({
+        orig: bestMove.from,
+        dest: bestMove.to,
+        brush: "paleGreen",
+        piece: undefined,
+      });
+    }
+
+    if (ponder && threatEnabled) {
+      shapes.push({
+        orig: ponder.from,
+        dest: ponder.to,
+        brush: "red",
+        piece: undefined,
+      });
+    }
+
+    return shapes;
+  }, [bestMove, ponder, threatEnabled]);
 
   return (
     <Box
@@ -236,9 +274,14 @@ export const Analysis = () => {
             setPremove={setPremove}
             onMove={handleMove}
             disableOrientation
-            movable={{
-              showDests: true,
-              dests: { a2: ["a3", "a4"], b1: ["a3", "c3"] },
+            animation={{
+              enabled: true,
+            }}
+            drawable={{
+              enabled: true,
+              visible: true,
+              defaultSnapToValidMove: true,
+              autoShapes: getShapes(),
             }}
           />
         </Box>

@@ -19,6 +19,8 @@ export const ChessBoard = (props) => {
     setPremove,
     onMove,
     disableOrientation = false,
+    drawable,
+    animation,
   } = props;
 
   const [showTransformPawn, setShowTransformPawn] = useState(false);
@@ -104,6 +106,8 @@ export const ChessBoard = (props) => {
           marginRight: "20px",
           marginBottom: "20px",
         }}
+        drawable={drawable}
+        animation={animation}
       />
       <TransformPawnDialog open={showTransformPawn} onSubmit={promotion} />
     </>

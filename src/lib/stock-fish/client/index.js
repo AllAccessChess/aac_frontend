@@ -83,7 +83,7 @@ export default class StockFishClient extends EventTarget {
       }
 
       // Best Move
-      const bvMatch = line.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/);
+      const bvMatch = line.match(/bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/);
 
       if (bvMatch && bvMatch.length > 3) {
         _this.triggerEvent("best-move", {
@@ -94,7 +94,7 @@ export default class StockFishClient extends EventTarget {
       }
 
       // Ponder
-      const pdMatch = line.match(/^ponder ([a-h][1-8])([a-h][1-8])([qrbn])?/);
+      const pdMatch = line.match(/ponder ([a-h][1-8])([a-h][1-8])([qrbn])?/);
 
       if (pdMatch && pdMatch.length > 3) {
         _this.triggerEvent("ponder", {
