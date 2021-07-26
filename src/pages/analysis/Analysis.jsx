@@ -41,7 +41,7 @@ export const Analysis = () => {
   const [lastMove, setLastMove] = useState();
   const [stockFishEnabled, setStockFishEnabled] = useState(false);
   const [threatEnabled, setThreatEnabled] = useState(false);
-  const [possibleMoves, setPossibleMoves] = useState("");
+  const [possibleMovesSan, setPossibleMovesSan] = useState("");
   const [currentScore, setCurrentScore] = useState(null);
 
   const [currentMoveId, setCurrentMoveId] = useState(null);
@@ -55,12 +55,12 @@ export const Analysis = () => {
   useEffect(() => {
     if (stockFishClient) {
       stockFishClient.on("score", onStockFishScore);
-      stockFishClient.on("possible-moves", onStockFishPossibleMoves);
+      stockFishClient.on("possible-moves-san", onStockFishPossibleMovesSan);
     }
 
     return () => {
       stockFishClient.off("score", onStockFishScore);
-      stockFishClient.off("possible-moves", onStockFishPossibleMoves);
+      stockFishClient.off("possible-moves-san", onStockFishPossibleMovesSan);
     };
   }, [stockFishClient]);
 
@@ -107,7 +107,7 @@ export const Analysis = () => {
   }, [currentMatch]);
 
   useEffect(() => {
-    if (stockFishEnabled) {
+    if (stockFishEnabled && currentMoveId) {
       const moves = getMovesFromTree(moveVariation, currentMoveId);
       stockFishClient.go(moves, chess.current.turn() === "b" ? "w" : "b");
     } else {
@@ -191,8 +191,8 @@ export const Analysis = () => {
     setCurrentScore(score);
   };
 
-  const onStockFishPossibleMoves = (pv) => {
-    setPossibleMoves(pv);
+  const onStockFishPossibleMovesSan = (pvSan) => {
+    setPossibleMovesSan(pvSan);
   };
 
   const toggleThreadEnabled = () => {
@@ -276,7 +276,7 @@ export const Analysis = () => {
           </MoveTreeHeader>
           {stockFishEnabled && (
             <Box p={2}>
-              <Typography variant="body2">{possibleMoves}</Typography>
+              <Typography variant="body2">{possibleMovesSan}</Typography>
             </Box>
           )}
           <Progress

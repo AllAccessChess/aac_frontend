@@ -29,7 +29,7 @@ export default class StockFishClient extends EventTarget {
       btime: 3000,
       winc: 1500,
       binc: 1500,
-      depth: 5,
+      // depth: 5,
     };
 
     // Log Level
@@ -105,9 +105,9 @@ export default class StockFishClient extends EventTarget {
       }
 
       // Possible Moves
-      const pvMatch = line.match(/^info .*\bpv (.*?) (bmc|pvSan)/);
-      if (pvMatch && pvMatch.length > 1) {
-        _this.triggerEvent("possible-moves", pvMatch[1]);
+      const pvSanMatch = line.match(/^info .*\bpvSan (.*?) bmc/);
+      if (pvSanMatch && pvSanMatch.length > 1) {
+        _this.triggerEvent("possible-moves-san", pvSanMatch[1]);
       }
 
       // Score
@@ -174,7 +174,7 @@ export default class StockFishClient extends EventTarget {
     }
 
     this.uciCmd("position startpos moves" + moveString);
-    this.uciCmd(`go depth ${this.config.depth}`);
+    this.uciCmd(this.config.depth ? `go depth ${this.config.depth}` : "go");
   };
 
   //=====================================================================
