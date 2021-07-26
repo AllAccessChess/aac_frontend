@@ -11,9 +11,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 import { useTheme } from "@material-ui/core";
+import { MyLocation as MyLocationIcon } from "@material-ui/icons";
 
 import { ChessBoard } from "components/common";
-import { Box, Switch, Typography } from "components/material-ui";
+import { Box, IconButton, Switch, Typography } from "components/material-ui";
 import { useWindowSize } from "hooks";
 import { useStockFishClient } from "lib/stock-fish";
 import { getMatch } from "redux/reducers/matchReducer";
@@ -39,6 +40,7 @@ export const Analysis = () => {
   const [premove, setPremove] = useState(null);
   const [lastMove, setLastMove] = useState();
   const [stockFishEnabled, setStockFishEnabled] = useState(false);
+  const [threatEnabled, setThreatEnabled] = useState(false);
   const [possibleMoves, setPossibleMoves] = useState("");
   const [currentScore, setCurrentScore] = useState(null);
 
@@ -134,6 +136,10 @@ export const Analysis = () => {
     // eslint-disable-next-line
   }, [currentScore]);
 
+  useEffect(() => {
+    setThreatEnabled(false);
+  }, [stockFishEnabled, currentMoveId]);
+
   const handleMove = useCallback(
     (from, to, promot = "x") => {
       const move = chess.current.move({ from, to, promotion: promot });
@@ -189,6 +195,10 @@ export const Analysis = () => {
     setPossibleMoves(pv);
   };
 
+  const toggleThreadEnabled = () => {
+    setThreatEnabled((threatEnabled) => !threatEnabled);
+  };
+
   return (
     <Box
       width="100%"
@@ -226,6 +236,10 @@ export const Analysis = () => {
             setPremove={setPremove}
             onMove={handleMove}
             disableOrientation
+            movable={{
+              showDests: true,
+              dests: { a2: ["a3", "a4"], b1: ["a3", "c3"] },
+            }}
           />
         </Box>
         <MoveTreeWrapper>
@@ -245,6 +259,15 @@ export const Analysis = () => {
                 <Typography variant="body2">in local browser</Typography>
               </Box>
             </Box>
+            {stockFishEnabled && (
+              <IconButton
+                aria-label="threat"
+                color={threatEnabled ? "secondary" : "default"}
+                onClick={toggleThreadEnabled}
+              >
+                <MyLocationIcon />
+              </IconButton>
+            )}
             <Switch
               color="secondary"
               checked={stockFishEnabled}

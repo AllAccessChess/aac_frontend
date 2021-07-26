@@ -93,6 +93,17 @@ export default class StockFishClient extends EventTarget {
         });
       }
 
+      // Ponder
+      const pdMatch = line.match(/^ponder ([a-h][1-8])([a-h][1-8])([qrbn])?/);
+
+      if (pdMatch && pdMatch.length > 3) {
+        _this.triggerEvent("ponder", {
+          from: pdMatch[1],
+          to: pdMatch[2],
+          promotion: pdMatch[3],
+        });
+      }
+
       // Possible Moves
       const pvMatch = line.match(/^info .*\bpv (.*?) (bmc|pvSan)/);
       if (pvMatch && pvMatch.length > 1) {

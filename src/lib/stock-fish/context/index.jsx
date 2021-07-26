@@ -11,7 +11,7 @@ export const StockFishProvider = (props) => {
 
   useEffect(() => {
     // Create a new StockFish Client
-    const stockFishClient = new StockFishClient();
+    const stockFishClient = new StockFishClient(0);
 
     // Initialize
     stockFishClient.initialize();
