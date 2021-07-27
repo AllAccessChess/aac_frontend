@@ -9,7 +9,7 @@ import { config } from "config";
 import { LichessButton } from "components/common";
 import { Box, Button, Grid, Link, Typography } from "components/material-ui";
 import { InnerForm } from "./components";
-import { BackgroundWrapper, Logo } from "./styles";
+import { BackgroundWrapper, Logo, StyledGoogleLogin } from "./styles";
 
 import logoImg from "assets/images/logo.png";
 import backgroundImg from "assets/images/auth_background.png";
@@ -40,6 +40,10 @@ export const SignIn = () => {
       setErrors({ submit: message });
       setSubmitting(false);
     }
+  };
+
+  const responseGoogle = (response) => {
+    console.log(response);
   };
 
   const handleGuestLogin = useCallback(() => {
@@ -75,6 +79,13 @@ export const SignIn = () => {
             justifyContent="center"
             flexDirection="column"
           >
+            <StyledGoogleLogin
+              clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+              buttonText="Log in with Google"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={"single_host_origin"}
+            />
             <LichessButton
               color="default"
               size="large"
