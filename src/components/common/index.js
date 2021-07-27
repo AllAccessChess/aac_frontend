@@ -15,3 +15,5 @@ export { StepNumber } from "./step-number";
 export { SwitchField } from "./switch-field";
 export { TabPanel } from "./tab-panel";
 export { TournamentCard } from "./tournament-card";
+export { OutlinedKeyboardTimePicker } from "./outlined-keyboard-time-picker";
+export { OutlinedKeyboardDatePicker } from "./outlined-keyboard-date-picker";

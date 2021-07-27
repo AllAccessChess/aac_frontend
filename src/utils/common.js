@@ -397,3 +397,11 @@ export const updateScore = (moveTree, currentMoveId, score) => {
     ),
   };
 };
+
+export const getRatingCategory = (startTime, increment) => {
+  let x = startTime + increment / 60;
+  if (x < 3) return "Bullet";
+  if (x < 10) return "Blitz";
+  if (x < 30) return "Rapid";
+  return "Classic";
+};

@@ -4,9 +4,16 @@ import {
   AccordionSummary,
   Box,
   Button,
+  Grid,
   Typography,
 } from "components/material-ui";
-import { StepNumber, SmallTextField, SmallHelpIcon } from "components/common";
+import {
+  StepNumber,
+  SmallTextField,
+  SmallHelpIcon,
+  OutlinedKeyboardTimePicker,
+  OutlinedKeyboardDatePicker,
+} from "components/common";
 import { CustomAccordion, CustomAccordionDetails } from "./styles";
 
 export const GeneralInformation = (props) => {
@@ -98,31 +105,46 @@ export const GeneralInformation = (props) => {
             />
           </Box>
           <Box my={3} width="50%">
-            <Box display="flex" alignItems="center">
-              <Typography variant="body1" color="textSecondary">
-                Tournament Start Date Time
-              </Typography>
-              <SmallHelpIcon />
-            </Box>
-            <SmallTextField
-              type="datetime-local"
-              name="start"
-              variant="outlined"
-              color="secondary"
-              placeholder="Select Date Time"
-              value={
-                values.start > 0
-                  ? new Date(values.start).toISOString().replace("Z", "")
-                  : ""
-              }
-              error={Boolean(touched.start && errors.start)}
-              fullWidth
-              helperText={touched.start && errors.start}
-              onBlur={handleBlur}
-              onChange={(event) =>
-                setFieldValue("start", new Date(event.target.value).getTime())
-              }
-            />
+            <Grid container spacing={2}>
+              <Grid item sm={6}>
+                <Box display="flex" alignItems="center">
+                  <Typography variant="body1" color="textSecondary">
+                    Tournament Start Date
+                  </Typography>
+                  <SmallHelpIcon />
+                </Box>
+                <OutlinedKeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  color="secondary"
+                  placeholder="Select Date"
+                  format="MM/dd/yyyy"
+                  value={values.start > 0 ? new Date(values.start) : null}
+                  fullWidth
+                  onChange={(date) =>
+                    setFieldValue("start", new Date(date).getTime())
+                  }
+                />
+              </Grid>
+
+              <Grid item sm={6}>
+                <Box display="flex" alignItems="center">
+                  <Typography variant="body1" color="textSecondary">
+                    Tournament Start Time
+                  </Typography>
+                  <SmallHelpIcon />
+                </Box>
+                <OutlinedKeyboardTimePicker
+                  variant="inline"
+                  placeholder="Select Time"
+                  fullWidth
+                  value={values.start > 0 ? new Date(values.start) : null}
+                  onChange={(date) =>
+                    setFieldValue("start", new Date(date).getTime())
+                  }
+                />
+              </Grid>
+            </Grid>
           </Box>
           {verified[0] ? (
             <Box width="150px">

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 
 import {
   AccordionSummary,
@@ -11,10 +11,13 @@ import {
   LightBlueTextColorButton,
   StepNumber,
   SmallTextField,
+  OutlinedKeyboardDatePicker,
+  OutlinedKeyboardTimePicker,
 } from "components/common";
 import { CustomAccordion, CustomAccordionDetails } from "./styles";
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
 import { FieldArray } from "formik";
+import { getRatingCategory } from "utils/common";
 
 export const Rounds = (props) => {
   const {
@@ -29,14 +32,6 @@ export const Rounds = (props) => {
     onOpen,
     onVerify,
   } = props;
-
-  const getRatingCategory = useCallback((startTime, increment) => {
-    let x = startTime + increment;
-    if (x < 3) return "Bullet";
-    if (x < 10) return "Blitz";
-    if (x < 30) return "Rapid";
-    return "Classic";
-  }, []);
 
   useEffect(() => {
     onVerify(!errors.settings || !errors.settings.rounds);
@@ -78,7 +73,10 @@ export const Rounds = (props) => {
                   <Grid item sm={1}>
                     <Typography color="textSecondary">Round No.</Typography>
                   </Grid>
-                  <Grid item sm={3}>
+                  <Grid item sm={2}>
+                    <Typography color="textSecondary">Start Date</Typography>
+                  </Grid>
+                  <Grid item sm={2}>
                     <Typography color="textSecondary">Start Time</Typography>
                   </Grid>
                   <Grid item sm={2}>
@@ -88,11 +86,11 @@ export const Rounds = (props) => {
                   </Grid>
                   <Grid item sm={2}>
                     <Typography color="textSecondary">
-                      Increment (min)
+                      Increment (sec)
                     </Typography>
                   </Grid>
                   <Grid item sm={2}>
-                    <Typography color="textSecondary">Game Type</Typography>
+                    <Typography color="textSecondary">Time Control</Typography>
                   </Grid>
                 </Grid>
                 {values.settings.rounds.map((round, index) => (
@@ -100,46 +98,33 @@ export const Rounds = (props) => {
                     <Grid item sm={1}>
                       <Typography variant="subtitle1">{index + 1}</Typography>
                     </Grid>
-                    <Grid item sm={3}>
-                      <SmallTextField
-                        type="datetime-local"
-                        name={`settings.rounds[${index}]['start']`}
-                        variant="outlined"
-                        placeholder="To be decided"
+                    <Grid item sm={2}>
+                      <OutlinedKeyboardDatePicker
+                        disableToolbar
+                        variant="inline"
                         color="secondary"
-                        value={
-                          round.start > 0
-                            ? new Date(round.start)
-                                .toISOString()
-                                .replace("Z", "")
-                            : ""
-                        }
-                        error={Boolean(
-                          touched.settings &&
-                            errors.settings &&
-                            touched.settings.rounds &&
-                            errors.settings.rounds &&
-                            touched.settings.rounds[index] &&
-                            errors.settings.rounds[index] &&
-                            touched.settings.rounds[index].start &&
-                            errors.settings.rounds[index].start
-                        )}
+                        placeholder="Select Date"
+                        format="MM/dd/yyyy"
+                        value={round.start > 0 ? new Date(round.start) : null}
                         fullWidth
-                        helperText={
-                          touched.settings &&
-                          errors.settings &&
-                          touched.settings.rounds &&
-                          errors.settings.rounds &&
-                          touched.settings.rounds[index] &&
-                          errors.settings.rounds[index] &&
-                          touched.settings.rounds[index].start &&
-                          errors.settings.rounds[index].start
-                        }
-                        onBlur={handleBlur}
-                        onChange={(event) =>
+                        onChange={(date) =>
                           setFieldValue(
                             `settings.rounds[${index}].start`,
-                            new Date(event.target.value).getTime()
+                            new Date(date).getTime()
+                          )
+                        }
+                      />
+                    </Grid>
+                    <Grid item sm={2}>
+                      <OutlinedKeyboardTimePicker
+                        variant="inline"
+                        placeholder="Select Time"
+                        fullWidth
+                        value={round.start > 0 ? new Date(round.start) : null}
+                        onChange={(date) =>
+                          setFieldValue(
+                            `settings.rounds[${index}].start`,
+                            new Date(date).getTime()
                           )
                         }
                       />
@@ -209,7 +194,7 @@ export const Rounds = (props) => {
                       />
                     </Grid>
 
-                    <Grid item sm={2}>
+                    <Grid item sm={1}>
                       <Box display="flex" alignItems="center">
                         <Typography>
                           {getRatingCategory(round.startTime, round.increment)}

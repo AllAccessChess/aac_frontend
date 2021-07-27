@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import _ from "lodash";
 
 import {
@@ -13,6 +13,7 @@ import {
 import { SmallTextField, FormSelect } from "components/common";
 import { CustomAutocomplete, FitedForm } from "./styles";
 import { TournamentVariants } from "constant";
+import { getRatingCategory } from "utils/common";
 
 export const InnerForm = (props) => {
   const {
@@ -59,14 +60,6 @@ export const InnerForm = (props) => {
     () => _.orderBy(users, ["name", "username"], ["asc", "asc"]),
     [users]
   );
-
-  const getRatingCategory = useCallback((startTime, increment) => {
-    let x = startTime + increment;
-    if (x < 3) return "Bullet";
-    if (x < 10) return "Blitz";
-    if (x < 30) return "Rapid";
-    return "Classic";
-  }, []);
 
   return (
     <FitedForm noValidate onSubmit={handleSubmit}>
@@ -246,10 +239,10 @@ export const InnerForm = (props) => {
               <Typography color="textSecondary">Game time (min)</Typography>
             </Grid>
             <Grid item sm={4}>
-              <Typography color="textSecondary">Increment (min)</Typography>
+              <Typography color="textSecondary">Increment (sec)</Typography>
             </Grid>
             <Grid item sm={4}>
-              <Typography color="textSecondary">Game Type</Typography>
+              <Typography color="textSecondary">Time Control</Typography>
             </Grid>
           </Grid>
 

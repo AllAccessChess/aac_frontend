@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback } from "react";
+import styled from "styled-components";
 import useInterval from "react-useinterval";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -6,6 +7,10 @@ import { Box, Button, Typography } from "components/material-ui";
 
 import { getMyNotifications } from "redux/reducers/notificationReducer";
 import { useHistory } from "react-router";
+
+const CustomButton = styled(Button)`
+  border: 2px solid rgba(255, 255, 255, 0.7);
+`;
 
 const Notification = () => {
   const history = useHistory();
@@ -45,14 +50,14 @@ const Notification = () => {
           {notification.game ? (
             <Typography>
               You are currently in the game called "{notification.game.title}"{" "}
-              <Button
+              <CustomButton
                 ml={2}
                 size="small"
                 variant="outlined"
                 onClick={() => navigateToGame(notification.game.id)}
               >
                 Enter Game
-              </Button>
+              </CustomButton>
             </Typography>
           ) : (
             <></>

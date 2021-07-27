@@ -11,8 +11,8 @@ export const Timer = (props) => {
   const theme = useTheme();
   const classes = useStyles();
 
-  const min = Math.floor(clock / 60);
-  const sec = clock - 60 * min;
+  const min = clock > 0 ? Math.floor(clock / 60) : 0;
+  const sec = clock > 0 ? clock - 60 * min : 0;
 
   return (
     <React.Fragment>

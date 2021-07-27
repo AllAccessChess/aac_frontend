@@ -239,7 +239,7 @@ export const Sections = (props) => {
               <Grid item sm={6}>
                 <Box display="flex" alignItems="center">
                   <Typography variant="body1" color="textSecondary">
-                    Game Type
+                    Time Control
                   </Typography>
                   <SmallHelpIcon />
                 </Box>
@@ -247,7 +247,7 @@ export const Sections = (props) => {
                   variant="outlined"
                   name="settings.ratingCategory"
                   value={values.settings.ratingCategory}
-                  placeholder="Select a game type"
+                  placeholder="Select a time control"
                   displayEmpty
                   options={GameTypeList}
                   error={
