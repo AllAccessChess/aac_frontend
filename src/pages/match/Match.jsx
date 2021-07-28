@@ -46,7 +46,14 @@ import { getValidUserName } from "utils/common";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/game-client";
 import { ChessBoard } from "components/common";
-import { Chat, Info, MoveList, Videos, Timer } from "./components";
+import {
+  Chat,
+  Info,
+  MoveList,
+  Videos,
+  Timer,
+  MaterialCaptcha,
+} from "./components";
 import { useStyles } from "./styles";
 
 export const Match = () => {
@@ -718,6 +725,10 @@ export const Match = () => {
             }
             clock={playerColor ? whiteClock : blackClock}
           />
+          <MaterialCaptcha
+            pieceDifference={pieceDifference}
+            color={1 - playerColor}
+          />
           <Box
             flexGrow={1}
             display="flex"
@@ -740,6 +751,10 @@ export const Match = () => {
               onMove={handleMove}
             />
           </Box>
+          <MaterialCaptcha
+            pieceDifference={pieceDifference}
+            color={playerColor}
+          />
           <Timer
             name={
               playerColor
@@ -784,7 +799,6 @@ export const Match = () => {
           <Videos
             match={currentMatch}
             playerColor={playerColor}
-            pieceDifference={pieceDifference}
             usingVideo={usingVideo}
             onToggleUsingVideo={handleToggleUsingVideo}
           />

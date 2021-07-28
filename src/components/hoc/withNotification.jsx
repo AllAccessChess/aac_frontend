@@ -18,6 +18,7 @@ const Notification = () => {
   const notificationList = useSelector(
     (state) => state.notificationReducer.list
   );
+  const user = useSelector((state) => state.authReducer.user);
 
   const navigateToGame = useCallback(
     (gameID) => {
@@ -27,11 +28,15 @@ const Notification = () => {
   );
 
   useInterval(() => {
-    dispatch(getMyNotifications());
-  }, [10000]);
+    if (user) {
+      dispatch(getMyNotifications());
+    }
+  }, [user ? 10000 : null]);
 
   useEffect(() => {
-    dispatch(getMyNotifications());
+    if (user) {
+      dispatch(getMyNotifications());
+    }
     // eslint-disable-next-line
   }, []);
 
