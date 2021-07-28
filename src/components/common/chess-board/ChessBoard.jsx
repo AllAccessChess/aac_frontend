@@ -14,14 +14,14 @@ export const ChessBoard = (props) => {
     playerColor,
     isSpectator,
     premove,
-    legalMoves,
     lastMove,
     isPlaying,
     setPremove,
     onMove,
-    disableOrientation = false,
     drawable,
     animation,
+    disableOrientation = false,
+    legalMoves = [],
   } = props;
 
   const [showTransformPawn, setShowTransformPawn] = useState(false);
