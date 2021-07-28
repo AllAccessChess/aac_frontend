@@ -100,6 +100,34 @@ export const Match = () => {
     [user, players, isSpectator]
   );
 
+  const pieceDifference = useMemo(() => {
+    const originalPieces = {
+      k: 1,
+      q: 1,
+      r: 2,
+      b: 2,
+      n: 2,
+      p: 8,
+    };
+    let blackPieces = { ...originalPieces };
+    let whitePieces = { ...originalPieces };
+    const board = chess.board();
+    for (let line of board) {
+      for (let piece of line) {
+        if (piece && piece.color === "b") blackPieces[piece.type]--;
+        if (piece && piece.color === "w") whitePieces[piece.type]--;
+      }
+    }
+    let difference = {};
+    for (let index of Object.keys(originalPieces)) {
+      difference[index] = whitePieces[index] - blackPieces[index];
+    }
+    console.log(difference);
+    return difference;
+
+    // eslint-disable-next-line
+  }, [chess, actionHistory]);
+
   const gameClientRef = useRef(new GameClient(config.socketURL));
   // const zoomPreviewRef = useRef(null);
   // const zoomChatRef = useRef(null);
@@ -758,6 +786,7 @@ export const Match = () => {
           <Videos
             match={currentMatch}
             playerColor={playerColor}
+            pieceDifference={pieceDifference}
             usingVideo={usingVideo}
             onToggleUsingVideo={handleToggleUsingVideo}
           />

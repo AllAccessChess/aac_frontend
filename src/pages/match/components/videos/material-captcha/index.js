@@ -1,0 +1,1 @@
+export { MaterialCaptcha } from "./MaterialCaptcha";

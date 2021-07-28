@@ -101,6 +101,15 @@ export const GameResults = Object.freeze({
   BLACK_WIN: "0-1",
 });
 
+export const PiecePoint = Object.freeze({
+  q: 9,
+  r: 5,
+  b: 3,
+  n: 3,
+  p: 1,
+  k: 0,
+});
+
 // Tournament
 
 export const TournamentStatus = Object.freeze({
