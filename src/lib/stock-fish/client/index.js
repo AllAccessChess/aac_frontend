@@ -29,7 +29,7 @@ export default class StockFishClient extends EventTarget {
       btime: 3000,
       winc: 1500,
       binc: 1500,
-      // depth: 5,
+      depth: 12,
     };
 
     // Log Level

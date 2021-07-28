@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { Box } from "components/material-ui";
+import { Box, Typography } from "components/material-ui";
 
 export const MoveTreeWrapper = styled(Box)`
   border-radius: 0.5rem;
@@ -15,4 +15,10 @@ export const MoveTreeHeader = styled(Box)`
   align-items: center;
   flex-grow: 1;
   background: ${(props) => props.theme.palette.background.paper};
+`;
+
+export const PossibleMovesText = styled(Typography)`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;

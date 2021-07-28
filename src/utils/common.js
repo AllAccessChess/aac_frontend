@@ -303,6 +303,10 @@ export const snakeCaseString = (string) => {
 };
 
 export const findFromMoveTree = (moveTree, moveId) => {
+  if (!moveTree) {
+    return null;
+  }
+
   if (moveTree.id === moveId) {
     return moveTree;
   }

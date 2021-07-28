@@ -25,7 +25,7 @@ import {
   updateScore,
 } from "utils/common";
 import { MoveTree, Progress } from "./components";
-import { MoveTreeHeader, MoveTreeWrapper } from "./styles";
+import { MoveTreeHeader, MoveTreeWrapper, PossibleMovesText } from "./styles";
 
 export const Analysis = () => {
   const dispatch = useDispatch();
@@ -113,9 +113,9 @@ export const Analysis = () => {
   }, [currentMatch]);
 
   useEffect(() => {
-    if (stockFishEnabled && currentMoveId) {
+    if (stockFishEnabled) {
       const moves = getMovesFromTree(moveVariation, currentMoveId);
-      stockFishClient.go(moves, chess.current.turn() === "b" ? "w" : "b");
+      stockFishClient.go(moves, chess.current.turn());
     } else {
       setCurrentScore(null);
     }
@@ -319,21 +319,19 @@ export const Analysis = () => {
           </MoveTreeHeader>
           {stockFishEnabled && (
             <Box p={2}>
-              <Typography variant="body2">{possibleMovesSan}</Typography>
+              <PossibleMovesText variant="body2">
+                {possibleMovesSan}
+              </PossibleMovesText>
             </Box>
           )}
-          <Progress
-            score={
-              currentScore
-                ? currentScore * (chess.current.turn() === "w" ? -1 : 1)
-                : 0
-            }
-          />
-          <MoveTree
-            moveTree={moveVariation}
-            currentMoveId={currentMoveId}
-            onShowPast={handleShowPast}
-          />
+          <Progress score={currentScore} />
+          <Box height={chessBoardSize - 100} position="relative">
+            <MoveTree
+              moveTree={moveVariation}
+              currentMoveId={currentMoveId}
+              onShowPast={handleShowPast}
+            />
+          </Box>
         </MoveTreeWrapper>
       </Box>
     </Box>

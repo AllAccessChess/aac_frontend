@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Box } from "components/material-ui";
 
 export const Wrapper = styled(Box)`
-  height: 60vh;
+  height: 100%;
   overflow-y: auto;
   background: ${(props) => props.theme.palette.background.default};
   flex-grow: 1;

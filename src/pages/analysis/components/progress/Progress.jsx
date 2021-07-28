@@ -5,7 +5,10 @@ import { Bar, Wrapper } from "./styles";
 export const Progress = (props) => {
   const { score } = props;
 
-  const pLength = Math.max(Math.min((score + 50) / 100, 1), 0);
+  const pLength = Math.max(
+    Math.min(((parseFloat(score) || 0) + 10) / 20, 1),
+    0
+  );
 
   return (
     <Wrapper>

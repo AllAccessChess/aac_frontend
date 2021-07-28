@@ -16,6 +16,4 @@ export const Bar = styled(Box)`
   bottom: 0;
   width: ${(props) => `${props.width * 100}%`};
   background: white;
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
 `;
