@@ -60,6 +60,7 @@ export const Match = () => {
   const [lastMove, setLastMove] = useState();
   const [gameMessage, setGameMessage] = useState("");
   const [gameStatus, setGameStatus] = useState(GameStatus.IDLE);
+  const [clockActive, setClockActive] = useState(false);
   const [players, setPlayers] = useState([]);
   // const [meetingJoining, setMeetingJoining] = useState(false);
   const [chessBoardSize, setChessBoardSize] = useState(0);
@@ -140,7 +141,7 @@ export const Match = () => {
   const premoveRef = useRef(premove);
   const currentMatchRef = useRef(currentMatch);
   const turnRef = useRef(turn);
-  const gameStatusRef = useRef(gameStatus);
+  const clockActiveRef = useRef(clockActive);
 
   // const { zoomClient } = useZoomContext();
   const { jitsiClient } = useJitsiClient();
@@ -259,18 +260,11 @@ export const Match = () => {
     (from, to, promot = "x") => {
       const move = chess.move({ from, to, promotion: promot });
       if (!move) return;
-      console.log(move);
       dispatch(
         addHistoryItem({ action: "move", content: move, fen: chess.fen() })
       );
-      console.log("***Setting Fen!");
       setFen(chess.fen());
       setLastMove([from, to]);
-      console.log(promot);
-      console.log(
-        "Send Move: ",
-        promot === "x" ? from + to : from + to + promot
-      );
       setAskingDraw(false);
       gameClientRef.current.sendData({
         action: GameActions.MOVE,
@@ -300,6 +294,10 @@ export const Match = () => {
         if (data.game.clocks) {
           setWhiteClock(data.game.clocks[0].time / 1000);
           setBlackClock(data.game.clocks[1].time / 1000);
+
+          setClockActive(
+            data.game.clocks[0].active || data.game.clocks[1].active
+          );
         }
         if (data.game.moves && data.game.moves.length > 0) {
           console.log("Checking history: ", historyRef.current);
@@ -584,14 +582,14 @@ export const Match = () => {
   }, [turn]);
 
   useEffect(() => {
-    gameStatusRef.current = gameStatus;
-  }, [gameStatus]);
+    clockActiveRef.current = clockActive;
+  }, [clockActive]);
 
   useEffect(() => {
     const worker = new Worker("/clock.js");
 
     const clockHandler = () => {
-      if (gameStatusRef.current === GameStatus.PLAYING) {
+      if (clockActiveRef.current) {
         if (turnRef.current === 0) {
           setWhiteClock((clock) => clock - 0.1);
         } else {
@@ -605,7 +603,7 @@ export const Match = () => {
     return () => {
       worker.terminate();
     };
-  }, [gameStatus]);
+  }, []);
 
   // Interval for Ping-Pong ;)
   useInterval(
