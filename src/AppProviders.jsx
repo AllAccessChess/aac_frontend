@@ -11,8 +11,8 @@ import {
 
 import { config } from "config";
 import { JitsiProvider } from "lib/jitsi";
-import { ZoomProvider } from "lib/zoom";
 import { StockFishProvider } from "lib/stock-fish";
+import { ZoomProvider } from "lib/zoom";
 import { themeSelector } from "redux/reducers";
 import { AppGlobalStyle } from "./AppGlobalStyle";
 import createTheme from "./theme";

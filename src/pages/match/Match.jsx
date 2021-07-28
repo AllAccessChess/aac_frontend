@@ -111,6 +111,8 @@ export const Match = () => {
   const isSpectatorRef = useRef(isSpectator);
   const premoveRef = useRef(premove);
   const currentMatchRef = useRef(currentMatch);
+  const turnRef = useRef(turn);
+  const gameStatusRef = useRef(gameStatus);
 
   // const { zoomClient } = useZoomContext();
   const { jitsiClient } = useJitsiClient();
@@ -541,13 +543,41 @@ export const Match = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useInterval(
-    () => {
-      if (turn === 0) setWhiteClock((clock) => clock - 0.1);
-      else setBlackClock((clock) => clock - 0.1);
-    },
-    gameStatus === GameStatus.PLAYING ? 100 : null
-  );
+  // useInterval(
+  //   () => {
+  //     if (turn === 0) setWhiteClock((clock) => clock - 0.1);
+  //     else setBlackClock((clock) => clock - 0.1);
+  //   },
+  //   gameStatus === GameStatus.PLAYING ? 100 : null
+  // );
+
+  useEffect(() => {
+    turnRef.current = turn;
+  }, [turn]);
+
+  useEffect(() => {
+    gameStatusRef.current = gameStatus;
+  }, [gameStatus]);
+
+  useEffect(() => {
+    const worker = new Worker("/clock.js");
+
+    const clockHandler = () => {
+      if (gameStatusRef.current === GameStatus.PLAYING) {
+        if (turnRef.current === 0) {
+          setWhiteClock((clock) => clock - 0.1);
+        } else {
+          setBlackClock((clock) => clock - 0.1);
+        }
+      }
+    };
+
+    worker.onmessage = clockHandler;
+
+    return () => {
+      worker.terminate();
+    };
+  }, [gameStatus]);
 
   // Interval for Ping-Pong ;)
   useInterval(
