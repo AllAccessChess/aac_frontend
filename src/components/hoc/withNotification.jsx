@@ -9,7 +9,7 @@ import { getMyNotifications } from "redux/reducers/notificationReducer";
 import { useHistory } from "react-router";
 
 const CustomButton = styled(Button)`
-  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-width: 2px !important;
 `;
 
 const Notification = () => {
@@ -48,12 +48,13 @@ const Notification = () => {
       {notificationList.map((notification, index) => (
         <Box key={index} mb={index ? 2 : 0}>
           {notification.game ? (
-            <Typography>
+            <Typography color="primary">
               You are currently in the game called "{notification.game.title}"{" "}
               <CustomButton
                 ml={2}
                 size="small"
                 variant="outlined"
+                color="primary"
                 onClick={() => navigateToGame(notification.game.id)}
               >
                 Enter Game

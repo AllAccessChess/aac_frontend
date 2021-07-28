@@ -4,6 +4,8 @@ export { FormSelect } from "./form-select";
 export { GreenButton } from "./buttons";
 export { InlineFilledSelect } from "./inline-field-select";
 export { LichessButton } from "./lichess-button";
+export { GoogleButton } from "./google-button";
+export { FacebookButton } from "./facebook-button";
 export { LightBlueTextColorButton } from "./buttons";
 export { LoadingScreen } from "./loading-screen";
 export { Notification } from "./notification";
