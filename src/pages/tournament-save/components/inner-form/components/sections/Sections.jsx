@@ -63,7 +63,7 @@ export const Sections = (props) => {
         value: TournamentVariants.STANDARD,
       },
       {
-        label: "Fischer random",
+        label: "Chess960",
         value: TournamentVariants.CHESS960,
       },
     ],
