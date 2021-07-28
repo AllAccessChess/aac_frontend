@@ -17,7 +17,7 @@ export const MaterialCaptcha = (props) => {
     for (let index of Object.keys(pieceDifference)) {
       sum += PiecePoint[index] * pieceDifference[index];
     }
-    console.log("sum: ", sum);
+
     return sum;
   }, [pieceDifference]);
 

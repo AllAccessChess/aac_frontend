@@ -78,6 +78,7 @@ export const Match = () => {
   const [premove, setPremove] = useState(null);
   const [usingVideo, setUsingVideo] = useState(true);
   const [pastMoveIndex, setPastMoveIndex] = useState(-1);
+  const [legalMoves, setLegalMoves] = useState([]);
 
   const currentMatch = useSelector((state) => state.matchReducer.current);
   const actionHistory = useSelector((state) => state.matchReducer.history);
@@ -130,7 +131,7 @@ export const Match = () => {
     for (let index of Object.keys(originalPieces)) {
       difference[index] = whitePieces[index] - blackPieces[index];
     }
-    console.log(difference);
+
     return difference;
 
     // eslint-disable-next-line
@@ -295,6 +296,7 @@ export const Match = () => {
           data.game.reason <= GameEndReason.AGREEMENT
         )
           onExitGame(data.game);
+        if (data.game.legalMoves) setLegalMoves(data.game.legalMoves);
         setTurn(data.game.turn);
         if (!playersRef.length && data.game.players.length > 1)
           setPlayers(data.game.players);
@@ -342,6 +344,7 @@ export const Match = () => {
       addMoveStringToHistory,
       setFen,
       setPastMoveIndex,
+      setLegalMoves,
       setPlayers,
       setGameStatus,
       setWhiteClock,
@@ -747,6 +750,7 @@ export const Match = () => {
               lastMove={lastMove}
               isPlaying={gameStatus === GameStatus.PLAYING}
               premove={premove}
+              legalMoves={legalMoves}
               setPremove={setPremove}
               onMove={handleMove}
             />

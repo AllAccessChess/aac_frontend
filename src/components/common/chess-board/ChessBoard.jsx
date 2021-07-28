@@ -14,6 +14,7 @@ export const ChessBoard = (props) => {
     playerColor,
     isSpectator,
     premove,
+    legalMoves,
     lastMove,
     isPlaying,
     setPremove,
@@ -46,21 +47,35 @@ export const ChessBoard = (props) => {
   const calcMovable = useCallback(() => {
     const dests = new Map();
     if (isPlaying) {
-      chess.SQUARES.forEach((s) => {
-        const ms = chess.moves({ square: s, verbose: true });
-        if (ms.length)
-          dests.set(
-            s,
-            ms.map((m) => m.to)
-          );
-      });
+      let legals = {};
+      for (let move of legalMoves) {
+        const from = move.slice(0, 2);
+        const to = move.slice(2, 4);
+        if (!legals[from]) legals[from] = [];
+        legals[from].push(to);
+      }
+      if (chess.turn() === playerColorName && legalMoves.length) {
+        for (let from of Object.keys(legals)) {
+          dests.set(from, legals[from]);
+        }
+      } else {
+        chess.SQUARES.forEach((s) => {
+          const ms = chess.moves({ square: s, verbose: true });
+          if (ms.length)
+            dests.set(
+              s,
+              ms.map((m) => m.to)
+            );
+        });
+      }
     }
+
     return {
       free: false,
       dests,
       color: playerColorName,
     };
-  }, [chess, isPlaying, playerColorName]);
+  }, [chess, isPlaying, playerColorName, legalMoves]);
 
   const handleMove = useCallback(
     (from, to) => {
