@@ -18,12 +18,7 @@ import { Box, IconButton, Switch, Typography } from "components/material-ui";
 import { useWindowSize } from "hooks";
 import { useStockFishClient } from "lib/stock-fish";
 import { getMatch } from "redux/reducers/matchReducer";
-import {
-  addToMoveTree,
-  findFromMoveTree,
-  getMovesFromTree,
-  updateScore,
-} from "utils/common";
+import { addToMoveTree, findFromMoveTree, updateScore } from "utils/common";
 import { MoveTree, Progress } from "./components";
 import { MoveTreeHeader, MoveTreeWrapper, PossibleMovesText } from "./styles";
 
@@ -46,11 +41,15 @@ export const Analysis = () => {
   const [bestMove, setBestMove] = useState(null);
   const [ponder, setPonder] = useState(null);
 
+  const [engineInProgress, setEngineInProgress] = useState(false);
+  const [depth, setDepth] = useState(0);
+
   const [currentMoveId, setCurrentMoveId] = useState(null);
   const [moveVariation, setMoveVariation] = useState(null);
 
   const chess = useRef(new Chess());
   const chessContainerRef = createRef(null);
+  const threatEnabledRef = useRef(threatEnabled);
 
   const { stockFishClient } = useStockFishClient();
 
@@ -59,15 +58,16 @@ export const Analysis = () => {
       stockFishClient.on("score", onStockFishScore);
       stockFishClient.on("possible-moves-san", onStockFishPossibleMovesSan);
       stockFishClient.on("best-move", onStockFishBestMove);
-      stockFishClient.on("ponder", onStockFishPonder);
+      stockFishClient.on("depth", onStockFishDepth);
     }
 
     return () => {
       stockFishClient.off("score", onStockFishScore);
       stockFishClient.off("possible-moves-san", onStockFishPossibleMovesSan);
       stockFishClient.off("best-move", onStockFishBestMove);
-      stockFishClient.off("ponder", onStockFishPonder);
+      stockFishClient.off("depth", onStockFishDepth);
     };
+    // eslint-disable-next-line
   }, [stockFishClient]);
 
   useEffect(() => {
@@ -113,14 +113,33 @@ export const Analysis = () => {
   }, [currentMatch]);
 
   useEffect(() => {
-    if (stockFishEnabled) {
-      const moves = getMovesFromTree(moveVariation, currentMoveId);
-      stockFishClient.go(moves, chess.current.turn());
-    } else {
-      setCurrentScore(null);
+    if (stockFishEnabled && !engineInProgress) {
+      const move = findFromMoveTree(moveVariation, currentMoveId);
+      let fen = move ? move.fen : chess.current.fen();
+      let turn = chess.current.turn();
+
+      if (threatEnabled) {
+        const opTurn = turn === "w" ? "b" : "w";
+        fen = fen.replace(
+          /(?<PiecePlacement>((?<RankItem>[pnbrqkPNBRQK1-8]{1,8})\/?){8})\s+(?<SideToMove>b|w)/,
+          `$<PiecePlacement> ${opTurn}`
+        );
+        turn = opTurn;
+      }
+
+      stockFishClient.go(fen, turn);
+      setEngineInProgress(true);
     }
     // eslint-disable-next-line
-  }, [currentMoveId, stockFishEnabled]);
+  }, [currentMoveId, stockFishEnabled, engineInProgress, threatEnabled]);
+
+  useEffect(() => {
+    if (!stockFishEnabled || engineInProgress) {
+      setCurrentScore(null);
+      stockFishClient.stop();
+    }
+    // eslint-disable-next-line
+  }, [currentMoveId, threatEnabled, stockFishEnabled]);
 
   useEffect(() => {
     if (chessContainerRef.current) {
@@ -145,6 +164,10 @@ export const Analysis = () => {
   useEffect(() => {
     setThreatEnabled(false);
   }, [stockFishEnabled, currentMoveId]);
+
+  useEffect(() => {
+    threatEnabledRef.current = threatEnabled;
+  }, [threatEnabled]);
 
   const handleMove = useCallback(
     (from, to, promot = "x") => {
@@ -201,12 +224,20 @@ export const Analysis = () => {
     setPossibleMovesSan(pvSan);
   };
 
-  const onStockFishBestMove = (bestMove) => {
-    setBestMove(bestMove);
+  const onStockFishBestMove = ({ bestMove, engineStopped = true }) => {
+    if (engineStopped) {
+      setEngineInProgress(false);
+    } else {
+      if (threatEnabledRef.current) {
+        setPonder(bestMove);
+      } else {
+        setBestMove(bestMove);
+      }
+    }
   };
 
-  const onStockFishPonder = (ponder) => {
-    setPonder(ponder);
+  const onStockFishDepth = (depth) => {
+    setDepth(depth);
   };
 
   const toggleThreadEnabled = () => {
@@ -299,7 +330,9 @@ export const Analysis = () => {
               </Box>
               <Box display="flex" flexDirection="column" ml={2}>
                 <Typography variant="body1">Stockfish 13+</Typography>
-                <Typography variant="body2">in local browser</Typography>
+                <Typography variant="body2">
+                  {depth ? `Depth ${depth} ` : ""}in local browser
+                </Typography>
               </Box>
             </Box>
             {stockFishEnabled && (

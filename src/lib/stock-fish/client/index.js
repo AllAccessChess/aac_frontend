@@ -29,7 +29,7 @@ export default class StockFishClient extends EventTarget {
       btime: 3000,
       winc: 1500,
       binc: 1500,
-      depth: 12,
+      // depth: 12,
     };
 
     // Log Level
@@ -87,9 +87,25 @@ export default class StockFishClient extends EventTarget {
 
       if (bvMatch && bvMatch.length > 3) {
         _this.triggerEvent("best-move", {
-          from: bvMatch[1],
-          to: bvMatch[2],
-          promotion: bvMatch[3],
+          bestMove: {
+            from: bvMatch[1],
+            to: bvMatch[2],
+            promotion: bvMatch[3],
+          },
+        });
+      }
+
+      // Best Move in go infinite
+      const bvInfMatch = line.match(/pv ([a-h][1-8])([a-h][1-8])([qrbn])?/);
+
+      if (bvInfMatch && bvInfMatch.length > 3) {
+        _this.triggerEvent("best-move", {
+          bestMove: {
+            from: bvInfMatch[1],
+            to: bvInfMatch[2],
+            promotion: bvInfMatch[3],
+          },
+          engineStopped: false,
         });
       }
 
@@ -117,6 +133,13 @@ export default class StockFishClient extends EventTarget {
         score = (score / 100.0).toFixed(1);
 
         _this.triggerEvent("score", score);
+      }
+
+      // Depth
+      const depthMath = line.match(/depth ([0-9]+)/);
+
+      if (depthMath && depthMath.length > 1) {
+        _this.triggerEvent("depth", parseInt(depthMath[1]));
       }
     };
   };
@@ -162,19 +185,32 @@ export default class StockFishClient extends EventTarget {
   /**
    * Go
    */
-  go = (moves, turn) => {
+  go = (fen, turn) => {
     this.handleLog(LogLevel.INFO, "Run Engine");
 
     this.turn = turn;
 
-    let moveString = "";
-    for (const move of moves) {
-      moveString +=
-        " " + move.from + move.to + (move.promotion ? move.promotion : "");
+    if (fen) {
+      this.uciCmd("position fen " + fen);
     }
 
-    this.uciCmd("position startpos moves" + moveString);
-    this.uciCmd(this.config.depth ? `go depth ${this.config.depth}` : "go");
+    this.uciCmd(
+      this.config.depth ? `go depth ${this.config.depth}` : "go infinite"
+    );
+  };
+
+  /**
+   * Go Infinite
+   */
+  goInfinite = () => {
+    this.uciCmd("go infinite");
+  };
+
+  /**
+   * Stop
+   */
+  stop = () => {
+    this.uciCmd("stop");
   };
 
   //=====================================================================
