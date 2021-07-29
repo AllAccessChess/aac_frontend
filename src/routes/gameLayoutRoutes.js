@@ -25,8 +25,6 @@ export const gameLayoutRoutes = [
     path: "/spectate/:id",
     name: "Spectate",
     component: Match,
-    guarded: true,
-    redirectToSignIn: true,
   },
   {
     id: "spectate-td",

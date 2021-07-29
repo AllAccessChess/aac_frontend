@@ -369,14 +369,17 @@ export const Match = () => {
     [setAskingDraw]
   );
   const onOpenedSocket = useCallback(() => {
-    console.log(
-      "Opened Socket, authenticating with token: ",
-      getAuthToken().token
-    );
-    gameClientRef.current.sendData({
-      action: GameActions.AUTH,
-      token: getAuthToken().token,
-    });
+    const authToken = getAuthToken();
+    if (!isSpectator && authToken) {
+      console.log(
+        "Opened Socket, authenticating with token: ",
+        authToken.token
+      );
+      gameClientRef.current.sendData({
+        action: GameActions.AUTH,
+        token: authToken.token,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const onAuthenticatedSocket = useCallback(
