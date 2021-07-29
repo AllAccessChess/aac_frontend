@@ -22,7 +22,7 @@ export default class GameClient extends EventTarget {
         if (msg.game) {
           if (!this.gameId) this.gameId = msg.game.id;
           if (msg.game.result !== GameResults.ONGOING) {
-            this.triggerEvent(GameEvents.EXITGAME, {});
+            this.triggerEvent(GameEvents.EXITGAME, msg.game);
           } else if (msg.game.drawOffer === 0 || msg.game.drawOffer === 1) {
             // Offering Draw
             this.triggerEvent(GameEvents.OFFEREDDRAW, msg.game.drawOffer);

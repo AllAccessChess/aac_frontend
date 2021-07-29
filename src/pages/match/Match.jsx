@@ -148,6 +148,7 @@ export const Match = () => {
   const isSpectatorRef = useRef(isSpectator);
   const premoveRef = useRef(premove);
   const currentMatchRef = useRef(currentMatch);
+  const gameStatusRef = useRef(gameStatus);
   const turnRef = useRef(turn);
   const clockActiveRef = useRef(clockActive);
 
@@ -220,6 +221,7 @@ export const Match = () => {
 
   const onExitGame = useCallback(
     (game) => {
+      console.log("onExitGame");
       const gameResult = game.result;
       const endReason = game.reason;
       if (gameResult && gameResult !== GameResults.ONGOING) {
@@ -291,7 +293,8 @@ export const Match = () => {
     (data) => {
       if (data.game) {
         dispatch(setCurrentMatch(data.game));
-        setGameStatus(GameStatus.PLAYING);
+        if (gameStatusRef.current !== GameStatus.EXITED)
+          setGameStatus(GameStatus.PLAYING);
 
         if (
           data.game.reason >= GameEndReason.CHECKMATE &&
@@ -652,6 +655,9 @@ export const Match = () => {
   useEffect(() => {
     currentMatchRef.current = currentMatch;
   }, [currentMatch]);
+  useEffect(() => {
+    gameStatusRef.current = gameStatus;
+  }, [gameStatus]);
 
   const handleToggleUsingVideo = () => {
     setUsingVideo((usingVideo) => !usingVideo);
