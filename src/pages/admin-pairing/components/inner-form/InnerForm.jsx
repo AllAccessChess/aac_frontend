@@ -75,7 +75,10 @@ export const InnerForm = (props) => {
                 options={sortedUsersByName}
                 getOptionLabel={(option) =>
                   option.name.length
-                    ? option.name.toString()
+                    ? option.name.toString() +
+                      " (" +
+                      option.username.toString() +
+                      ")"
                     : option.username.toString()
                 }
                 onBlur={handleBlur}

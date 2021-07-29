@@ -161,6 +161,7 @@ export const Match = () => {
   const handleOfferDraw = useCallback(() => {
     console.log("Offering Draw");
     gameClientRef.current.sendData({
+      game: gameClientRef.current.gameId,
       action: GameActions.DRAWOFFER,
     });
   }, []);
@@ -168,6 +169,7 @@ export const Match = () => {
     (accept = true) => {
       console.log("Responding to Draw: ", accept);
       gameClientRef.current.sendData({
+        game: gameClientRef.current.gameId,
         action: GameActions.DRAWRESPONSE,
         accept: accept,
       });
@@ -178,6 +180,7 @@ export const Match = () => {
 
   const handleResign = useCallback(() => {
     gameClientRef.current.sendData({
+      game: gameClientRef.current.gameId,
       action: GameActions.RESIGN,
     });
   }, []);
@@ -287,10 +290,9 @@ export const Match = () => {
   const getResponse = useCallback(
     (data) => {
       if (data.game) {
-        if (data.state === GameStatus.PLAYING) {
-          dispatch(setCurrentMatch(data.game));
-          setGameStatus(GameStatus.PLAYING);
-        }
+        dispatch(setCurrentMatch(data.game));
+        setGameStatus(GameStatus.PLAYING);
+
         if (
           data.game.reason >= GameEndReason.CHECKMATE &&
           data.game.reason <= GameEndReason.AGREEMENT
@@ -376,28 +378,29 @@ export const Match = () => {
   }, []);
   const onAuthenticatedSocket = useCallback(
     (data) => {
-      console.log("Authenticated Socket");
+      console.log("Authenticated Socket: ", data);
       // gameClientRef.current.sendData({
       //   action: GameActions.STATUS,
       // });
-      if (data.state === GameStatus.PLAYING) {
+      if (data.game) {
         setGameStatus(GameStatus.PLAYING);
         chess.load(data.game.fen);
         setFen(data.game.fen);
       } else if (isSpectator) {
-        if (!currentMatchRef.current) {
+        if (!gameClientRef.current.gameId && !params.id) {
           return;
         }
-        console.log("Spectating now", currentMatchRef.current.id);
+        console.log("Spectating now", gameClientRef.current.id);
         gameClientRef.current.sendData({
-          action: GameActions.SPECTATE,
-          game: currentMatchRef.current.id,
+          action: GameActions.JOIN,
+          game: gameClientRef.current.gameId || params.id,
         });
-      } else {
+      } else if (!data.user || !data.user.guest) {
         if (params.id) {
           console.log("Joining now");
           gameClientRef.current.sendData({
             action: GameActions.JOIN,
+            game: gameClientRef.current.gameId || params.id,
           });
           setGameStatus(GameStatus.JOINING);
         } else {
