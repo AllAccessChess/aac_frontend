@@ -10,6 +10,12 @@ export default class UserService extends BaseAPIService {
   static getAllUsers = () => {
     return this.requestWithAuth("/users/all", "GET");
   };
+  static searchUsers = (term) => {
+    return this.requestWithAuth(
+      term ? `/users/search/${term}` : "/users/all",
+      "GET"
+    );
+  };
   static updateUser = (payload) => {
     return this.requestWithAuth(`/users/update`, "POST", payload);
   };

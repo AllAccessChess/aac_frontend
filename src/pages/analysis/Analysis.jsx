@@ -54,11 +54,18 @@ export const Analysis = () => {
   const { stockFishClient } = useStockFishClient();
 
   useEffect(() => {
+    return () => {
+      stockFishClient.stop();
+    };
+  }, [stockFishClient]);
+
+  useEffect(() => {
     if (stockFishClient) {
       stockFishClient.on("score", onStockFishScore);
       stockFishClient.on("possible-moves-san", onStockFishPossibleMovesSan);
       stockFishClient.on("best-move", onStockFishBestMove);
       stockFishClient.on("depth", onStockFishDepth);
+      stockFishClient.on("stopped", onStockFishStopped);
     }
 
     return () => {
@@ -66,6 +73,7 @@ export const Analysis = () => {
       stockFishClient.off("possible-moves-san", onStockFishPossibleMovesSan);
       stockFishClient.off("best-move", onStockFishBestMove);
       stockFishClient.off("depth", onStockFishDepth);
+      stockFishClient.off("stopped", onStockFishStopped);
     };
     // eslint-disable-next-line
   }, [stockFishClient]);
@@ -240,6 +248,10 @@ export const Analysis = () => {
     setDepth(depth);
   };
 
+  const onStockFishStopped = () => {
+    setEngineInProgress(false);
+  };
+
   const toggleThreadEnabled = () => {
     setThreatEnabled((threatEnabled) => !threatEnabled);
   };
@@ -289,6 +301,7 @@ export const Analysis = () => {
           display="flex"
           justifyContent="center"
           alignItems="center"
+          position="relative"
           ref={chessContainerRef}
         >
           <ChessBoard

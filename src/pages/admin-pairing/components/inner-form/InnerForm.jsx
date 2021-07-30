@@ -1,24 +1,25 @@
-import React, { useMemo, useState } from "react";
-import _ from "lodash";
+import React, { useMemo } from "react";
 
 import {
   Box,
   Button,
   Typography,
   Grid,
-  TextField,
   FormControl,
   FormHelperText,
 } from "components/material-ui";
-import { SmallTextField, FormSelect } from "components/common";
-import { CustomAutocomplete, FitedForm } from "./styles";
+import {
+  SmallTextField,
+  FormSelect,
+  PlayerAutoComplete,
+} from "components/common";
+import { FitedForm } from "./styles";
 import { TournamentVariants } from "constant";
 import { getRatingCategory } from "utils/common";
 
 export const InnerForm = (props) => {
   const {
     errors,
-    users,
     handleBlur,
     handleChange,
     setFieldValue,
@@ -27,10 +28,6 @@ export const InnerForm = (props) => {
     values,
     handleSubmit,
   } = props;
-
-  const [search, setSearch] = useState();
-
-  console.log(values, errors);
 
   const VariantList = useMemo(
     () => [
@@ -46,75 +43,9 @@ export const InnerForm = (props) => {
     []
   );
 
-  const whitePlayer = useMemo(
-    () =>
-      users.length ? users.find((item) => item.id === values.white) : null,
-    [values.white, users]
-  );
-  const blackPlayer = useMemo(
-    () =>
-      users.length ? users.find((item) => item.id === values.black) : null,
-    [values.black, users]
-  );
-  const sortedUsersByName = useMemo(
-    () => _.orderBy(users, ["name", "username"], ["asc", "asc"]),
-    [users]
-  );
-
   return (
     <FitedForm noValidate onSubmit={handleSubmit}>
       <Box py={2} px={4} width="100%">
-        <Box mt={5} mb={10} width="100%" display="flex" alignItems="flex-start">
-          <Box width="50%">
-            <FormControl
-              error={Boolean(dirty && errors.white)}
-              fullWidth
-              onBlur={handleBlur}
-            >
-              <CustomAutocomplete
-                options={sortedUsersByName}
-                getOptionLabel={(option) =>
-                  option.name.length
-                    ? option.name.toString() +
-                      " (" +
-                      option.username.toString() +
-                      ")"
-                    : option.username.toString()
-                }
-                onBlur={handleBlur}
-                onChange={(event, newValue) => {
-                  setSearch(newValue);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Search People by Name"
-                    variant="outlined"
-                  />
-                )}
-              />
-            </FormControl>
-          </Box>
-          {search ? (
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              flexGrow={1}
-              ml={5}
-              mt="-5px"
-            >
-              <Box>
-                <Typography>{search.name}</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  ID {search.id}
-                </Typography>
-              </Box>
-            </Box>
-          ) : (
-            <></>
-          )}
-        </Box>
-
         <Box my={5} width="100%" display="flex" alignItems="flex-start">
           <Box width="50%">
             <FormControl
@@ -122,20 +53,12 @@ export const InnerForm = (props) => {
               fullWidth
               onBlur={handleBlur}
             >
-              <CustomAutocomplete
-                options={users}
-                getOptionLabel={(option) => option.id.toString()}
+              <PlayerAutoComplete
                 onBlur={handleBlur}
-                onChange={(event, newValue) => {
+                onChange={(_event, newValue) => {
                   setFieldValue("white", newValue ? newValue.id : "");
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="White Player ID"
-                    variant="outlined"
-                  />
-                )}
+                label="White Player"
               />
 
               {dirty && errors.white ? (
@@ -145,24 +68,6 @@ export const InnerForm = (props) => {
               )}
             </FormControl>
           </Box>
-          {whitePlayer ? (
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              flexGrow={1}
-              ml={5}
-              mt="-5px"
-            >
-              <Box>
-                <Typography>{whitePlayer.name}</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  ID {whitePlayer.id}
-                </Typography>
-              </Box>
-            </Box>
-          ) : (
-            <></>
-          )}
         </Box>
         <Box my={5} width="100%" display="flex" alignItems="flex-start">
           <Box width="50%">
@@ -171,20 +76,12 @@ export const InnerForm = (props) => {
               fullWidth
               onBlur={handleBlur}
             >
-              <CustomAutocomplete
-                options={users}
-                getOptionLabel={(option) => option.id.toString()}
+              <PlayerAutoComplete
                 onBlur={handleBlur}
-                onChange={(event, newValue) => {
+                onChange={(_event, newValue) => {
                   setFieldValue("black", newValue ? newValue.id : "");
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Black Player ID"
-                    variant="outlined"
-                  />
-                )}
+                label="Black Player"
               />
 
               {dirty && errors.black ? (
@@ -194,25 +91,8 @@ export const InnerForm = (props) => {
               )}
             </FormControl>
           </Box>
-          {blackPlayer ? (
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              flexGrow={1}
-              ml={5}
-              mt="-5px"
-            >
-              <Box>
-                <Typography>{blackPlayer.name}</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  ID {blackPlayer.id}
-                </Typography>
-              </Box>
-            </Box>
-          ) : (
-            <></>
-          )}
         </Box>
+
         <Box my={3} width="50%">
           <Box display="flex" alignItems="center">
             <Typography variant="body1" color="textSecondary">

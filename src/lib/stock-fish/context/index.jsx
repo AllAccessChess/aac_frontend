@@ -15,6 +15,7 @@ export const StockFishProvider = (props) => {
 
     // Initialize
     stockFishClient.initialize();
+    stockFishClient.initializeTemp();
 
     setStockFishClient(stockFishClient);
   }, []);

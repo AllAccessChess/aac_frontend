@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Bar, Wrapper } from "./styles";
+import { Bar, Indicator, Wrapper } from "./styles";
 
 export const Progress = (props) => {
   const { score } = props;
@@ -13,6 +13,7 @@ export const Progress = (props) => {
   return (
     <Wrapper>
       <Bar width={pLength} />
+      <Indicator />
     </Wrapper>
   );
 };

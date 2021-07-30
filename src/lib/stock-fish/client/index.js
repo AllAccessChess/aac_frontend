@@ -14,8 +14,14 @@ export default class StockFishClient extends EventTarget {
   constructor(logLevel = LogLevel.INFO) {
     super();
 
-    // StockFish Engine for Possible & Best Moves using 5 depth
+    // StockFish Engine
     this.engine =
+      typeof STOCKFISH === "function"
+        ? STOCKFISH()
+        : new Worker("/stockfish.js");
+
+    // Stock Engine Temporary
+    this.engineTemp =
       typeof STOCKFISH === "function"
         ? STOCKFISH()
         : new Worker("/stockfish.js");
@@ -56,12 +62,12 @@ export default class StockFishClient extends EventTarget {
   /**
    * Engine Response Handler
    */
-  setupEngineResponseHandler = () => {
+  setupEngineResponseHandler = (engine) => {
     this.handleLog(LogLevel.INFO, "Setting Up Engine Reponse Handler");
 
     const _this = this;
 
-    this.engine.onmessage = (event) => {
+    (engine || this.engine).onmessage = (event) => {
       let line;
 
       if (event && typeof event === "object") {
@@ -145,6 +151,13 @@ export default class StockFishClient extends EventTarget {
   };
 
   /**
+   * Remove Engine Response Handler
+   */
+  removeEngineResponseHandler = (engine) => {
+    (engine || this.engine).onmessage = null;
+  };
+
+  /**
    * Send UCI Command to Engine
    */
   uciCmd = (cmd, engine) => {
@@ -170,6 +183,16 @@ export default class StockFishClient extends EventTarget {
 
     // Set up Engine Response Handlers
     this.setupEngineResponseHandler();
+  };
+
+  initializeTemp = () => {
+    this.handleLog(LogLevel.INFO, "Initializing Secondary Engine...");
+
+    // Switch to UCI mode
+    this.uciCmd("uci", this.engineTemp);
+
+    // Set up Engine Response Handlers
+    this.setupEngineResponseHandler(this.engineTemp);
   };
 
   /**
@@ -210,7 +233,22 @@ export default class StockFishClient extends EventTarget {
    * Stop
    */
   stop = () => {
-    this.uciCmd("stop");
+    if (this.engine) {
+      this.removeEngineResponseHandler();
+
+      delete this.engine;
+
+      this.engine = this.engineTemp;
+
+      this.engineTemp =
+        typeof STOCKFISH === "function"
+          ? STOCKFISH()
+          : new Worker("/stockfish.js");
+
+      this.initializeTemp();
+    }
+
+    this.triggerEvent("stopped");
   };
 
   //=====================================================================
