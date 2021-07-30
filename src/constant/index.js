@@ -150,6 +150,73 @@ export const RoundStatus = Object.freeze({
   FINISHED: 3,
 });
 
+export const TournamentTypeOptions = Object.freeze([
+  {
+    label: "Swiss",
+    value: TournamentTypes.SWISS,
+  },
+]);
+
+export const TimeControlOptions = Object.freeze([
+  {
+    label: "Bullet",
+    value: TimeCategories.BULLET,
+  },
+  {
+    label: "Blitz",
+    value: TimeCategories.BLITZ,
+  },
+  {
+    label: "Rapid",
+    value: TimeCategories.RAPID,
+  },
+  {
+    label: "Classic",
+    value: TimeCategories.CLASSIC,
+  },
+  {
+    label: "Blitz OTB",
+    value: TimeCategories.BLITZOTB,
+  },
+  {
+    label: "Rapid OTB",
+    value: TimeCategories.RAPIDOTB,
+  },
+  {
+    label: "Classic OTB",
+    value: TimeCategories.CLASSICOTB,
+  },
+]);
+
+export const VariantOptions = Object.freeze([
+  {
+    label: "Standard",
+    value: TournamentVariants.STANDARD,
+  },
+  {
+    label: "Chess960",
+    value: TournamentVariants.CHESS960,
+  },
+]);
+export const RatingOptions = Object.freeze([
+  {
+    label: "USCF",
+    value: RatingProviders.USCF,
+  },
+  {
+    label: "FIDE",
+    value: RatingProviders.FIDE,
+  },
+  {
+    label: "Lichess",
+    value: RatingProviders.LICHESS,
+  },
+  {
+    label: "AAC",
+    value: RatingProviders.AAC,
+  },
+]);
+
 // Chat
 
 export const ChatEvents = Object.freeze({

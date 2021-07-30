@@ -627,16 +627,14 @@ export const Match = () => {
   // Interval for Ping-Pong ;)
   useInterval(
     () => {
-      if (gameStatus !== GameStatus.IDLE && gameStatus !== GameStatus.EXITED) {
+      if (gameStatus !== GameStatus.EXITED) {
         console.log(gameStatus);
         gameClientRef.current.sendData({
           action: GameActions.PING,
         });
       }
     },
-    gameStatus !== GameStatus.IDLE && gameStatus !== GameStatus.EXITED
-      ? 10000
-      : null
+    gameStatus !== GameStatus.EXITED ? 10000 : null
   );
 
   // Setting Refs on Change of States

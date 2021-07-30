@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { FieldArray } from "formik";
 
 import {
@@ -27,10 +27,10 @@ import {
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
 
 import {
-  TournamentTypes,
-  RatingProviders,
-  TimeCategories,
-  TournamentVariants,
+  TimeControlOptions,
+  TournamentTypeOptions,
+  VariantOptions,
+  RatingOptions,
 } from "constant";
 
 export const Sections = (props) => {
@@ -46,83 +46,6 @@ export const Sections = (props) => {
     onOpen,
     onVerify,
   } = props;
-
-  const PairingList = useMemo(
-    () => [
-      {
-        label: "Swiss",
-        value: TournamentTypes.SWISS,
-      },
-    ],
-    []
-  );
-  const VariantList = useMemo(
-    () => [
-      {
-        label: "Standard",
-        value: TournamentVariants.STANDARD,
-      },
-      {
-        label: "Chess960",
-        value: TournamentVariants.CHESS960,
-      },
-    ],
-    []
-  );
-  const RatingList = useMemo(
-    () => [
-      {
-        label: "USCF",
-        value: RatingProviders.USCF,
-      },
-      {
-        label: "FIDE",
-        value: RatingProviders.FIDE,
-      },
-      {
-        label: "Lichess",
-        value: RatingProviders.LICHESS,
-      },
-      {
-        label: "AAC",
-        value: RatingProviders.AAC,
-      },
-    ],
-    []
-  );
-  const GameTypeList = useMemo(
-    () => [
-      {
-        label: "Bullet",
-        value: TimeCategories.BULLET,
-      },
-      {
-        label: "Blitz",
-        value: TimeCategories.BLITZ,
-      },
-      {
-        label: "Rapid",
-        value: TimeCategories.RAPID,
-      },
-      {
-        label: "Classic",
-        value: TimeCategories.CLASSIC,
-      },
-      {
-        label: "Blitz OTB",
-        value: TimeCategories.BLITZOTB,
-      },
-      {
-        label: "Rapid OTB",
-        value: TimeCategories.RAPIDOTB,
-      },
-      {
-        label: "Classic OTB",
-        value: TimeCategories.CLASSICOTB,
-      },
-    ],
-    []
-  );
 
   useEffect(() => {
     onVerify(
@@ -174,7 +97,7 @@ export const Sections = (props) => {
                   value={values.settings.type}
                   placeholder="Select a tournament format"
                   displayEmpty
-                  options={PairingList}
+                  options={TournamentTypeOptions}
                   error={
                     touched.settings &&
                     errors.settings &&
@@ -199,7 +122,7 @@ export const Sections = (props) => {
                   value={values.settings.ratingProvider}
                   placeholder="Select a rating provider"
                   displayEmpty
-                  options={RatingList}
+                  options={RatingOptions}
                   error={
                     touched.settings &&
                     errors.settings &&
@@ -224,7 +147,7 @@ export const Sections = (props) => {
                   value={values.settings.variant}
                   placeholder="Select a chess variant"
                   displayEmpty
-                  options={VariantList}
+                  options={VariantOptions}
                   error={
                     touched.settings &&
                     errors.settings &&
@@ -249,7 +172,7 @@ export const Sections = (props) => {
                   value={values.settings.ratingCategory}
                   placeholder="Select a time control"
                   displayEmpty
-                  options={GameTypeList}
+                  options={TimeControlOptions}
                   error={
                     touched.settings &&
                     errors.settings &&

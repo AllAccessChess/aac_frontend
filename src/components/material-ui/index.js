@@ -7,6 +7,8 @@ import {
   Link as MuiLink,
   Paper as MuiPaper,
   Grid as MuiGrid,
+  Select as MuiSelect,
+  Chip as MuiChip,
 } from "@material-ui/core";
 import {
   Alert as MuiAlert,
@@ -23,6 +25,8 @@ export const Button = styled(MuiButton)(spacing);
 export const IconButton = styled(MuiIconButton)(spacing);
 export const Link = styled(MuiLink)(spacing);
 export const Typography = styled(MuiTypography)(spacing);
+export const Select = styled(MuiSelect)(spacing);
+export const Chip = styled(MuiChip)(spacing);
 export const Grid = styled(MuiGrid)(spacing);
 
 export const Paper = styled(styled(MuiPaper)(spacing))`

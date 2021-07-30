@@ -1,22 +1,27 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useTheme } from "@material-ui/core";
 
 import { TournamentStatus } from "constant";
-import { TabPanel, TournamentCard } from "components/common";
+import { TournamentCard } from "components/common";
 import { Box, Button } from "components/material-ui";
+import { FilterBar } from "./components";
 import { CustomTab, CustomTabs } from "./styles";
 
 import { getTournamentList } from "redux/reducers/tournamentReducer";
-import { useCallback } from "react";
 import { isAdmin } from "utils/common";
 
 export const Tournaments = () => {
   const history = useHistory();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const [tabValue, setTabValue] = useState(TournamentStatus.SCHEDULED);
+  const [tabValue, setTabValue] = useState(0);
+
+  const [typeFilter, setTypeFilter] = useState([]);
+  const [timeControlFilter, setTimeControlFilter] = useState([]);
+  const [variantFilter, setVariantFilter] = useState([]);
+  const [ratingFilter, setRatingFilter] = useState([]);
 
   const user = useSelector((state) => state.authReducer.user);
   const tournamentList = useSelector((state) => state.tournamentReducer.list);
@@ -26,29 +31,60 @@ export const Tournaments = () => {
     [user]
   );
 
-  const getFilteredTournaments = useCallback(
-    (status) =>
+  const filteredTournaments = useMemo(
+    () =>
       tournamentList.filter((tournament) => {
         if (tournament.hidden) {
           return false;
         }
 
-        if (
-          status === TournamentStatus.SCHEDULED ||
-          status === TournamentStatus.FINISHED
-        ) {
-          return tournament.state === status;
-        }
-
-        if (user && user.id) {
-          return (
+        const inTabFilter =
+          (tabValue === 0 && tournament.state === TournamentStatus.SCHEDULED) ||
+          (tabValue === 1 &&
+            user &&
+            user.id &&
             tournament.players.findIndex((player) => player.id === user.id) !==
-            -1
-          ); // status === TournamentStatus.ONGOING
-        }
-        return 0;
+              -1) ||
+          (tabValue === 2 && tournament.state === TournamentStatus.ONGOING) ||
+          (tabValue === 3 && tournament.state === TournamentStatus.FINISHED);
+
+        const inTypeFilter =
+          !typeFilter || !typeFilter.length
+            ? true
+            : typeFilter.includes(tournament.settings.type);
+
+        const inTimeControlFilter =
+          !timeControlFilter || !timeControlFilter.length
+            ? true
+            : timeControlFilter.includes(tournament.settings.ratingCategory);
+
+        const inVariantFilter =
+          !variantFilter || !variantFilter.length
+            ? true
+            : variantFilter.includes(tournament.settings.variant);
+
+        const inRatingFilter =
+          !ratingFilter || !ratingFilter.length
+            ? true
+            : ratingFilter.includes(tournament.settings.ratingProvider);
+
+        return (
+          inTabFilter &&
+          inTypeFilter &&
+          inTimeControlFilter &&
+          inVariantFilter &&
+          inRatingFilter
+        );
       }),
-    [tournamentList, user]
+    [
+      tournamentList,
+      user,
+      tabValue,
+      typeFilter,
+      timeControlFilter,
+      variantFilter,
+      ratingFilter,
+    ]
   );
 
   const handleTabChange = useCallback((event, newValue) => {
@@ -93,50 +129,56 @@ export const Tournaments = () => {
       >
         <CustomTab
           label="Upcoming"
-          value={TournamentStatus.SCHEDULED}
+          value={0}
           bgcolor={theme.palette.background.paper}
         />
         {user && user.id && (
           <CustomTab
             label="Registered"
-            value={TournamentStatus.ONGOING}
+            value={1}
             bgcolor={theme.palette.background.paper}
           />
         )}
-
+        <CustomTab
+          label="Ongoing"
+          value={2}
+          bgcolor={theme.palette.background.paper}
+        />
         <CustomTab
           label="Past Events"
-          value={TournamentStatus.FINISHED}
+          value={3}
           bgcolor={theme.palette.background.paper}
         />
       </CustomTabs>
-      {Object.values(TournamentStatus).map((status) => (
-        <TabPanel
-          value={tabValue}
-          index={status}
-          key={status}
-          p={5}
-          bgcolor={theme.palette.background.paper}
-          borderRadius="10px"
-        >
-          {getFilteredTournaments(status).map((tournament) => (
-            <Box
-              width="100%"
-              bgcolor="#15375C"
-              p={5}
-              mb={5}
-              borderRadius={10}
-              key={tournament.id}
-            >
-              <TournamentCard
-                tournament={tournament}
-                onViewDetails={handleViewTounamentDetail}
-                onEdit={editTournamentPermission ? handleEditTournament : null}
-              />
-            </Box>
-          ))}
-        </TabPanel>
-      ))}
+
+      <Box p={5} bgcolor={theme.palette.background.paper} borderRadius="10px">
+        <FilterBar
+          typeFilter={typeFilter}
+          timeControlFilter={timeControlFilter}
+          variantFilter={variantFilter}
+          ratingFilter={ratingFilter}
+          setTypeFilter={setTypeFilter}
+          setTimeControlFilter={setTimeControlFilter}
+          setVariantFilter={setVariantFilter}
+          setRatingFilter={setRatingFilter}
+        />
+        {filteredTournaments.map((tournament) => (
+          <Box
+            width="100%"
+            bgcolor="#15375C"
+            p={5}
+            mb={5}
+            borderRadius={10}
+            key={tournament.id}
+          >
+            <TournamentCard
+              tournament={tournament}
+              onViewDetails={handleViewTounamentDetail}
+              onEdit={editTournamentPermission ? handleEditTournament : null}
+            />
+          </Box>
+        ))}
+      </Box>
 
       {isAdmin(user) ? (
         <Box position="absolute" right={0} top={10}>
