@@ -17,3 +17,12 @@ export const Bar = styled(Box)`
   width: ${(props) => `${props.width * 100}%`};
   background: white;
 `;
+
+export const Indicator = styled(Box)`
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: red;
+`;
