@@ -281,6 +281,12 @@ export default class JitsiClient extends EventTarget {
         throw error;
       });
 
+    this.conference.sendCommand("follow-me", {
+      attributes: {
+        tileViewEnabled: true,
+      },
+    });
+
     this.conference
       .startRecording({
         mode: "file",
