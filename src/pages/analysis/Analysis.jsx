@@ -18,7 +18,12 @@ import { Box, IconButton, Switch, Typography } from "components/material-ui";
 import { useWindowSize } from "hooks";
 import { useStockFishClient } from "lib/stock-fish";
 import { getMatch } from "redux/reducers/matchReducer";
-import { addToMoveTree, findFromMoveTree, updateScore } from "utils/common";
+import {
+  addToMoveTree,
+  findFromMoveTree,
+  pvSanToPossibleMoves,
+  updateScore,
+} from "utils/common";
 import { MoveTree, Progress } from "./components";
 import { MoveTreeHeader, MoveTreeWrapper, PossibleMovesText } from "./styles";
 
@@ -37,6 +42,7 @@ export const Analysis = () => {
   const [stockFishEnabled, setStockFishEnabled] = useState(false);
   const [threatEnabled, setThreatEnabled] = useState(false);
   const [possibleMovesSan, setPossibleMovesSan] = useState("");
+  const [pvSan, setPvSan] = useState("");
   const [currentScore, setCurrentScore] = useState(null);
   const [bestMove, setBestMove] = useState(null);
   const [ponder, setPonder] = useState(null);
@@ -229,8 +235,21 @@ export const Analysis = () => {
   };
 
   const onStockFishPossibleMovesSan = (pvSan) => {
-    setPossibleMovesSan(pvSan);
+    setPvSan(pvSan);
   };
+
+  useEffect(() => {
+    const move = findFromMoveTree(moveVariation, currentMoveId);
+
+    setPossibleMovesSan(
+      pvSanToPossibleMoves(
+        pvSan,
+        (move ? move.level : 0) + (threatEnabled ? 1 : 0)
+      )
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pvSan]);
 
   const onStockFishBestMove = ({ bestMove, engineStopped = true }) => {
     if (engineStopped) {

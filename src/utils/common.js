@@ -409,3 +409,35 @@ export const getRatingCategory = (startTime, increment) => {
   if (x < 30) return "Rapid";
   return "Classic";
 };
+
+export const pvSanToPossibleMoves = (pvSan, level) => {
+  console.log(pvSan);
+
+  const pvMoves = pvSan.split(" ");
+
+  if (pvMoves.length % 2 === 1) {
+    pvMoves.push("");
+  }
+
+  let curLevel = Math.ceil((level + 1) / 2);
+
+  let possibleMovesStr = "";
+
+  if (level % 2 === 1) {
+    pvMoves.unshift("");
+  }
+
+  if (level % 2 === 1) {
+    possibleMovesStr = `${curLevel}... ${pvMoves[1]}`;
+  } else {
+    possibleMovesStr = `${curLevel}. ${pvMoves[0]} ${pvMoves[1]}`;
+  }
+
+  for (let index = 1; index < Math.floor(pvMoves.length / 2); index++) {
+    possibleMovesStr += ` ${curLevel + index}. ${pvMoves[2 * index]} ${
+      pvMoves[2 * index + 1]
+    }`;
+  }
+
+  return possibleMovesStr;
+};
