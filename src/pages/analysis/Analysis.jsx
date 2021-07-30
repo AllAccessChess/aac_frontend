@@ -61,6 +61,12 @@ export const Analysis = () => {
   const { stockFishClient } = useStockFishClient();
 
   useEffect(() => {
+    return () => {
+      stockFishClient.stop();
+    };
+  }, [stockFishClient]);
+
+  useEffect(() => {
     if (stockFishClient) {
       stockFishClient.on("engine-loaded", onStockFishEngineReady);
       stockFishClient.on("score", onStockFishScore);
