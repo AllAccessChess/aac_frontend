@@ -145,6 +145,13 @@ export default class StockFishClient extends EventTarget {
   };
 
   /**
+   * Remove Engine Response Handler
+   */
+  removeEngineResponseHandler = () => {
+    this.engine.onmessage = null;
+  };
+
+  /**
    * Send UCI Command to Engine
    */
   uciCmd = (cmd, engine) => {
@@ -210,7 +217,20 @@ export default class StockFishClient extends EventTarget {
    * Stop
    */
   stop = () => {
-    this.uciCmd("stop");
+    if (this.engine) {
+      this.removeEngineResponseHandler();
+
+      delete this.engine;
+
+      this.engine =
+        typeof STOCKFISH === "function"
+          ? STOCKFISH()
+          : new Worker("/stockfish.js");
+
+      this.initialize();
+    }
+
+    this.triggerEvent("stopped");
   };
 
   //=====================================================================

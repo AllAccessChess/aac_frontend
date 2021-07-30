@@ -14,7 +14,13 @@ import { useTheme } from "@material-ui/core";
 import { MyLocation as MyLocationIcon } from "@material-ui/icons";
 
 import { ChessBoard } from "components/common";
-import { Box, IconButton, Switch, Typography } from "components/material-ui";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Switch,
+  Typography,
+} from "components/material-ui";
 import { useWindowSize } from "hooks";
 import { useStockFishClient } from "lib/stock-fish";
 import { getMatch } from "redux/reducers/matchReducer";
@@ -41,6 +47,7 @@ export const Analysis = () => {
   const [bestMove, setBestMove] = useState(null);
   const [ponder, setPonder] = useState(null);
 
+  const [engineLoading, setEngineLoading] = useState(true);
   const [engineInProgress, setEngineInProgress] = useState(false);
   const [depth, setDepth] = useState(0);
 
@@ -55,17 +62,21 @@ export const Analysis = () => {
 
   useEffect(() => {
     if (stockFishClient) {
+      stockFishClient.on("engine-loaded", onStockFishEngineReady);
       stockFishClient.on("score", onStockFishScore);
       stockFishClient.on("possible-moves-san", onStockFishPossibleMovesSan);
       stockFishClient.on("best-move", onStockFishBestMove);
       stockFishClient.on("depth", onStockFishDepth);
+      stockFishClient.on("stopped", onStockFishStopped);
     }
 
     return () => {
+      stockFishClient.off("engine-loaded", onStockFishEngineReady);
       stockFishClient.off("score", onStockFishScore);
       stockFishClient.off("possible-moves-san", onStockFishPossibleMovesSan);
       stockFishClient.off("best-move", onStockFishBestMove);
       stockFishClient.off("depth", onStockFishDepth);
+      stockFishClient.off("stopped", onStockFishStopped);
     };
     // eslint-disable-next-line
   }, [stockFishClient]);
@@ -216,6 +227,10 @@ export const Analysis = () => {
     setStockFishEnabled((stockFishEnabled) => !stockFishEnabled);
   };
 
+  const onStockFishEngineReady = () => {
+    setEngineLoading(false);
+  };
+
   const onStockFishScore = (score) => {
     setCurrentScore(score);
   };
@@ -238,6 +253,11 @@ export const Analysis = () => {
 
   const onStockFishDepth = (depth) => {
     setDepth(depth);
+  };
+
+  const onStockFishStopped = () => {
+    setEngineInProgress(false);
+    setEngineLoading(true);
   };
 
   const toggleThreadEnabled = () => {
@@ -289,6 +309,7 @@ export const Analysis = () => {
           display="flex"
           justifyContent="center"
           alignItems="center"
+          position="relative"
           ref={chessContainerRef}
         >
           <ChessBoard
@@ -315,6 +336,18 @@ export const Analysis = () => {
               autoShapes: getShapes(),
             }}
           />
+          {engineLoading && (
+            <Box
+              position="absolute"
+              width="100%"
+              height="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <CircularProgress m={2} color="secondary" />
+            </Box>
+          )}
         </Box>
         <MoveTreeWrapper>
           <MoveTreeHeader p={2}>
