@@ -411,8 +411,6 @@ export const getRatingCategory = (startTime, increment) => {
 };
 
 export const pvSanToPossibleMoves = (pvSan, level) => {
-  console.log(pvSan);
-
   const pvMoves = pvSan.split(" ");
 
   if (pvMoves.length % 2 === 1) {
