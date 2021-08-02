@@ -11,8 +11,7 @@ import {
   LightBlueTextColorButton,
   StepNumber,
   SmallTextField,
-  OutlinedKeyboardDatePicker,
-  OutlinedKeyboardTimePicker,
+  OutlinedDatePicker,
 } from "components/common";
 import { CustomAccordion, CustomAccordionDetails } from "./styles";
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
@@ -71,13 +70,12 @@ export const Rounds = (props) => {
               <Box width="100%">
                 <Grid container spacing={5} my={3}>
                   <Grid item sm={1}>
-                    <Typography color="textSecondary">Round No.</Typography>
+                    <Typography color="textSecondary">No.</Typography>
                   </Grid>
-                  <Grid item sm={2}>
-                    <Typography color="textSecondary">Start Date</Typography>
-                  </Grid>
-                  <Grid item sm={2}>
-                    <Typography color="textSecondary">Start Time</Typography>
+                  <Grid item sm={3}>
+                    <Typography color="textSecondary">
+                      Start Date Time
+                    </Typography>
                   </Grid>
                   <Grid item sm={2}>
                     <Typography color="textSecondary">
@@ -98,29 +96,14 @@ export const Rounds = (props) => {
                     <Grid item sm={1}>
                       <Typography variant="subtitle1">{index + 1}</Typography>
                     </Grid>
-                    <Grid item sm={2}>
-                      <OutlinedKeyboardDatePicker
-                        disableToolbar
+                    <Grid item sm={3}>
+                      <OutlinedDatePicker
                         variant="inline"
                         color="secondary"
-                        placeholder="Select Date"
-                        format="MM/dd/yyyy"
+                        placeholder="To be decided"
+                        format="MM/dd/yyyy hh:mm"
                         value={round.start > 0 ? new Date(round.start) : null}
                         fullWidth
-                        onChange={(date) =>
-                          setFieldValue(
-                            `settings.rounds[${index}].start`,
-                            new Date(date).getTime()
-                          )
-                        }
-                      />
-                    </Grid>
-                    <Grid item sm={2}>
-                      <OutlinedKeyboardTimePicker
-                        variant="inline"
-                        placeholder="Select Time"
-                        fullWidth
-                        value={round.start > 0 ? new Date(round.start) : null}
                         onChange={(date) =>
                           setFieldValue(
                             `settings.rounds[${index}].start`,
@@ -194,7 +177,7 @@ export const Rounds = (props) => {
                       />
                     </Grid>
 
-                    <Grid item sm={1}>
+                    <Grid item sm={2}>
                       <Box display="flex" alignItems="center">
                         <Typography>
                           {getRatingCategory(round.startTime, round.increment)}

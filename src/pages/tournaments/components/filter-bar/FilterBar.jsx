@@ -2,9 +2,13 @@ import React, { useMemo } from "react";
 import moment from "moment";
 
 import { Box } from "components/material-ui";
-import { CustomIcon, ClearButton, CustomChip } from "./styles";
+import {
+  CustomIcon,
+  ClearButton,
+  CustomChip,
+  CustomDatePicker,
+} from "./styles";
 import { MultiSelect, ChipArray } from "./components";
-import { OutlinedKeyboardDatePicker } from "components/common";
 
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
@@ -66,18 +70,18 @@ export const FilterBar = (props) => {
           variant="outlined"
           displayEmpty
           onChange={(event) => setTimeControlFilter(event.target.value)}
-          placeholder="Time Control"
+          placeholder="Time control"
           mr={2}
         />
-        <OutlinedKeyboardDatePicker
-          disableToolbar
+        <CustomDatePicker
           variant="inline"
           color="secondary"
-          placeholder="Start Date"
+          placeholder="Start date"
           format="MM/dd/yyyy"
-          value={dateFilter ? new Date(dateFilter) : null}
-          render={"Start Date"}
-          onChange={(date) => setDateFilter(new Date(date).getTime())}
+          value={null}
+          onChange={(date) =>
+            setDateFilter(new Date(date.toDateString()).getTime())
+          }
         />
         <MultiSelect
           options={VariantOptions}
