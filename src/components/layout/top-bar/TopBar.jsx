@@ -35,8 +35,14 @@ export const TopBar = () => {
   };
 
   return (
-    <Wrapper position="static" background={backgroundImg}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Wrapper background={backgroundImg}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        flexGrow={1}
+        mx="4rem"
+      >
         <Link component={RouterLink} to="/">
           <Logo src={logoImg} />
         </Link>

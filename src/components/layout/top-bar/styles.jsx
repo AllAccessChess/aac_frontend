@@ -4,7 +4,10 @@ import { AppBar } from "components/material-ui";
 export const Wrapper = styled(AppBar)`
   background: url(${(props) => props.background});
   background-size: cover;
-  padding: 20px 5%;
+  position: fixed;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
 `;
 
 export const Logo = styled.img`

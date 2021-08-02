@@ -1,13 +1,14 @@
 import loadable from "@loadable/component";
+import { Dashboard as DashboardIcon } from "@material-ui/icons";
+
 import {
-  Dashboard as DashboardIcon,
-  AccountCircle as AccountIcon,
-  SupervisorAccount as TournamentIcon,
-  AttachMoney as PrizeIcon,
-  Settings as SettingsIcon,
-  SupervisorAccount as AdminIcon,
-  Adb as BotIcon,
-} from "@material-ui/icons";
+  DollarIcon,
+  GearIcon,
+  KnightIcon,
+  MagnifierIcon,
+  PersonIcon,
+  PersonShieldIcon,
+} from "components/icons";
 
 // Main Layout Pages
 const Account = loadable(() => import("pages/account"));
@@ -20,27 +21,6 @@ const Analysis = loadable(() => import("pages/analysis"));
 
 // Main Layout Routes
 export const mainLayoutRoutes = [
-  {
-    id: "account",
-    path: "/account",
-    name: "Account",
-    icon: AccountIcon,
-    component: Account,
-    guarded: true,
-    redirectToSignIn: true,
-    sidebar: true,
-  },
-  {
-    id: "admin",
-    path: "/admin",
-    name: "Admin Panel",
-    icon: AdminIcon,
-    component: Admin,
-    guarded: true,
-    redirectToSignIn: true,
-    adminAccess: true,
-    sidebar: true,
-  },
   {
     id: "dashboard",
     path: "/",
@@ -56,26 +36,37 @@ export const mainLayoutRoutes = [
     path: "/tournaments",
     name: "Tournaments",
     component: Tournaments,
-    icon: TournamentIcon,
+    icon: KnightIcon,
     guarded: true,
+    sidebar: true,
+  },
+  {
+    id: "account",
+    path: "/account",
+    name: "Profile",
+    icon: PersonIcon,
+    component: Account,
+    guarded: true,
+    redirectToSignIn: true,
+    sidebar: true,
+  },
+  {
+    id: "admin",
+    path: "/admin",
+    name: "Admin Panel",
+    icon: PersonShieldIcon,
+    component: Admin,
+    guarded: true,
+    redirectToSignIn: true,
+    adminAccess: true,
     sidebar: true,
   },
   {
     id: "Prizes",
     path: "/prizes",
     name: "My Prizes",
-    icon: PrizeIcon,
+    icon: DollarIcon,
     component: Prizes,
-    guarded: true,
-    redirectToSignIn: true,
-    sidebar: true,
-  },
-  {
-    id: "Settings",
-    path: "/settings",
-    name: "Settings",
-    icon: SettingsIcon,
-    component: Settings,
     guarded: true,
     redirectToSignIn: true,
     sidebar: true,
@@ -84,7 +75,7 @@ export const mainLayoutRoutes = [
     id: "Analysis",
     path: "/analysis",
     name: "Analysis",
-    icon: BotIcon,
+    icon: MagnifierIcon,
     component: Analysis,
     guarded: false,
     sidebar: true,
@@ -93,10 +84,20 @@ export const mainLayoutRoutes = [
     id: "Analysis",
     path: "/analysis/:id",
     name: "Analysis",
-    icon: BotIcon,
+    icon: MagnifierIcon,
     component: Analysis,
     guarded: true,
     redirectToSignIn: true,
     sidebar: false,
+  },
+  {
+    id: "Settings",
+    path: "/settings",
+    name: "Settings",
+    icon: GearIcon,
+    component: Settings,
+    guarded: true,
+    redirectToSignIn: true,
+    sidebar: true,
   },
 ];

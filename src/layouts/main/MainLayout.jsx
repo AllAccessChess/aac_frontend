@@ -10,9 +10,9 @@ import { authSelector } from "redux/reducers";
 import { Wrapper } from "./styles";
 
 const Main = (props) => (
-  <Box display="flex" mx="5%" my="20px" height="calc(100vh - 127px)">
+  <Box display="flex" mt="5rem" height="calc(100vh - 5rem)">
     <SideBar user={props.user} routes={props.routes} />
-    <Box display="flex" width="100%">
+    <Box display="flex" flexGrow={1} p={5}>
       {props.children}
     </Box>
   </Box>

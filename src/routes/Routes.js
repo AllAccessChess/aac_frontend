@@ -22,9 +22,12 @@ const renderChildRoutes = (Layout, routes) =>
       },
       index
     ) => {
-      const ComponentLayout = guarded
-        ? withAuthGuard(Layout, redirectToSignIn, adminAccess)
-        : Layout;
+      const ComponentLayout = withAuthGuard(
+        Layout,
+        guarded,
+        redirectToSignIn,
+        adminAccess
+      );
 
       return children ? (
         renderChildRoutes(Layout, children)

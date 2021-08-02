@@ -3,6 +3,7 @@ import { THEMES } from "constant";
 
 const initialState = {
   currentTheme: THEMES.BLUE,
+  sidebarCollapsed: false,
 };
 
 export const slice = createSlice({
@@ -12,9 +13,12 @@ export const slice = createSlice({
     setTheme: (state, action) => {
       state.currentTheme = action.payload;
     },
+    setSidebarCollapsed: (state, action) => {
+      state.sidebarCollapsed = action.payload;
+    },
   },
 });
 
-export const { setTheme } = slice.actions;
+export const { setTheme, setSidebarCollapsed } = slice.actions;
 
 export default slice.reducer;

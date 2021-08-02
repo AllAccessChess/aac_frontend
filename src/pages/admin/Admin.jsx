@@ -49,7 +49,6 @@ export const Admin = () => {
       flexDirection="column"
       borderRadius={10}
       p={5}
-      m={4}
       bgcolor={theme.palette.background.paper}
     >
       <Typography variant="h3" mb={2}>

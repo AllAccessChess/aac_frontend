@@ -306,7 +306,6 @@ export const Analysis = () => {
       flexDirection="column"
       borderRadius={10}
       p={5}
-      m={4}
       bgcolor={theme.palette.background.paper}
     >
       <Helmet title="Analysis" />

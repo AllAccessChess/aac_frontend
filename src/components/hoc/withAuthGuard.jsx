@@ -10,6 +10,7 @@ import { isAdmin } from "utils/common";
 // For routes that can only be accessed by authenticated users
 export const withAuthGuard = (
   Component,
+  guarded = false,
   redirectToSignIn = false,
   adminAccess = false
 ) => (props) => {
@@ -23,12 +24,12 @@ export const withAuthGuard = (
         signInWithToken(
           true,
           (user) => {
-            if (adminAccess && !isAdmin(user)) {
+            if (guarded && adminAccess && !isAdmin(user)) {
               history.push("/");
             }
           },
           () => {
-            if (redirectToSignIn) {
+            if (guarded && redirectToSignIn) {
               history.push("/auth/sign-in");
             }
           }

@@ -15,7 +15,7 @@ export const Dashboard = () => {
   return (
     <Box width="100%" height="100%" display="flex" flexDirection="column">
       {user ? (
-        <Grid container>
+        <Grid container spacing={5}>
           <Grid item md={8} sm={6}>
             <Box display="flex" flexDirection="column">
               <Block>
