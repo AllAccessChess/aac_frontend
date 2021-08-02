@@ -20,5 +20,10 @@ export const OutlinedKeyboardTimePicker = styled(KeyboardTimePicker)`
     &.Mui-error {
       border: 1px solid #f44336;
     }
+    .MuiInputBase-input::-webkit-input-placeholder {
+      font-weight: 400 !important;
+      color: #b8c6d6 !important;
+      opacity: 1 !important;
+    }
   }
 `;

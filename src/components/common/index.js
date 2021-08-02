@@ -11,6 +11,8 @@ export { LoadingScreen } from "./loading-screen";
 export { Notification } from "./notification";
 export { OutlinedKeyboardTimePicker } from "./outlined-keyboard-time-picker";
 export { OutlinedKeyboardDatePicker } from "./outlined-keyboard-date-picker";
+export { OutlinedDatePicker } from "./outlined-date-picker";
+export { OutlinedDateTimePicker } from "./outlined-date-time-picker";
 export { PlayerAutoComplete } from "./player-auto-complete";
 export { SmallHelpIcon } from "./small-help-icon";
 export { SmallTextField } from "./small-text-field";

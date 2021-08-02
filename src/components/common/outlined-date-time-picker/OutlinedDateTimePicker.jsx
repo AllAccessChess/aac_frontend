@@ -1,12 +1,13 @@
 import styled from "styled-components";
 
-import { KeyboardDatePicker } from "@material-ui/pickers";
+import { DateTimePicker } from "@material-ui/pickers";
 
-export const OutlinedKeyboardDatePicker = styled(KeyboardDatePicker)`
+export const OutlinedDateTimePicker = styled(DateTimePicker)`
   .MuiInputBase-root {
     border: 1px solid rgba(255, 255, 255, 0.23);
     border-radius: 5px;
     padding: 4px 1px 3px 14px;
+    cursor: pointer;
     &::before,
     &::after {
       display: none;
@@ -20,10 +21,13 @@ export const OutlinedKeyboardDatePicker = styled(KeyboardDatePicker)`
     &.Mui-error {
       border: 1px solid #f44336;
     }
-    .MuiInputBase-input::-webkit-input-placeholder {
-      font-weight: 400 !important;
-      color: #b8c6d6 !important;
-      opacity: 1 !important;
+    .MuiInputBase-input {
+      cursor: pointer;
+      &::-webkit-input-placeholder {
+        font-weight: 400 !important;
+        color: #b8c6d6 !important;
+        opacity: 1 !important;
+      }
     }
   }
 `;

@@ -114,7 +114,6 @@ export const GeneralInformation = (props) => {
                   <SmallHelpIcon />
                 </Box>
                 <OutlinedKeyboardDatePicker
-                  disableToolbar
                   variant="inline"
                   color="secondary"
                   placeholder="Select Date"
