@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button } from "components/material-ui";
+import { Button, Chip } from "components/material-ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const CustomIcon = styled(FontAwesomeIcon)`
@@ -11,5 +11,9 @@ export const CustomIcon = styled(FontAwesomeIcon)`
 `;
 
 export const ClearButton = styled(Button)`
+  border-radius: 20px;
+`;
+
+export const CustomChip = styled(Chip)`
   border-radius: 20px;
 `;

@@ -22,6 +22,7 @@ export const Tournaments = () => {
   const [timeControlFilter, setTimeControlFilter] = useState([]);
   const [variantFilter, setVariantFilter] = useState([]);
   const [ratingFilter, setRatingFilter] = useState([]);
+  const [dateFilter, setDateFilter] = useState();
 
   const user = useSelector((state) => state.authReducer.user);
   const tournamentList = useSelector((state) => state.tournamentReducer.list);
@@ -68,12 +69,15 @@ export const Tournaments = () => {
             ? true
             : ratingFilter.includes(tournament.settings.ratingProvider);
 
+        const inDateFilter = !dateFilter ? true : tournament.start > dateFilter;
+
         return (
           inTabFilter &&
           inTypeFilter &&
           inTimeControlFilter &&
           inVariantFilter &&
-          inRatingFilter
+          inRatingFilter &&
+          inDateFilter
         );
       }),
     [
@@ -84,6 +88,7 @@ export const Tournaments = () => {
       timeControlFilter,
       variantFilter,
       ratingFilter,
+      dateFilter,
     ]
   );
 
@@ -145,7 +150,7 @@ export const Tournaments = () => {
           bgcolor={theme.palette.background.paper}
         />
         <CustomTab
-          label="Past Events"
+          label="Completed"
           value={3}
           bgcolor={theme.palette.background.paper}
         />
@@ -157,10 +162,12 @@ export const Tournaments = () => {
           timeControlFilter={timeControlFilter}
           variantFilter={variantFilter}
           ratingFilter={ratingFilter}
+          dateFilter={dateFilter}
           setTypeFilter={setTypeFilter}
           setTimeControlFilter={setTimeControlFilter}
           setVariantFilter={setVariantFilter}
           setRatingFilter={setRatingFilter}
+          setDateFilter={setDateFilter}
         />
         {filteredTournaments.map((tournament) => (
           <Box

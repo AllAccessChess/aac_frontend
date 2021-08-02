@@ -1,9 +1,12 @@
 import React, { useMemo } from "react";
+import moment from "moment";
 
 import { Box } from "components/material-ui";
-import { CustomIcon, ClearButton } from "./styles";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { CustomIcon, ClearButton, CustomChip } from "./styles";
 import { MultiSelect, ChipArray } from "./components";
+import { OutlinedKeyboardDatePicker } from "components/common";
+
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 import {
   TimeControlOptions,
@@ -22,6 +25,8 @@ export const FilterBar = (props) => {
     setVariantFilter,
     ratingFilter,
     setRatingFilter,
+    dateFilter,
+    setDateFilter,
   } = props;
 
   const showChips = useMemo(
@@ -29,8 +34,9 @@ export const FilterBar = (props) => {
       typeFilter.length ||
       timeControlFilter.length ||
       variantFilter.length ||
-      ratingFilter.length,
-    [typeFilter, timeControlFilter, variantFilter, ratingFilter]
+      ratingFilter.length ||
+      dateFilter,
+    [typeFilter, timeControlFilter, variantFilter, ratingFilter, dateFilter]
   );
 
   const handleClearAll = () => {
@@ -38,6 +44,7 @@ export const FilterBar = (props) => {
     setTimeControlFilter([]);
     setVariantFilter([]);
     setRatingFilter([]);
+    setDateFilter(null);
   };
 
   return (
@@ -62,6 +69,16 @@ export const FilterBar = (props) => {
           placeholder="Time Control"
           mr={2}
         />
+        <OutlinedKeyboardDatePicker
+          disableToolbar
+          variant="inline"
+          color="secondary"
+          placeholder="Start Date"
+          format="MM/dd/yyyy"
+          value={dateFilter ? new Date(dateFilter) : null}
+          render={"Start Date"}
+          onChange={(date) => setDateFilter(new Date(date).getTime())}
+        />
         <MultiSelect
           options={VariantOptions}
           value={variantFilter}
@@ -69,7 +86,7 @@ export const FilterBar = (props) => {
           displayEmpty
           onChange={(event) => setVariantFilter(event.target.value)}
           placeholder="Variant"
-          mr={2}
+          mx={2}
         />
         <MultiSelect
           options={RatingOptions}
@@ -103,6 +120,17 @@ export const FilterBar = (props) => {
             filter={ratingFilter}
             setFilter={setRatingFilter}
           />
+          {dateFilter ? (
+            <CustomChip
+              label={moment(dateFilter).format("> MM/DD/yyy")}
+              color="primary"
+              mr={2}
+              onDelete={() => setDateFilter(null)}
+            />
+          ) : (
+            <></>
+          )}
+
           <ClearButton
             variant="contained"
             color="secondary"

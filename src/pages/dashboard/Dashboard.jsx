@@ -85,15 +85,27 @@ export const Dashboard = () => {
                       <Grid container>
                         <Info
                           label="Blitz"
-                          value={user.ratings.uscf.ratings.blitz.rating}
+                          value={
+                            user.ratings.uscf.ratings.blitz
+                              ? user.ratings.uscf.ratings.blitz.rating
+                              : "-"
+                          }
                         />
                         <Info
                           label="Rapid"
-                          value={user.ratings.uscf.ratings.rapid.rating}
+                          value={
+                            user.ratings.uscf.ratings.rapid
+                              ? user.ratings.uscf.ratings.rapid.rating
+                              : "-"
+                          }
                         />
                         <Info
                           label="Classic"
-                          value={user.ratings.uscf.ratings.classical.rating}
+                          value={
+                            user.ratings.uscf.ratings.classical
+                              ? user.ratings.uscf.ratings.classical.rating
+                              : "-"
+                          }
                         />
                       </Grid>
                     </Box>
@@ -110,15 +122,27 @@ export const Dashboard = () => {
                       <Grid container>
                         <Info
                           label="Blitz"
-                          value={user.ratings.fide.ratings.blitz.rating}
+                          value={
+                            user.ratings.fide.ratings.blitz
+                              ? user.ratings.fide.ratings.blitz.rating
+                              : "-"
+                          }
                         />
                         <Info
                           label="Rapid"
-                          value={user.ratings.fide.ratings.rapid.rating}
+                          value={
+                            user.ratings.fide.ratings.rapid
+                              ? user.ratings.fide.ratings.rapid.rating
+                              : "-"
+                          }
                         />
                         <Info
                           label="Classic"
-                          value={user.ratings.fide.ratings.classical.rating}
+                          value={
+                            user.ratings.fide.ratings.classical
+                              ? user.ratings.fide.ratings.classical.rating
+                              : "-"
+                          }
                         />
                       </Grid>
                     </Box>
