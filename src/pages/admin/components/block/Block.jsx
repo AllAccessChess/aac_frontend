@@ -24,7 +24,7 @@ export const Block = (props) => {
           justifyContent="space-between"
           mb={5}
         >
-          <Typography variant="h6">{title}</Typography>
+          <Typography variant="h5">{title}</Typography>
           <ChevronRightIcon />
         </Box>
         <TextLabel>{description}</TextLabel>

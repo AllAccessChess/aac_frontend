@@ -226,6 +226,7 @@ export const Match = () => {
       const endReason = game.reason;
       if (gameResult && gameResult !== GameResults.ONGOING) {
         setGameStatus(GameStatus.EXITED);
+        setClockActive(false);
 
         if (gameResult === GameResults.DRAW) {
           setGameMessage(`Game drawn by ${GameEndReasonMessage[endReason]}`);
