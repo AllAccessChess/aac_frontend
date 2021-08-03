@@ -10,7 +10,7 @@ import {
 export const CustomListItem = styled(ListItem)`
   border-left: 0.5rem solid transparent;
   height: 60px;
-  padding: 0;
+  padding: 0 0.5rem 0 0;
 
   &.Mui-selected {
     border-color: ${(props) => props.theme.palette.primary.main};
@@ -24,7 +24,7 @@ export const CustomListItemIcon = styled(ListItemIcon)`
 `;
 
 export const CustomListItemText = styled(ListItemText)`
-  margin: 0 3rem 0 1rem;
+  margin: 0 2.5rem 0 1rem;
 `;
 
 export const ToggleButton = styled(Button)`
