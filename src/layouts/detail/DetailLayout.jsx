@@ -1,13 +1,41 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import { withWidth } from "@material-ui/core";
+import { ChevronLeft as BackIcon } from "@material-ui/icons";
 
-import { Box } from "components/material-ui";
+import { Box, Button } from "components/material-ui";
 import { TopBar } from "components/layout";
 import { withNotification } from "components/hoc";
 import { Wrapper } from "./styles";
 
-const MainBody = (props) => <Box display="flex">{props.children}</Box>;
+const MainBody = (props) => {
+  const history = useHistory();
+
+  const handleBack = useCallback(() => {
+    history.goBack();
+  }, [history]);
+
+  return (
+    <Box
+      flexGrow={1}
+      display="flex"
+      flexDirection="column"
+      alignItems="flex-start"
+      position="relative"
+    >
+      <Box my={3}>
+        <Button startIcon={<BackIcon />} onClick={handleBack}>
+          Go Back
+        </Button>
+      </Box>
+
+      <Box display="flex" flexGrow={1} width="100%">
+        {props.children}
+      </Box>
+    </Box>
+  );
+};
 
 const MainBodyWithNotification = withNotification(MainBody);
 

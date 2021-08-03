@@ -1,19 +1,18 @@
-import React, { useCallback, useMemo, useEffect } from "react";
-import * as Yup from "yup";
 import { Formik } from "formik";
+import React, { useMemo, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useHistory } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-
-import { InnerForm } from "./components";
+import { useHistory } from "react-router";
+import * as Yup from "yup";
 import { useTheme } from "@material-ui/core";
-import { Box, Typography, Button } from "components/material-ui";
-import { Close as CloseIcon } from "@material-ui/icons";
 
+import { Box, Typography } from "components/material-ui";
 import { createGameWithTwoPlayers } from "redux/reducers/tournamentReducer";
 import { getUserList } from "redux/reducers/userReducer";
 
-export const AdminPairing = () => {
+import { InnerForm } from "./components";
+
+export const AdminGamesNew = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const theme = useTheme();
@@ -31,10 +30,6 @@ export const AdminPairing = () => {
     }),
     []
   );
-
-  const handleBack = useCallback(() => {
-    history.push("/admin");
-  }, [history]);
 
   const handleSubmit = (values, { setSubmitting }) => {
     dispatch(
@@ -65,10 +60,6 @@ export const AdminPairing = () => {
       alignItems="flex-start"
     >
       <Helmet title="Pairing Two Players" />
-      <Button startIcon={<CloseIcon fontSize="small" />} onClick={handleBack}>
-        <Typography variant="body1">Close</Typography>
-      </Button>
-
       <Box
         width="100%"
         height="calc(100% - 56px)"

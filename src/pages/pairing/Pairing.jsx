@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useTheme } from "@material-ui/core";
-import { ChevronLeft as BackIcon } from "@material-ui/icons";
 
 import { Box, Button, Typography } from "components/material-ui";
 import { LoadingScreen } from "components/common";
@@ -16,7 +15,6 @@ import { redoPairing, reorderList } from "utils/common";
 
 export const Pairing = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const params = useParams();
   const theme = useTheme();
 
@@ -29,10 +27,6 @@ export const Pairing = () => {
   const [black, setBlack] = useState([]);
   const [unpaired, setUnpaired] = useState([]);
   const [byes, setByes] = useState([]);
-
-  const handleBack = () => {
-    history.push(`/tournament/${params.tournamentId}`);
-  };
 
   useEffect(() => {
     if (params.tournamentId && params.roundId) {
@@ -209,10 +203,6 @@ export const Pairing = () => {
       flexDirection="column"
       alignItems="flex-start"
     >
-      <Button startIcon={<BackIcon />} onClick={handleBack}>
-        Go Back
-      </Button>
-
       <Box
         width="100%"
         my={5}

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { Formik } from "formik";
 import { Helmet } from "react-helmet";
 import _ from "lodash";
@@ -7,8 +7,7 @@ import { useHistory, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useTheme } from "@material-ui/core";
-import { Box, Typography, Button } from "components/material-ui";
-import { Close as CloseIcon } from "@material-ui/icons";
+import { Box, Typography } from "components/material-ui";
 import { InnerForm } from "./components";
 
 import {
@@ -60,10 +59,6 @@ export const TournamentSave = () => {
     [currentTournament]
   );
 
-  const handleBack = useCallback(() => {
-    history.push("/tournaments");
-  }, [history]);
-
   const handleSubmit = (values, { setSubmitting }) => {
     if (currentTournament) {
       dispatch(
@@ -111,10 +106,6 @@ export const TournamentSave = () => {
       <Helmet
         title={currentTournament ? "Update Tournament" : "Create Tournament"}
       />
-      <Button startIcon={<CloseIcon fontSize="small" />} onClick={handleBack}>
-        <Typography variant="body1">Close</Typography>
-      </Button>
-
       <Box
         width="100%"
         height="calc(100% - 56px)"

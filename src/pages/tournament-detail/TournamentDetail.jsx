@@ -2,15 +2,13 @@ import React, { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import useInterval from "react-useinterval";
-import { ChevronLeft as BackIcon } from "@material-ui/icons";
 
 import { TournamentStatus, RoundStatus, GameResults } from "constant";
 import { LoadingScreen, TournamentCard } from "components/common";
-import { Box, Button } from "components/material-ui";
+import { Box } from "components/material-ui";
 import { isAdmin } from "utils/common";
 import {
   getTournament,
-  clearCurrent as clearCurrentTournament,
   registerTournament,
   unRegisterTournament,
   startRound,
@@ -141,14 +139,8 @@ export const TournamentDetail = () => {
     }
   }, [pollingTournamentRoundCondition ? 10000 : null]);
 
-  const handleBack = () => {
-    dispatch(clearCurrentTournament());
-    history.push("/tournaments");
-  };
-
   const handleDownloadPGN = (gameID, roundTitle) => {
     dispatch(downloadPGN(gameID, roundTitle));
-    // dispatch(downloadPGN("60c8a855a2f4807757ce30cb", roundTitle));
   };
 
   const handleRegister = () => {
@@ -212,10 +204,6 @@ export const TournamentDetail = () => {
       flexDirection="column"
       alignItems="flex-start"
     >
-      <Button startIcon={<BackIcon />} onClick={handleBack}>
-        Go Back
-      </Button>
-
       <Box width="100%" my={5}>
         <TournamentCard
           tournament={currentTournament}
