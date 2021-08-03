@@ -5,9 +5,9 @@ import { OutlinedDatePicker } from "components/common";
 
 export const CustomIcon = styled(FontAwesomeIcon)`
   background: #ffffff1a;
-  width: 2em !important;
-  height: 3em !important;
-  padding: 0px 5px;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  padding: 10px;
   margin-right: 15px;
 `;
 

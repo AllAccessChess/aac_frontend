@@ -7,13 +7,13 @@ import { TransformPawnDialog } from "components/dialogs";
 export const ChessBoard = (props) => {
   const {
     chess,
+    chessgroundRef,
     fen,
     inPast,
     width,
     height,
     playerColor,
     isSpectator,
-    premove,
     lastMove,
     isPlaying,
     setPremove,
@@ -29,6 +29,19 @@ export const ChessBoard = (props) => {
   const playerColorName = useMemo(
     () => (playerColor === 0 ? "white" : "black"),
     [playerColor]
+  );
+
+  const premovable = useMemo(
+    () => ({
+      enabled: true,
+      showDests: true,
+      castle: true,
+      events: {
+        set: (orig, dest) => setPremove([orig, dest]),
+        unset: () => setPremove(null),
+      },
+    }),
+    [setPremove]
   );
 
   const promotion = useCallback(
@@ -79,7 +92,6 @@ export const ChessBoard = (props) => {
 
   const handleMove = useCallback(
     (from, to) => {
-      setPremove(null);
       const moves = chess.moves({ verbose: true });
 
       for (let i = 0, len = moves.length; i < len; i++) {
@@ -92,12 +104,13 @@ export const ChessBoard = (props) => {
       }
       onMove(from, to);
     },
-    [chess, setPremove, onMove, setPendingMove, setShowTransformPawn]
+    [chess, onMove, setPendingMove, setShowTransformPawn]
   );
 
   return (
     <>
       <Chessground
+        ref={chessgroundRef}
         width={width}
         height={height}
         viewOnly={isSpectator || inPast}
@@ -107,15 +120,7 @@ export const ChessBoard = (props) => {
         lastMove={lastMove}
         fen={fen}
         orientation={disableOrientation ? "white" : playerColorName}
-        premovable={{
-          enabled: true,
-          showDests: true,
-          current: premove,
-          events: {
-            set: (orig, dest) => setPremove([orig, dest]),
-            unset: () => setPremove(null),
-          },
-        }}
+        premovable={premovable}
         onMove={handleMove}
         style={{
           marginRight: "20px",

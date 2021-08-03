@@ -31,6 +31,7 @@ export const TournamentCard = (props) => {
     onJoinLobby,
     onStartRound,
     onEdit,
+    onTogglePublish,
   } = props;
   const offsetInMileSeconds = 300000;
 
@@ -74,7 +75,7 @@ export const TournamentCard = (props) => {
       bgcolor="#15375C"
       justifyContent="space-between"
       alignItems="center"
-      height="140px"
+      minHeight="140px"
     >
       <Box
         display="flex"
@@ -99,7 +100,7 @@ export const TournamentCard = (props) => {
       <Box
         display="flex"
         justifyContent="space-between"
-        alignItems="center"
+        alignItems="flex-end"
         flexGrow="1"
         height="100%"
       >
@@ -107,9 +108,9 @@ export const TournamentCard = (props) => {
           display="flex"
           flexDirection="column"
           px={5}
-          py={4}
           height="100%"
           justifyContent="space-between"
+          alignSelf="center"
           flexGrow="1"
           maxWidth="800px"
         >
@@ -174,7 +175,6 @@ export const TournamentCard = (props) => {
           height="100%"
           width="25%"
           maxWidth="200px"
-          py={4}
         >
           {onEdit && (
             <Button
@@ -185,6 +185,19 @@ export const TournamentCard = (props) => {
               onClick={() => onEdit(tournament.id)}
             >
               Edit Tournament
+            </Button>
+          )}
+          {onTogglePublish && (
+            <Button
+              variant="contained"
+              color="primary"
+              mb={2}
+              fullWidth
+              onClick={() =>
+                onTogglePublish(tournament.id, !tournament.published)
+              }
+            >
+              {tournament.published ? "UnPublish" : "Publish"}
             </Button>
           )}
           {onViewDetails && tournament.start > new Date().getTime() && (

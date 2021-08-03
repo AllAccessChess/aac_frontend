@@ -151,6 +151,7 @@ export const Match = () => {
   const gameStatusRef = useRef(gameStatus);
   const turnRef = useRef(turn);
   const clockActiveRef = useRef(clockActive);
+  const chessgroundRef = useRef();
 
   // const { zoomClient } = useZoomContext();
   const { jitsiClient } = useJitsiClient();
@@ -206,6 +207,9 @@ export const Match = () => {
       if (index === actionHistory.length - 1) {
         setPastMoveIndex(-1);
       } else {
+        if (chessgroundRef.current && chessgroundRef.current.cg)
+          chessgroundRef.current.cg.cancelPremove();
+        setPremove(null);
         setPastMoveIndex(index);
       }
       setFen(actionHistory[index].fen);
@@ -272,6 +276,9 @@ export const Match = () => {
 
   const handleMove = useCallback(
     (from, to, promot = "x") => {
+      if (chessgroundRef.current && chessgroundRef.current.cg)
+        chessgroundRef.current.cg.cancelPremove();
+      setPremove(null);
       const move = chess.move({ from, to, promotion: promot });
       if (!move) return;
       dispatch(
@@ -754,13 +761,13 @@ export const Match = () => {
               width={chessBoardSize}
               height={chessBoardSize}
               chess={chess}
+              chessgroundRef={chessgroundRef}
               fen={fen}
               inPast={pastMoveIndex !== -1}
               playerColor={playerColor}
               isSpectator={isSpectator}
               lastMove={lastMove}
               isPlaying={gameStatus === GameStatus.PLAYING}
-              premove={premove}
               legalMoves={legalMoves}
               setPremove={setPremove}
               onMove={handleMove}

@@ -9,7 +9,11 @@ import { Box, Button } from "components/material-ui";
 import { FilterBar } from "./components";
 import { CustomTab, CustomTabs } from "./styles";
 
-import { getTournamentList } from "redux/reducers/tournamentReducer";
+import {
+  getTournamentList,
+  publishTournament,
+  unPublishTournament,
+} from "redux/reducers/tournamentReducer";
 import { isAdmin } from "utils/common";
 
 export const Tournaments = () => {
@@ -111,6 +115,13 @@ export const Tournaments = () => {
     },
     [history]
   );
+  const handleTogglePublish = useCallback(
+    (id, publish) => {
+      if (publish) dispatch(publishTournament(id));
+      else dispatch(unPublishTournament(id));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (!tournamentList.length) dispatch(getTournamentList());
@@ -182,6 +193,9 @@ export const Tournaments = () => {
               tournament={tournament}
               onViewDetails={handleViewTounamentDetail}
               onEdit={editTournamentPermission ? handleEditTournament : null}
+              onTogglePublish={
+                editTournamentPermission ? handleTogglePublish : null
+              }
             />
           </Box>
         ))}

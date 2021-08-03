@@ -25,6 +25,15 @@ export default class TournamentService extends BaseAPIService {
       "POST"
     );
   };
+  static publishTournament = (tournamentID) => {
+    return this.requestWithAuth(`/tournaments/publish/${tournamentID}`, "POST");
+  };
+  static unpublishTournament = (tournamentID) => {
+    return this.requestWithAuth(
+      `/tournaments/unpublish/${tournamentID}`,
+      "POST"
+    );
+  };
   static startRound = (tournamentID) => {
     return this.requestWithAuth(
       `/tournaments/startround/${tournamentID}`,

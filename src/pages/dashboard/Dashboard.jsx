@@ -18,7 +18,7 @@ export const Dashboard = () => {
         <Grid container spacing={5}>
           <Grid item md={8} sm={6}>
             <Box display="flex" flexDirection="column">
-              <Block>
+              <Block mb={2}>
                 <Box mb={3}>
                   <Typography variant="h3" component="h3">
                     General Information
@@ -59,7 +59,7 @@ export const Dashboard = () => {
                 </Grid>
               </Block>
               {user.ratings && (user.ratings.uscf || user.ratings.fide) ? (
-                <Block>
+                <Block mb={2}>
                   <Box
                     display="flex"
                     flexDirection="row"

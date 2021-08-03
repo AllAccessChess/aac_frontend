@@ -111,6 +111,30 @@ export const unRegisterTournament = (id) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
+export const publishTournament = (id) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const { tournament } = await TournamentService.publishTournament(id);
+    dispatch(updateListItem(tournament));
+    dispatch(setCurrent(tournament));
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+  }
+  dispatch(setLoading(false));
+};
+
+export const unPublishTournament = (id) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const { tournament } = await TournamentService.unpublishTournament(id);
+    dispatch(updateListItem(tournament));
+    dispatch(setCurrent(tournament));
+  } catch (err) {
+    dispatch(setMessage({ message: err.message }));
+  }
+  dispatch(setLoading(false));
+};
+
 export const startRound = (id) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
