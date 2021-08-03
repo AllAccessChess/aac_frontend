@@ -7,11 +7,7 @@ import { TopBar } from "components/layout";
 import { withNotification } from "components/hoc";
 import { Wrapper } from "./styles";
 
-const MainBody = (props) => (
-  <Box display="flex" p={5}>
-    {props.children}
-  </Box>
-);
+const MainBody = (props) => <Box display="flex">{props.children}</Box>;
 
 const MainBodyWithNotification = withNotification(MainBody);
 
@@ -25,6 +21,7 @@ const Layout = (props) => {
         display="flex"
         flexDirection="column"
         mt="5rem"
+        p={5}
         height="calc(100vh - 5rem)"
         overflow="auto"
       >
