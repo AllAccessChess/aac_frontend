@@ -10,11 +10,8 @@ import { authSelector } from "redux/reducers";
 import { Wrapper } from "./styles";
 
 const Main = (props) => (
-  <Box display="flex" mt="5rem" height="calc(100vh - 5rem)">
-    <SideBar user={props.user} routes={props.routes} />
-    <Box display="flex" flexGrow={1} p={5}>
-      {props.children}
-    </Box>
+  <Box display="flex" flexGrow={1}>
+    {props.children}
   </Box>
 );
 
@@ -25,8 +22,13 @@ const Layout = (props) => {
 
   return (
     <Wrapper>
-      <TopBar user={user} /> {/* Topbar is 127px in height */}
-      <MainWithNotification {...props} user={user} />
+      <TopBar user={user} />
+      <Box display="flex" mt="5rem" height="calc(100vh - 5rem)">
+        <SideBar user={user} routes={props.routes} />
+        <Box display="flex" flexDirection="column" flexGrow={1} p={5}>
+          <MainWithNotification {...props} />
+        </Box>
+      </Box>
     </Wrapper>
   );
 };

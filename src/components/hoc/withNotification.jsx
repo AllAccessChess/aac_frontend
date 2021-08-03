@@ -49,6 +49,8 @@ const Notification = () => {
       bgcolor="#F7B500"
       px="5%"
       py="10px"
+      mb={5}
+      borderRadius={5}
     >
       {notificationList.map((notification, index) => (
         <Box key={index} mb={index ? 2 : 0}>

@@ -8,13 +8,7 @@ import { withNotification } from "components/hoc";
 import { Wrapper } from "./styles";
 
 const MainBody = (props) => (
-  <Box
-    display="flex"
-    px="5%"
-    py="20px"
-    overflow="auto"
-    height="calc(100% - 87px)"
-  >
+  <Box display="flex" p={5}>
     {props.children}
   </Box>
 );
@@ -27,7 +21,15 @@ const Layout = (props) => {
   return (
     <Wrapper>
       <TopBar user={user} />
-      <MainBodyWithNotification {...props} />
+      <Box
+        display="flex"
+        flexDirection="column"
+        mt="5rem"
+        height="calc(100vh - 5rem)"
+        overflow="auto"
+      >
+        <MainBodyWithNotification {...props} />
+      </Box>
     </Wrapper>
   );
 };
