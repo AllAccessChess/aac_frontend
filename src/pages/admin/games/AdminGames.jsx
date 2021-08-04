@@ -17,14 +17,12 @@ import {
 } from "components/material-ui";
 
 import { getLiveGames } from "redux/reducers/matchReducer";
-import { isAdmin } from "utils/common";
 
 export const AdminGames = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const theme = useTheme();
   const liveGames = useSelector((state) => state.matchReducer.liveGames);
-  const user = useSelector((state) => state.authReducer.user);
 
   const handleCreateGame = useCallback(() => {
     history.push("/admin/games/new");
@@ -34,12 +32,6 @@ export const AdminGames = () => {
     dispatch(getLiveGames());
     // eslint-disable-next-line
   }, []);
-
-  useEffect(() => {
-    if (user && user.id && !isAdmin(user)) {
-      history.push("/tournaments");
-    }
-  }, [user, history]);
 
   return (
     <Box
@@ -89,19 +81,10 @@ export const AdminGames = () => {
                     <Link component={RouterLink} to={`/spectate/${game.id}`}>
                       <Typography variant="body1">Spectate</Typography>
                     </Link>
-                    {isAdmin(user) && (
-                      <React.Fragment>
-                        <Typography>&nbsp;|&nbsp;</Typography>
-                        <Link
-                          component={RouterLink}
-                          to={`/spectate/${game.id}/td`}
-                        >
-                          <Typography variant="body1">
-                            Join as Director
-                          </Typography>
-                        </Link>
-                      </React.Fragment>
-                    )}
+                    <Typography>&nbsp;|&nbsp;</Typography>
+                    <Link component={RouterLink} to={`/spectate/${game.id}/td`}>
+                      <Typography variant="body1">Join as Director</Typography>
+                    </Link>
                   </Box>
                 </TableCell>
               </TableRow>

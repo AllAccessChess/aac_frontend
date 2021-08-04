@@ -1,4 +1,4 @@
-import { RoundStatus } from "constant";
+import { RoundStatus, VALID_USCF_LENGTH } from "constant";
 
 export const mathRound2 = (num) =>
   Math.round((num + Number.EPSILON) * 100) / 100;
@@ -438,4 +438,10 @@ export const pvSanToPossibleMoves = (pvSan, level) => {
   }
 
   return possibleMovesStr;
+};
+
+export const validateUSCFID = (uscfID) => {
+  if (!uscfID || !uscfID.length) return true;
+  if (uscfID.length !== VALID_USCF_LENGTH) return false;
+  return /^\d+$/.test(uscfID);
 };

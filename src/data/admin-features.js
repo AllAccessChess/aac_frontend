@@ -16,6 +16,6 @@ export default [
     id: "players",
     title: "Find and edit players",
     description: "Find and edit details of players already on the platform.",
-    url: "/admin/players",
+    url: "/admin/users",
   },
 ];

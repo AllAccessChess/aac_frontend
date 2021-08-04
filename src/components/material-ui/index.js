@@ -20,15 +20,14 @@ export * from "@material-ui/core";
 
 export const Alert = styled(MuiAlert)(spacing);
 export const Autocomplete = styled(MuiAutocomplete)(spacing);
-export const TextField = styled(MuiTextField)(spacing);
 export const Button = styled(MuiButton)(spacing);
-export const IconButton = styled(MuiIconButton)(spacing);
-export const Link = styled(MuiLink)(spacing);
-export const Typography = styled(MuiTypography)(spacing);
-export const Select = styled(MuiSelect)(spacing);
 export const Chip = styled(MuiChip)(spacing);
+export const IconButton = styled(MuiIconButton)(spacing);
 export const Grid = styled(MuiGrid)(spacing);
-
+export const Link = styled(MuiLink)(spacing);
 export const Paper = styled(styled(MuiPaper)(spacing))`
   border-radius: 8px;
 `;
+export const Select = styled(MuiSelect)(spacing);
+export const TextField = styled(MuiTextField)(spacing);
+export const Typography = styled(MuiTypography)(spacing);

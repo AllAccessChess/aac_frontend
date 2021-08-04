@@ -4,6 +4,7 @@ import { SupervisorAccount as TournamentIcon } from "@material-ui/icons";
 // Admin Detail
 const AdminGames = loadable(() => import("pages/admin/games"));
 const AdminGamesNew = loadable(() => import("pages/admin/games/new"));
+const AdminUsers = loadable(() => import("pages/admin/users"));
 
 // Tournament Detail
 const TournamentDetail = loadable(() => import("pages/tournament-detail"));
@@ -19,7 +20,6 @@ export const detailLayoutRoutes = [
     path: "/admin/games",
     name: "Admin Games",
     component: AdminGames,
-    icon: TournamentIcon,
     guarded: true,
     redirectToSignIn: true,
     adminAccess: true,
@@ -29,7 +29,15 @@ export const detailLayoutRoutes = [
     path: "/admin/games/new",
     name: "Admin Games New",
     component: AdminGamesNew,
-    icon: TournamentIcon,
+    guarded: true,
+    redirectToSignIn: true,
+    adminAccess: true,
+  },
+  {
+    id: "admin-users",
+    path: "/admin/users",
+    name: "Admin Users",
+    component: AdminUsers,
     guarded: true,
     redirectToSignIn: true,
     adminAccess: true,

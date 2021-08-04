@@ -1,14 +1,13 @@
 import { Formik } from "formik";
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import { Helmet } from "react-helmet";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import * as Yup from "yup";
 import { useTheme } from "@material-ui/core";
 
 import { Box, Typography } from "components/material-ui";
 import { createGameWithTwoPlayers } from "redux/reducers/tournamentReducer";
-import { getUserList } from "redux/reducers/userReducer";
 
 import { InnerForm } from "./components";
 
@@ -16,7 +15,6 @@ export const AdminGamesNew = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const theme = useTheme();
-  const users = useSelector((state) => state.userReducer.list);
 
   const initialValues = useMemo(
     () => ({
@@ -44,13 +42,6 @@ export const AdminGamesNew = () => {
       )
     );
   };
-
-  useEffect(() => {
-    if (!users.length) {
-      dispatch(getUserList());
-    }
-    // eslint-disable-next-line
-  }, []);
 
   return (
     <Box
@@ -107,7 +98,7 @@ export const AdminGamesNew = () => {
             })}
             onSubmit={handleSubmit}
           >
-            {(formProps) => <InnerForm {...formProps} users={users} />}
+            {(props) => <InnerForm {...props} />}
           </Formik>
         </Box>
       </Box>
