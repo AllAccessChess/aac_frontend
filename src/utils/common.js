@@ -246,8 +246,8 @@ export const getWinnerString = (result) => {
   return "-";
 };
 
-export const getPlayerScores = (tournament, player) => {
-  const scores = new Array(tournament.settings.numRounds);
+export const getPlayerScores = (bracket, numRounds, player) => {
+  const scores = new Array(numRounds);
 
   const scoreData = {
     black: {
@@ -264,9 +264,9 @@ export const getPlayerScores = (tournament, player) => {
     },
   };
 
-  for (let index = 0; index < tournament.settings.numRounds; index++) {
+  for (let index = 0; index < numRounds; index++) {
     try {
-      const playerBoard = tournament.rounds[index].boards.find((board) =>
+      const playerBoard = bracket.rounds[index].boards.find((board) =>
         board.playerIds.includes(player.id)
       );
       const playerColor =
@@ -274,7 +274,7 @@ export const getPlayerScores = (tournament, player) => {
       scores[index] = scoreData[playerColor][playerBoard.result];
     } catch (err) {
       try {
-        if (tournament.rounds[index].byes.includes(player.id)) {
+        if (bracket.rounds[index].byes.includes(player.id)) {
           scores[index] = "1/2";
         } else {
           scores[index] = "-";

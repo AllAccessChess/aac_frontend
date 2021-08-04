@@ -9,6 +9,7 @@ import {
   Grid as MuiGrid,
   Select as MuiSelect,
   Chip as MuiChip,
+  Tabs as MuiTabs,
 } from "@material-ui/core";
 import {
   Alert as MuiAlert,
@@ -29,5 +30,6 @@ export const Paper = styled(styled(MuiPaper)(spacing))`
   border-radius: 8px;
 `;
 export const Select = styled(MuiSelect)(spacing);
+export const Tabs = styled(MuiTabs)(spacing);
 export const TextField = styled(MuiTextField)(spacing);
 export const Typography = styled(MuiTypography)(spacing);

@@ -237,6 +237,7 @@ export const updateTournament = (payload, callback, fallback) => async (
 
 export const adjustGameResultInRound = (
   tournament,
+  bracketIndex,
   roundIndex,
   gamePayload,
   callback,
@@ -246,7 +247,7 @@ export const adjustGameResultInRound = (
   try {
     const { game } = await GameService.adjustGame(gamePayload);
     let currentTournament = JSON.parse(JSON.stringify(tournament));
-    let round = currentTournament.rounds[roundIndex];
+    let round = currentTournament.brackets[bracketIndex].rounds[roundIndex];
     let board = round.boards.find((item) => item.gameId === game.id);
     board.result = game.result;
     dispatch(updateListItem(currentTournament));

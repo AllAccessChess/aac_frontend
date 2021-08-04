@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import moment from "moment";
 
 import useInterval from "react-useinterval";
@@ -23,7 +23,7 @@ import { GreenButton } from "components/common";
 export const TournamentCard = (props) => {
   const {
     tournament,
-    currentRoundIndex,
+    currentRound,
     onViewDetails,
     onRegister,
     onUnRegister,
@@ -40,13 +40,6 @@ export const TournamentCard = (props) => {
   );
   const [remainTimeForRound, setRemainTimeForRound] = useState(-1);
 
-  const currentRound = useMemo(
-    () =>
-      tournament && currentRoundIndex >= 0
-        ? tournament.rounds[currentRoundIndex]
-        : null,
-    [tournament, currentRoundIndex]
-  );
   const tournamentTimerCondition =
     tournament.start && tournament.start > new Date().getTime();
   const roundTimerCondition =
@@ -123,7 +116,7 @@ export const TournamentCard = (props) => {
             <Box display="flex" alignItems="center" mr={4}>
               <CustomIcon icon={faGamepad} />
               <Typography variant="body1" color="textSecondary">
-                {tournament.rounds.length} Round{" "}
+                {tournament.settings.numRounds} Round{" "}
                 {capitalizeFirstLetter(tournament.settings.type)}
               </Typography>
             </Box>
