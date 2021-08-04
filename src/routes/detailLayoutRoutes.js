@@ -44,7 +44,7 @@ export const detailLayoutRoutes = [
   },
   {
     id: "pairing",
-    path: "/tournament/:tournamentId/round/:roundId/pairing",
+    path: "/tournament/:tournamentId/:bracketId/:roundId/pairing",
     name: "Pairing",
     component: Pairing,
     icon: TournamentIcon,

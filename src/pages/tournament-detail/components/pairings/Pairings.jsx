@@ -145,7 +145,7 @@ export const Pairings = (props) => {
                   <Button
                     color="secondary"
                     variant="contained"
-                    onClick={() => onManagePairings(index)}
+                    onClick={() => onManagePairings(currentBracketIndex, index)}
                   >
                     Manage Pairings
                   </Button>

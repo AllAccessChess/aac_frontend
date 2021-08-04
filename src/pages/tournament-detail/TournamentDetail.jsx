@@ -177,8 +177,8 @@ export const TournamentDetail = () => {
     dispatch(startRound(currentTournament.id));
   };
 
-  const handleManagePairings = (roundId) => {
-    history.push(`/tournament/${params.id}/round/${roundId}/pairing`);
+  const handleManagePairings = (bracketId, roundId) => {
+    history.push(`/tournament/${params.id}/${bracketId}/${roundId}/pairing`);
   };
 
   const handleUpdateTournament = (
