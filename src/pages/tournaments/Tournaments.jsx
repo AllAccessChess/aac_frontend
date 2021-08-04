@@ -48,8 +48,11 @@ export const Tournaments = () => {
           (tabValue === 1 &&
             user &&
             user.id &&
-            tournament.players.findIndex((player) => player.id === user.id) !==
-              -1) ||
+            tournament.brackets.some(
+              (bracket) =>
+                bracket.players.findIndex((player) => player.id === user.id) !==
+                -1
+            )) ||
           (tabValue === 2 && tournament.state === TournamentStatus.ONGOING) ||
           (tabValue === 3 && tournament.state === TournamentStatus.FINISHED);
 
@@ -124,7 +127,7 @@ export const Tournaments = () => {
   );
 
   useEffect(() => {
-    if (!tournamentList.length) dispatch(getTournamentList());
+    dispatch(getTournamentList());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -81,10 +81,10 @@ export const TournamentDetail = () => {
       user.id &&
       currentTournament &&
       currentTournament.state === TournamentStatus.SCHEDULED &&
-      !currentTournament.brackets[currentBracketIndex].players.find(
-        (item) => item.id === user.id
+      !currentTournament.brackets.some((bracket) =>
+        bracket.players.find((item) => item.id === user.id)
       ),
-    [user, currentTournament, currentBracketIndex]
+    [user, currentTournament]
   );
   const unRegisterCondition = useMemo(
     () =>
@@ -92,10 +92,10 @@ export const TournamentDetail = () => {
       user.id &&
       currentTournament &&
       currentTournament.state === TournamentStatus.SCHEDULED &&
-      currentTournament.brackets[currentBracketIndex].players.find(
-        (item) => item.id === user.id
+      currentTournament.brackets.some((bracket) =>
+        bracket.players.find((item) => item.id === user.id)
       ),
-    [user, currentTournament, currentBracketIndex]
+    [user, currentTournament]
   );
   const findMatchCondition = useMemo(
     () =>

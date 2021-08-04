@@ -38,6 +38,7 @@ export const Sections = (props) => {
     errors,
     handleBlur,
     handleChange,
+    setFieldValue,
     touched,
     values,
     active,
@@ -192,16 +193,18 @@ export const Sections = (props) => {
             </Typography>
             <HoriziontalRadioGroup
               name="settings.rated"
-              value={values.settings.rated}
-              onChange={handleChange}
+              value={values.settings.rated ? "true" : "false"}
+              onChange={(event) =>
+                setFieldValue("settings.rated", event.target.value === "true")
+              }
             >
               <FormControlLabel
-                value={true}
+                value="true"
                 control={<Radio color="primary" />}
                 label="Yes"
               />
               <FormControlLabel
-                value={false}
+                value="false"
                 control={<Radio color="primary" />}
                 label="No"
               />
@@ -315,7 +318,7 @@ export const Sections = (props) => {
                     </Grid>
                   ))}
                   <LightBlueTextColorButton
-                    onClick={() => arrayHelpers.push([0, 0])}
+                    onClick={() => arrayHelpers.push([0])}
                     color="primary"
                     startIcon={<AddIcon fontSize="small" />}
                   >
