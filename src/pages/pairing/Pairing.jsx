@@ -31,7 +31,7 @@ export const Pairing = () => {
   useEffect(() => {
     if (params.tournamentId && params.roundId) {
       dispatch(getTournament(params.tournamentId));
-      dispatch(getPairings(params.tournamentId, params.roundId));
+      dispatch(getPairings(params.tournamentId, 0, params.roundId));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -95,7 +95,7 @@ export const Pairing = () => {
       }
     }
     dispatch(
-      updatePairings(currentTournament.id, params.roundId, {
+      updatePairings(currentTournament.id, 0, params.roundId, {
         pairings,
         unpaired,
         byes,

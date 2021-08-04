@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -35,6 +35,8 @@ import { CustomPaper } from "./styles";
 export const Pairings = (props) => {
   const {
     tournament,
+    currentBracketIndex,
+    setCurrentBracketIndex,
     currentRoundIndex,
     onManagePairings,
     onDownloadPGN,
@@ -45,11 +47,15 @@ export const Pairings = (props) => {
     currentRoundIndex >= 0 ? currentRoundIndex : 0
   );
   const [page, setPage] = useState(0);
-  const [matchFilter, setMatchFilter] = useState(1200);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [editingGameId, setEditingGameId] = useState(null);
   const [editedResult, setEditedResult] = useState();
   const [updatingResult, setUpdatingResult] = useState(false);
+
+  const currentBracket = useMemo(
+    () => tournament.brackets[currentBracketIndex],
+    [tournament, currentBracketIndex]
+  );
 
   useEffect(() => {
     if (currentRoundIndex >= 0) setTabValue(currentRoundIndex);
@@ -60,7 +66,7 @@ export const Pairings = (props) => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
+    setRowsPerPage(event.target.value);
     setPage(0);
   };
 
@@ -69,7 +75,7 @@ export const Pairings = (props) => {
   };
 
   const handleSelectChange = (event) => {
-    setMatchFilter(event.target.value);
+    setCurrentBracketIndex(event.target.value);
   };
 
   const handleClickEditGame = (match) => {
@@ -83,12 +89,9 @@ export const Pairings = (props) => {
 
   const handleClickSaveGameResult = () => {
     setUpdatingResult(true);
-    let currentTournament = JSON.parse(JSON.stringify(tournament));
-    let round = currentTournament.rounds[tabValue];
-    let board = round.boards.find((item) => item.gameId === editingGameId);
-    board.result = editedResult;
     onUpdateMatchResult(
       tournament,
+      currentBracketIndex,
       tabValue,
       {
         game: editingGameId,
@@ -102,7 +105,7 @@ export const Pairings = (props) => {
     );
   };
 
-  if (!tournament.rounds.length) return <></>;
+  if (!currentBracket.rounds.length) return <></>;
   return (
     <CustomPaper round="true" mb={5}>
       <Box p={3}>
@@ -117,24 +120,26 @@ export const Pairings = (props) => {
             labelId="round-filter-label"
             label="Filter by"
             id="round-filter"
-            value={matchFilter}
+            value={currentBracketIndex}
             onChange={handleSelectChange}
           >
-            <MenuItem value={1200}>&#10094;1200</MenuItem>
-            <MenuItem value={2400}>&#10094;2400</MenuItem>
-            <MenuItem value={3600}>&#10094;3600</MenuItem>
+            {tournament.brackets.map((bracket, index) => (
+              <MenuItem value={index} key={index}>
+                {bracket.upper ? `< ${bracket.upper}` : `>= ${bracket.lower}`}
+              </MenuItem>
+            ))}
           </InlineFilledSelect>
         </Box>
         <Tabs value={tabValue} onChange={handleTabChange} aria-label="rounds">
-          {tournament.rounds.map((round, index) => (
+          {currentBracket.rounds.map((round, index) => (
             <Tab key={index} label={`Round ${index + 1}`} />
           ))}
-          <Tab key={tournament.rounds.length} label="Standings" />
+          <Tab key={currentBracket.rounds.length} label="Standings" />
         </Tabs>
-        {tournament.rounds.map((round, index) => (
+        {currentBracket.rounds.map((round, index) => (
           <TabPanel key={index} value={tabValue} index={index}>
             {isAdmin(user) &&
-              tournament.state === TournamentStatus.ONGOING &&
+              currentBracket.state === TournamentStatus.ONGOING &&
               round.state === RoundStatus.SETUP && (
                 <Box my={5} display="flex" justifyContent="flex-end">
                   <Button
@@ -186,10 +191,10 @@ export const Pairings = (props) => {
                   {round.boards
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((match, index) => {
-                      const whitePlayer = tournament.players.find(
+                      const whitePlayer = currentBracket.players.find(
                         (player) => player.id === match.playerIds[0]
                       );
-                      const blackPlayer = tournament.players.find(
+                      const blackPlayer = currentBracket.players.find(
                         (player) => player.id === match.playerIds[1]
                       );
                       const isOwner =
@@ -361,11 +366,11 @@ export const Pairings = (props) => {
           </TabPanel>
         ))}
         <TabPanel
-          key={tournament.rounds.length}
+          key={currentBracket.rounds.length}
           value={tabValue}
-          index={tournament.rounds.length}
+          index={currentBracket.rounds.length}
         >
-          <Standings tournament={tournament} />
+          <Standings tournament={tournament} currentBracket={currentBracket} />
         </TabPanel>
       </Box>
     </CustomPaper>

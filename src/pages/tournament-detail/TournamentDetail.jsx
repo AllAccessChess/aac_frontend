@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import useInterval from "react-useinterval";
@@ -30,37 +30,49 @@ export const TournamentDetail = () => {
   const byeSaving = useSelector((state) => state.tournamentReducer.byeSaving);
   const user = useSelector((state) => state.authReducer.user);
 
+  const [currentBracketIndex, setCurrentBracketIndex] = useState(0);
+
   const tournamentStarted = useMemo(
     () =>
       currentTournament &&
       currentTournament.start < new Date().getTime() &&
-      currentTournament.rounds.some(
+      currentTournament.brackets[currentBracketIndex].rounds.some(
         (round) => round.state < RoundStatus.FINISHED
       ),
-    [currentTournament]
+    [currentTournament, currentBracketIndex]
   );
   const currentRoundIndex = useMemo(
     () =>
       currentTournament
-        ? currentTournament.rounds.findIndex(
+        ? currentTournament.brackets[currentBracketIndex].rounds.findIndex(
             (round) => round.state < RoundStatus.FINISHED
           )
         : -1,
-    [currentTournament]
+    [currentTournament, currentBracketIndex]
   );
+  const currentRound = useMemo(
+    () =>
+      currentTournament && currentRoundIndex >= 0
+        ? currentTournament.brackets[currentBracketIndex].rounds[
+            currentRoundIndex
+          ]
+        : null,
+    [currentTournament, currentBracketIndex, currentRoundIndex]
+  );
+
   const pollingTournamentRoundCondition = useMemo(
-    () => currentTournament && tournamentStarted && currentRoundIndex >= 0,
-    [currentTournament, tournamentStarted, currentRoundIndex]
+    () => currentTournament && tournamentStarted && currentRound,
+    [currentTournament, tournamentStarted, currentRound]
   );
   const joinedRoundBoardIndex = useMemo(
     () =>
-      currentTournament && currentRoundIndex > -1
-        ? currentTournament.rounds[currentRoundIndex].boards.findIndex(
+      currentTournament && currentRound
+        ? currentRound.boards.findIndex(
             (board) =>
               board.playerIds.findIndex((id) => id === user && user.id) > -1
           )
         : -1,
-    [currentTournament, currentRoundIndex, user]
+    [currentTournament, currentRound, user]
   );
 
   const registerCondition = useMemo(
@@ -69,8 +81,10 @@ export const TournamentDetail = () => {
       user.id &&
       currentTournament &&
       currentTournament.state === TournamentStatus.SCHEDULED &&
-      !currentTournament.players.find((item) => item.id === user.id),
-    [user, currentTournament]
+      !currentTournament.brackets[currentBracketIndex].players.find(
+        (item) => item.id === user.id
+      ),
+    [user, currentTournament, currentBracketIndex]
   );
   const unRegisterCondition = useMemo(
     () =>
@@ -78,8 +92,10 @@ export const TournamentDetail = () => {
       user.id &&
       currentTournament &&
       currentTournament.state === TournamentStatus.SCHEDULED &&
-      currentTournament.players.find((item) => item.id === user.id),
-    [user, currentTournament]
+      currentTournament.brackets[currentBracketIndex].players.find(
+        (item) => item.id === user.id
+      ),
+    [user, currentTournament, currentBracketIndex]
   );
   const findMatchCondition = useMemo(
     () =>
@@ -95,28 +111,24 @@ export const TournamentDetail = () => {
       user.id &&
       currentTournament &&
       currentTournament.state === TournamentStatus.ONGOING &&
-      currentRoundIndex > -1 &&
-      currentTournament.rounds[currentRoundIndex].state ===
-        RoundStatus.PLAYING &&
-      currentTournament.rounds[currentRoundIndex].start <=
-        new Date().getTime() &&
+      currentRound &&
+      currentRound.state === RoundStatus.PLAYING &&
+      currentRound.start <= new Date().getTime() &&
       joinedRoundBoardIndex > -1 &&
-      currentTournament.rounds[currentRoundIndex].boards[joinedRoundBoardIndex]
-        .result === GameResults.ONGOING,
-    [user, currentTournament, currentRoundIndex, joinedRoundBoardIndex]
+      currentRound.boards[joinedRoundBoardIndex].result === GameResults.ONGOING,
+    [user, currentTournament, currentRound, joinedRoundBoardIndex]
   );
   const startRoundCondition = useMemo(
     () =>
       user &&
       user.id &&
       isAdmin(user) &&
-      currentRoundIndex > -1 &&
+      currentRound &&
       currentTournament &&
       currentTournament.state === TournamentStatus.ONGOING &&
-      currentTournament.rounds[currentRoundIndex].start <=
-        new Date().getTime() &&
-      currentTournament.rounds[currentRoundIndex].state === RoundStatus.SETUP,
-    [user, currentRoundIndex, currentTournament]
+      currentRound.start <= new Date().getTime() &&
+      currentRound.state === RoundStatus.SETUP,
+    [user, currentRound, currentTournament]
   );
   const byeCondition = useMemo(
     () =>
@@ -124,8 +136,10 @@ export const TournamentDetail = () => {
       user.id &&
       currentTournament &&
       currentTournament.state === TournamentStatus.SCHEDULED &&
-      currentTournament.players.find((item) => item.id === user.id),
-    [user, currentTournament]
+      currentTournament.brackets[currentBracketIndex].players.find(
+        (item) => item.id === user.id
+      ),
+    [user, currentTournament, currentBracketIndex]
   );
   const chatCondition = useMemo(() => user && user.id && currentTournament, [
     user,
@@ -169,6 +183,7 @@ export const TournamentDetail = () => {
 
   const handleUpdateTournament = (
     tournament,
+    bracketIndex,
     roundIndex,
     payload,
     callback
@@ -176,6 +191,7 @@ export const TournamentDetail = () => {
     dispatch(
       adjustGameResultInRound(
         tournament,
+        bracketIndex,
         roundIndex,
         payload,
         (updatedTournament) => {
@@ -207,7 +223,7 @@ export const TournamentDetail = () => {
       <Box width="100%" my={5}>
         <TournamentCard
           tournament={currentTournament}
-          currentRoundIndex={currentRoundIndex}
+          currentRound={currentRound}
           onRegister={registerCondition && handleRegister}
           onUnRegister={unRegisterCondition && handleUnRegister}
           onFindMatch={findMatchCondition && handleFindMatch}
@@ -217,6 +233,8 @@ export const TournamentDetail = () => {
       </Box>
       <Pairings
         tournament={currentTournament}
+        currentBracketIndex={currentBracketIndex}
+        setCurrentBracketIndex={setCurrentBracketIndex}
         currentRoundIndex={currentRoundIndex}
         onDownloadPGN={handleDownloadPGN}
         onManagePairings={handleManagePairings}
@@ -226,17 +244,13 @@ export const TournamentDetail = () => {
         <Byes
           tournament={currentTournament}
           byeSaving={byeSaving}
-          byes={currentTournament.rounds.map((round) =>
-            round.byes.includes(user.id)
-          )}
+          byes={currentTournament.brackets[
+            currentBracketIndex
+          ].rounds.map((round) => round.byes.includes(user.id))}
         />
       )}
       <Box width="100%" my={5}>
-        <Members
-          user={user}
-          members={currentTournament.players}
-          rounds={currentTournament.rounds}
-        />
+        <Members user={user} tournament={currentTournament} />
       </Box>
       {chatCondition && <Chat />}
     </Box>

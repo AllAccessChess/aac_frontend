@@ -15,7 +15,7 @@ import {
 import { getPlayerScores, stableSort, tableComparator } from "utils/common";
 
 export const Standings = (props) => {
-  const { tournament } = props;
+  const { tournament, currentBracket } = props;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState("desc");
@@ -39,9 +39,13 @@ export const Standings = (props) => {
 
   const players = useMemo(
     () =>
-      tournament.players.map((player) => ({
+      currentBracket.players.map((player) => ({
         ...player,
-        ...getPlayerScores(tournament, player).reduce(
+        ...getPlayerScores(
+          currentBracket,
+          tournament.settings.numRounds,
+          player
+        ).reduce(
           (scores, score, index) => ({
             ...scores,
             [`round${index + 1}`]: score,
@@ -49,7 +53,7 @@ export const Standings = (props) => {
           {}
         ),
       })),
-    [tournament]
+    [tournament, currentBracket]
   );
 
   const rounds = useMemo(
@@ -169,7 +173,7 @@ export const Standings = (props) => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 30]}
         component="div"
-        count={tournament.players.length}
+        count={currentBracket.players.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}

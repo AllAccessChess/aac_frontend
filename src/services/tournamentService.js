@@ -34,21 +34,21 @@ export default class TournamentService extends BaseAPIService {
       "POST"
     );
   };
-  static startRound = (tournamentID) => {
+  static startRound = (tournamentID, bracketID = -1) => {
     return this.requestWithAuth(
-      `/tournaments/startround/${tournamentID}`,
+      `/tournaments/startround/${tournamentID}/${bracketID}`,
       "POST"
     );
   };
-  static getPairings = (tournamentID, roundID) => {
+  static getPairings = (tournamentID, bracketID, roundID) => {
     return this.requestWithAuth(
-      `/tournaments/pairings/get/${tournamentID}/${roundID}`,
+      `/tournaments/pairings/get/${tournamentID}/${bracketID}/${roundID}`,
       "GET"
     );
   };
-  static updatePairings = (tournamentID, roundID, pairings) => {
+  static updatePairings = (tournamentID, bracketID, roundID, pairings) => {
     return this.requestWithAuth(
-      `/tournaments/pairings/update/${tournamentID}/${roundID}`,
+      `/tournaments/pairings/update/${tournamentID}/${bracketID}/${roundID}`,
       "POST",
       pairings
     );
