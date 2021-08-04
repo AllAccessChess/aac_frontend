@@ -50,7 +50,7 @@ export const TournamentSave = () => {
               rated: false,
               numRounds: 0,
               rounds: [],
-              brackets: [],
+              brackets: [[0]],
             },
             restrictions: {},
             start: 0,
@@ -159,21 +159,20 @@ export const TournamentSave = () => {
                       increment: Yup.number().min(0, "Shouldn't be negative"),
                     })
                   ),
-                brackets: Yup.array().of(
-                  Yup.array()
-                    .min(1)
-                    .max(2)
-                    .of(
-                      Yup.number()
-                        .required("Required")
-                        .min(0, "Shouldn't be negative")
-                    )
-                    .test(
-                      "bracket-validator",
-                      "Max Rating should be greater than Min Rating",
-                      (value) => value[1] >= value[0]
-                    )
-                ),
+                brackets: Yup.array()
+                  .of(
+                    Yup.array()
+                      .min(1)
+                      .max(2)
+                      .of(Yup.number().min(0, "Shouldn't be negative"))
+                      .test(
+                        "bracket-validator",
+                        "Max Rating should be greater than Min Rating",
+                        (value) =>
+                          (!value[1] && value[1] !== 0) || value[1] >= value[0]
+                      )
+                  )
+                  .min(1),
               }),
               restrictions: Yup.object(),
               hidden: Yup.boolean(),
