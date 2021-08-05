@@ -11,13 +11,13 @@ import quickIcon from "assets/icons/quick.png";
 import {
   faGamepad,
   faClock,
-  faDollarSign,
+  // faDollarSign,
   faCalendarAlt,
   faHouseUser,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { getRemainingTimeString, capitalizeFirstLetter } from "utils/common";
-import { RoundStatus } from "constant";
+import { RoundStatus, TimeCategories, TournamentStatus } from "constant";
 import { GreenButton } from "components/common";
 
 export const TournamentCard = (props) => {
@@ -80,9 +80,13 @@ export const TournamentCard = (props) => {
       >
         <img
           src={
-            tournament.settings.timeCategory === "blitz"
+            [TimeCategories.BLITZ, TimeCategories.BLITZOTB].includes(
+              tournament.settings.ratingCategory
+            )
               ? blitzIcon
-              : tournament.settings.timeCategory === "quick"
+              : [TimeCategories.BULLET].includes(
+                  tournament.settings.ratingCategory
+                )
               ? quickIcon
               : regularIcon
           }
@@ -123,16 +127,16 @@ export const TournamentCard = (props) => {
             <Box display="flex" alignItems="center" mr={4}>
               <CustomIcon icon={faClock} />
               <Typography variant="body1" color="textSecondary">
-                G{tournament.settings.startTime || 30} +{" "}
-                {tournament.settings.increment || 0}
+                G{tournament.settings.rounds[0].startTime || 30} +{" "}
+                {tournament.settings.rounds[0].increment || 0}
               </Typography>
             </Box>
-            <Box display="flex" alignItems="center">
+            {/* <Box display="flex" alignItems="center">
               <CustomIcon icon={faDollarSign} />
               <Typography variant="body1" color="textSecondary">
                 ${tournament.prize || 300}
               </Typography>
-            </Box>
+            </Box> */}
           </Box>
           <Box
             display="flex"
@@ -193,7 +197,7 @@ export const TournamentCard = (props) => {
               {tournament.published ? "UnPublish" : "Publish"}
             </Button>
           )}
-          {onViewDetails && tournament.start > new Date().getTime() && (
+          {onViewDetails && tournament.state < TournamentStatus.FINISHED && (
             <GreenButton
               variant="contained"
               color={"primary"}
@@ -204,7 +208,7 @@ export const TournamentCard = (props) => {
               Enter Lobby
             </GreenButton>
           )}
-          {onViewDetails && tournament.start <= new Date().getTime() && (
+          {onViewDetails && tournament.state === TournamentStatus.FINISHED && (
             <Button
               variant="contained"
               color={"secondary"}

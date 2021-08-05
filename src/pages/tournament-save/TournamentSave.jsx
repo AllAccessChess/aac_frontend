@@ -48,6 +48,7 @@ export const TournamentSave = () => {
               variant: 0,
               prepTime: 30000,
               rated: false,
+              merges: [],
               numRounds: 0,
               rounds: [],
               brackets: [[0]],
@@ -102,13 +103,14 @@ export const TournamentSave = () => {
       display="flex"
       flexDirection="column"
       alignItems="flex-start"
+      height="calc(100vh - 250px)"
     >
       <Helmet
         title={currentTournament ? "Update Tournament" : "Create Tournament"}
       />
       <Box
         width="100%"
-        height="calc(100% - 56px)"
+        height="calc(100% - 50px)"
         display="flex"
         flexDirection="column"
         borderRadius={10}
@@ -147,6 +149,7 @@ export const TournamentSave = () => {
                 prepTime: Yup.number(),
                 ratingProvider: Yup.string().required("Required"),
                 rated: Yup.boolean(),
+                merges: Yup.array().of(Yup.number()),
                 playup: Yup.number().min(0, "Shouln't be negative"),
                 rounds: Yup.array()
                   .ensure()

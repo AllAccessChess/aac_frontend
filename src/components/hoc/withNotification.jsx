@@ -27,6 +27,13 @@ const Notification = () => {
     [history]
   );
 
+  const navigateToTournament = useCallback(
+    (tournamentID) => {
+      history.push(`/tournament/${tournamentID}`);
+    },
+    [history]
+  );
+
   useInterval(() => {
     if (user) {
       dispatch(getMyNotifications());
@@ -53,7 +60,7 @@ const Notification = () => {
       borderRadius={5}
     >
       {notificationList.map((notification, index) => (
-        <Box key={index} mb={index ? 2 : 0}>
+        <Box key={index} mt={index ? 2 : 0}>
           {notification.game ? (
             <Typography color="primary">
               You are currently in the game called "{notification.game.title}"{" "}
@@ -65,6 +72,20 @@ const Notification = () => {
                 onClick={() => navigateToGame(notification.game.id)}
               >
                 Enter Game
+              </CustomButton>
+            </Typography>
+          ) : notification.tournament ? (
+            <Typography color="primary">
+              You are currently in the tournament called "
+              {notification.tournament.title}"{" "}
+              <CustomButton
+                ml={2}
+                size="small"
+                variant="outlined"
+                color="primary"
+                onClick={() => navigateToTournament(notification.tournament.id)}
+              >
+                Enter Tournament
               </CustomButton>
             </Typography>
           ) : (

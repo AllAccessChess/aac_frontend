@@ -135,10 +135,15 @@ export const unPublishTournament = (id) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
-export const startRound = (id) => async (dispatch) => {
+export const startRound = (tournamentID, bracketID = "all") => async (
+  dispatch
+) => {
   dispatch(setLoading(true));
   try {
-    const { tournament } = await TournamentService.startRound(id);
+    const { tournament } = await TournamentService.startRound(
+      tournamentID,
+      bracketID
+    );
     dispatch(setCurrent(tournament));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));

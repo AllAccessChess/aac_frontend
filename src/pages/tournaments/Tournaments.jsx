@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import _ from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useTheme } from "@material-ui/core";
@@ -38,7 +39,11 @@ export const Tournaments = () => {
 
   const filteredTournaments = useMemo(
     () =>
-      tournamentList.filter((tournament) => {
+      _.orderBy(
+        tournamentList,
+        ["start"],
+        [tabValue === 0 ? "asc" : "desc"]
+      ).filter((tournament) => {
         if (tournament.hidden) {
           return false;
         }

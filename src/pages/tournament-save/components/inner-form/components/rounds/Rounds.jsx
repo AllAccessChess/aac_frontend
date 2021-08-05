@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import moment from "moment";
 
 import {
   AccordionSummary,
@@ -13,7 +14,7 @@ import {
   SmallTextField,
   OutlinedDatePicker,
 } from "components/common";
-import { CustomAccordion, CustomAccordionDetails } from "./styles";
+import { CustomAccordion, CustomAccordionDetails, TimeField } from "./styles";
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
 import { FieldArray } from "formik";
 import { getRatingCategory } from "utils/common";
@@ -72,10 +73,11 @@ export const Rounds = (props) => {
                   <Grid item sm={1}>
                     <Typography color="textSecondary">No.</Typography>
                   </Grid>
-                  <Grid item sm={3}>
-                    <Typography color="textSecondary">
-                      Start Date Time
-                    </Typography>
+                  <Grid item sm={2}>
+                    <Typography color="textSecondary">Start Date</Typography>
+                  </Grid>
+                  <Grid item sm={2}>
+                    <Typography color="textSecondary">Start Time</Typography>
                   </Grid>
                   <Grid item sm={2}>
                     <Typography color="textSecondary">
@@ -96,12 +98,12 @@ export const Rounds = (props) => {
                     <Grid item sm={1}>
                       <Typography variant="subtitle1">{index + 1}</Typography>
                     </Grid>
-                    <Grid item sm={3}>
+                    <Grid item sm={2}>
                       <OutlinedDatePicker
                         variant="inline"
                         color="secondary"
                         placeholder="To be decided"
-                        format="MM/dd/yyyy hh:mm"
+                        format="MM/dd/yyyy"
                         value={round.start > 0 ? new Date(round.start) : null}
                         fullWidth
                         onChange={(date) =>
@@ -110,6 +112,36 @@ export const Rounds = (props) => {
                             new Date(date).getTime()
                           )
                         }
+                      />
+                    </Grid>
+                    <Grid item sm={2}>
+                      <TimeField
+                        type="time"
+                        variant="outlined"
+                        placeholder="Select Time"
+                        fullWidth
+                        value={
+                          round.start > 0
+                            ? moment(round.start).format("HH:mm")
+                            : ""
+                        }
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
+                        onChange={(event) => {
+                          let date = moment(
+                            round.start > 0 ? round.start : new Date()
+                          );
+                          let time = moment(event.target.value, "HH:mm");
+                          date.set({
+                            hour: time.get("hour"),
+                            minute: time.get("minute"),
+                          });
+                          setFieldValue(
+                            `settings.rounds[${index}].start`,
+                            date.valueOf()
+                          );
+                        }}
                       />
                     </Grid>
                     <Grid item sm={2}>
@@ -177,7 +209,7 @@ export const Rounds = (props) => {
                       />
                     </Grid>
 
-                    <Grid item sm={2}>
+                    <Grid item sm={1}>
                       <Box display="flex" alignItems="center">
                         <Typography>
                           {getRatingCategory(round.startTime, round.increment)}
