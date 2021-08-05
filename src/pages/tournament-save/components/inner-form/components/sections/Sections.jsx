@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { FieldArray } from "formik";
 
 import {
@@ -9,6 +9,7 @@ import {
   Grid,
   FormControlLabel,
   Radio,
+  Checkbox,
 } from "components/material-ui";
 
 import {
@@ -47,6 +48,17 @@ export const Sections = (props) => {
     onOpen,
     onVerify,
   } = props;
+
+  const handleMergeChange = useCallback(
+    (index) => {
+      let merges = [...values.settings.merges];
+      let checked = values.settings.merges.includes(index);
+      if (checked) merges = merges.filter((item) => item !== index);
+      else merges.push(index);
+      setFieldValue(`settings.merges`, merges);
+    },
+    [setFieldValue, values]
+  );
 
   useEffect(() => {
     onVerify(
@@ -227,6 +239,11 @@ export const Sections = (props) => {
                     <Grid item sm={2}>
                       <Typography color="textSecondary">Max Rating</Typography>
                     </Grid>
+                    <Grid item sm={1}>
+                      <Typography color="textSecondary" align="center">
+                        Merge
+                      </Typography>
+                    </Grid>
                   </Grid>
                   {values.settings.brackets.map((bracket, index) => (
                     <Grid key={index} container spacing={2} my={1}>
@@ -305,6 +322,18 @@ export const Sections = (props) => {
                           onBlur={handleBlur}
                           onChange={handleChange}
                         />
+                      </Grid>
+                      <Grid item sm={1}>
+                        <Box
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <Checkbox
+                            checked={values.settings.merges.includes(index)}
+                            onChange={() => handleMergeChange(index)}
+                          />
+                        </Box>
                       </Grid>
                       <Grid item sm={2}>
                         <Button

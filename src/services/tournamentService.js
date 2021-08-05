@@ -34,7 +34,7 @@ export default class TournamentService extends BaseAPIService {
       "POST"
     );
   };
-  static startRound = (tournamentID, bracketID = -1) => {
+  static startRound = (tournamentID, bracketID) => {
     return this.requestWithAuth(
       `/tournaments/startround/${tournamentID}/${bracketID}`,
       "POST"

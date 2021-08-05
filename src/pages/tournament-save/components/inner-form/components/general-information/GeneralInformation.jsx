@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 
+import moment from "moment";
 import {
   AccordionSummary,
   Box,
@@ -11,10 +12,9 @@ import {
   StepNumber,
   SmallTextField,
   SmallHelpIcon,
-  OutlinedKeyboardTimePicker,
   OutlinedKeyboardDatePicker,
 } from "components/common";
-import { CustomAccordion, CustomAccordionDetails } from "./styles";
+import { CustomAccordion, CustomAccordionDetails, TimeField } from "./styles";
 
 export const GeneralInformation = (props) => {
   const {
@@ -31,6 +31,19 @@ export const GeneralInformation = (props) => {
     onVerify,
   } = props;
   console.log(errors);
+
+  const handleChangeTime = useCallback(
+    (event) => {
+      let date = moment(values.start > 0 ? values.start : new Date());
+      let time = moment(event.target.value, "HH:mm");
+      date.set({
+        hour: time.get("hour"),
+        minute: time.get("minute"),
+      });
+      setFieldValue("start", date.valueOf());
+    },
+    [setFieldValue, values]
+  );
 
   useEffect(() => {
     onVerify(!errors.title && !errors.organiser && !errors.start);
@@ -133,14 +146,21 @@ export const GeneralInformation = (props) => {
                   </Typography>
                   <SmallHelpIcon />
                 </Box>
-                <OutlinedKeyboardTimePicker
-                  variant="inline"
+                <TimeField
+                  type="time"
+                  variant="outlined"
                   placeholder="Select Time"
                   fullWidth
-                  value={values.start > 0 ? new Date(values.start) : null}
-                  onChange={(date) =>
-                    setFieldValue("start", new Date(date).getTime())
+                  value={
+                    values.start > 0 ? moment(values.start).format("HH:mm") : ""
                   }
+                  inputProps={{
+                    step: 300, // 5 min
+                  }}
+                  error={Boolean(touched.start && errors.start)}
+                  helperText={touched.start && errors.start}
+                  onBlur={handleBlur}
+                  onChange={handleChangeTime}
                 />
               </Grid>
             </Grid>
