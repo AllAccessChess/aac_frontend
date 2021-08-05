@@ -8,3 +8,7 @@ export const Wrapper = styled(Box)`
   height: 100%;
   width: 100%;
 `;
+
+export const Container = styled(Box)`
+  overflow-y: auto;
+`;

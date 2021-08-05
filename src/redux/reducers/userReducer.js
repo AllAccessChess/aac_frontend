@@ -30,10 +30,10 @@ export const { setList } = slice.actions;
 
 export default slice.reducer;
 
-export const getUserList = () => async (dispatch) => {
+export const getUserList = (term = null) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const { users } = await UserService.getAllUsers();
+    const { users } = await UserService.searchUsers(term);
     dispatch(setList(users));
   } catch (err) {
     dispatch(setMessage({ message: err.message }));

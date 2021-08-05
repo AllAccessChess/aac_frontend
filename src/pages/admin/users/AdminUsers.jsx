@@ -8,6 +8,7 @@ import {
   Edit as EditIcon,
   OfflineBoltOutlined as BlitzIcon,
   Save as SaveIcon,
+  Search as SearchIcon,
   TimerOutlined as RapidIcon,
 } from "@material-ui/icons";
 
@@ -18,7 +19,7 @@ import {
   Chip,
   CircularProgress,
   IconButton,
-  // Tab,
+  InputAdornment,
   Table,
   TableBody,
   TableCell,
@@ -26,7 +27,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  // Tabs,
   TextField,
   Typography,
 } from "components/material-ui";
@@ -40,6 +40,7 @@ const NoIcon = () => <CloseIcon style={{ color: red[500] }} />;
 export const AdminUsers = () => {
   const dispatch = useDispatch();
   const mountedRef = useRef(null);
+  const searchTermRef = useRef("");
   const uscfIDRef = useRef(null);
   const user = useSelector((state) => state.userReducer);
   const [page, setPage] = useState(0);
@@ -49,6 +50,7 @@ export const AdminUsers = () => {
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [uscfData, setUscfData] = useState();
   const [uscfSubmitting, setUscfSubmitting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const theme = useTheme();
 
   const sortableCells = useMemo(
@@ -66,7 +68,6 @@ export const AdminUsers = () => {
   );
 
   useEffect(() => {
-    dispatch(getUserList());
     mountedRef.current = true;
 
     return () => {
@@ -116,6 +117,23 @@ export const AdminUsers = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPlayer]);
 
+  useEffect(() => {
+    searchTermRef.current = searchTerm;
+  }, [searchTerm]);
+
+  useEffect(() => {
+    let currentTerm = searchTerm;
+
+    setTimeout(() => {
+      if (currentTerm !== searchTermRef.current) {
+        return;
+      }
+
+      dispatch(getUserList(currentTerm));
+    }, 1000);
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -143,7 +161,6 @@ export const AdminUsers = () => {
   const handleClickSave = () => {
     const player = { ...currentPlayer };
 
-    console.log("**", uscfData);
     if (uscfData) {
       player.ratings.uscf = {
         ...uscfData,
@@ -199,6 +216,10 @@ export const AdminUsers = () => {
     }));
   };
 
+  const handleChangeSearchTerm = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <Box
       width="100%"
@@ -209,9 +230,29 @@ export const AdminUsers = () => {
       p={5}
       bgcolor={theme.palette.background.paper}
     >
-      <Typography variant="h3" mb={3}>
-        Players
-      </Typography>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        mb={3}
+      >
+        <Typography variant="h3">Players</Typography>
+        <TextField
+          value={searchTerm}
+          onChange={handleChangeSearchTerm}
+          label="Search Player"
+          color="secondary"
+          variant="filled"
+          placeholder="Enter player name..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
 
       {user.loading ? (
         <Box
