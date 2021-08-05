@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 
 import moment from "moment";
 import {
@@ -31,6 +31,19 @@ export const GeneralInformation = (props) => {
     onVerify,
   } = props;
   console.log(errors);
+
+  const handleChangeTime = useCallback(
+    (event) => {
+      let date = moment(values.start > 0 ? values.start : new Date());
+      let time = moment(event.target.value, "HH:mm");
+      date.set({
+        hour: time.get("hour"),
+        minute: time.get("minute"),
+      });
+      setFieldValue("start", date.valueOf());
+    },
+    [setFieldValue, values]
+  );
 
   useEffect(() => {
     onVerify(!errors.title && !errors.organiser && !errors.start);
@@ -147,17 +160,7 @@ export const GeneralInformation = (props) => {
                   error={Boolean(touched.start && errors.start)}
                   helperText={touched.start && errors.start}
                   onBlur={handleBlur}
-                  onChange={(event) => {
-                    let date = moment(
-                      values.start > 0 ? values.start : new Date()
-                    );
-                    let time = moment(event.target.value, "HH:mm");
-                    date.set({
-                      hour: time.get("hour"),
-                      minute: time.get("minute"),
-                    });
-                    setFieldValue("start", date.valueOf());
-                  }}
+                  onChange={handleChangeTime}
                 />
               </Grid>
             </Grid>

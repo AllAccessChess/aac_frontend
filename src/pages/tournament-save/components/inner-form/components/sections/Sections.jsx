@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { FieldArray } from "formik";
 
 import {
@@ -48,6 +48,17 @@ export const Sections = (props) => {
     onOpen,
     onVerify,
   } = props;
+
+  const handleMergeChange = useCallback(
+    (index) => {
+      let merges = [...values.settings.merges];
+      let checked = values.settings.merges.includes(index);
+      if (checked) merges = merges.filter((item) => item !== index);
+      else merges.push(index);
+      setFieldValue(`settings.merges`, merges);
+    },
+    [setFieldValue, values]
+  );
 
   useEffect(() => {
     onVerify(
@@ -320,18 +331,7 @@ export const Sections = (props) => {
                         >
                           <Checkbox
                             checked={values.settings.merges.includes(index)}
-                            onChange={() => {
-                              let merges = [...values.settings.merges];
-                              let checked = values.settings.merges.includes(
-                                index
-                              );
-                              if (checked)
-                                merges = merges.filter(
-                                  (item) => item !== index
-                                );
-                              else merges.push(index);
-                              setFieldValue(`settings.merges`, merges);
-                            }}
+                            onChange={() => handleMergeChange(index)}
                           />
                         </Box>
                       </Grid>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import moment from "moment";
 
 import {
@@ -32,6 +32,19 @@ export const Rounds = (props) => {
     onOpen,
     onVerify,
   } = props;
+
+  const handleChangeTime = useCallback(
+    (event, round, index) => {
+      let date = moment(round.start > 0 ? round.start : new Date());
+      let time = moment(event.target.value, "HH:mm");
+      date.set({
+        hour: time.get("hour"),
+        minute: time.get("minute"),
+      });
+      setFieldValue(`settings.rounds[${index}].start`, date.valueOf());
+    },
+    [setFieldValue]
+  );
 
   useEffect(() => {
     onVerify(!errors.settings || !errors.settings.rounds);
@@ -128,20 +141,9 @@ export const Rounds = (props) => {
                         inputProps={{
                           step: 300, // 5 min
                         }}
-                        onChange={(event) => {
-                          let date = moment(
-                            round.start > 0 ? round.start : new Date()
-                          );
-                          let time = moment(event.target.value, "HH:mm");
-                          date.set({
-                            hour: time.get("hour"),
-                            minute: time.get("minute"),
-                          });
-                          setFieldValue(
-                            `settings.rounds[${index}].start`,
-                            date.valueOf()
-                          );
-                        }}
+                        onChange={(event) =>
+                          handleChangeTime(event, round, index)
+                        }
                       />
                     </Grid>
                     <Grid item sm={2}>
