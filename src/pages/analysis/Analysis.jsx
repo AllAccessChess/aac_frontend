@@ -320,6 +320,7 @@ export const Analysis = () => {
           justifyContent="center"
           alignItems="center"
           position="relative"
+          overflow="hidden"
           ref={chessContainerRef}
         >
           <ChessBoard

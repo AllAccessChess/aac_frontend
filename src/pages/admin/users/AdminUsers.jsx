@@ -105,7 +105,7 @@ export const AdminUsers = () => {
       validateUSCFID(currentPlayer.ratings.uscf.id)
     ) {
       uscfIDRef.current = currentPlayer.ratings.uscf.id;
-      if (!uscfSubmitting) {
+      if (!uscfSubmitting && uscfIDRef.current !== uscfData?.id) {
         setUscfSubmitting(true);
         validateUSCF(currentPlayer.ratings.uscf.id);
       }
