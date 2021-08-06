@@ -59,6 +59,15 @@ export const TournamentDetail = () => {
         : null,
     [currentTournament, currentBracketIndex, currentRoundIndex]
   );
+  const joinedBracketIndex = useMemo(
+    () =>
+      user && user.id && currentTournament
+        ? currentTournament.brackets.findIndex((bracket) =>
+            bracket.players.find((player) => player.id === user.id)
+          )
+        : -1,
+    [currentTournament, user]
+  );
 
   const pollingTournamentRoundCondition = useMemo(
     () => currentTournament && tournamentStarted && currentRound,
@@ -66,10 +75,9 @@ export const TournamentDetail = () => {
   );
   const joinedRoundBoardIndex = useMemo(
     () =>
-      currentTournament && currentRound
+      currentTournament && currentRound && user && user.id
         ? currentRound.boards.findIndex(
-            (board) =>
-              board.playerIds.findIndex((id) => id === user && user.id) > -1
+            (board) => board.playerIds.findIndex((id) => id === user.id) > -1
           )
         : -1,
     [currentTournament, currentRound, user]
@@ -81,21 +89,18 @@ export const TournamentDetail = () => {
       user.id &&
       currentTournament &&
       currentTournament.state === TournamentStatus.SCHEDULED &&
-      !currentTournament.brackets.some((bracket) =>
-        bracket.players.find((item) => item.id === user.id)
-      ),
-    [user, currentTournament]
+      joinedBracketIndex === -1,
+    [user, currentTournament, joinedBracketIndex]
   );
+
   const unRegisterCondition = useMemo(
     () =>
       user &&
       user.id &&
       currentTournament &&
       currentTournament.state === TournamentStatus.SCHEDULED &&
-      currentTournament.brackets.some((bracket) =>
-        bracket.players.find((item) => item.id === user.id)
-      ),
-    [user, currentTournament]
+      joinedBracketIndex > -1,
+    [user, currentTournament, joinedBracketIndex]
   );
   const findMatchCondition = useMemo(
     () =>
@@ -130,16 +135,15 @@ export const TournamentDetail = () => {
       currentRound.state === RoundStatus.SETUP,
     [user, currentRound, currentTournament]
   );
+
   const byeCondition = useMemo(
     () =>
       user &&
       user.id &&
       currentTournament &&
       currentTournament.state === TournamentStatus.SCHEDULED &&
-      currentTournament.brackets[currentBracketIndex].players.find(
-        (item) => item.id === user.id
-      ),
-    [user, currentTournament, currentBracketIndex]
+      joinedBracketIndex > -1,
+    [user, currentTournament, joinedBracketIndex]
   );
   const chatCondition = useMemo(() => user && user.id && currentTournament, [
     user,
@@ -245,7 +249,7 @@ export const TournamentDetail = () => {
           tournament={currentTournament}
           byeSaving={byeSaving}
           byes={currentTournament.brackets[
-            currentBracketIndex
+            joinedBracketIndex
           ].rounds.map((round) => round.byes.includes(user.id))}
         />
       )}

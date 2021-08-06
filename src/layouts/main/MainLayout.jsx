@@ -19,6 +19,7 @@ const MainWithNotification = withNotification(Main);
 
 const Layout = (props) => {
   const { user } = useSelector(authSelector);
+  const { sidebarCollapsed } = useSelector((state) => state.themeReducer);
 
   return (
     <Wrapper>
@@ -26,10 +27,15 @@ const Layout = (props) => {
       <Box
         display="flex"
         mt="5rem"
+        width="100%"
         height="calc(100vh - 5rem)"
         position="relative"
       >
-        <SideBar user={user} routes={props.routes} />
+        <SideBar
+          user={user}
+          routes={props.routes}
+          sidebarCollapsed={sidebarCollapsed}
+        />
         <Container
           flexGrow={1}
           display="flex"

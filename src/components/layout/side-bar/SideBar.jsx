@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useHistory, useLocation } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useTheme } from "@material-ui/styles";
 import {
   ChevronLeft as ChevronLeftIcon,
@@ -20,12 +20,11 @@ import {
 } from "./styles";
 
 export const SideBar = (props) => {
-  const { user } = props;
+  const { user, sidebarCollapsed } = props;
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
   const theme = useTheme();
-  const { sidebarCollapsed } = useSelector((state) => state.themeReducer);
 
   const filteredRoutes = useMemo(
     () =>

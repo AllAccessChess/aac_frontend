@@ -302,6 +302,7 @@ export const Analysis = () => {
   return (
     <Box
       width="100%"
+      minWidth="900px"
       display="flex"
       flexDirection="column"
       borderRadius={10}

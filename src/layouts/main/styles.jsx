@@ -10,5 +10,5 @@ export const Wrapper = styled(Box)`
 `;
 
 export const Container = styled(Box)`
-  overflow-y: auto;
+  overflow: auto;
 `;

@@ -53,7 +53,6 @@ export const AdminGamesNew = () => {
       <Helmet title="Pairing Two Players" />
       <Box
         width="100%"
-        height="calc(100% - 56px)"
         display="flex"
         flexDirection="column"
         borderRadius={10}

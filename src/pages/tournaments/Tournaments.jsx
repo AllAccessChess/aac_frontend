@@ -79,7 +79,8 @@ export const Tournaments = () => {
         const inRatingFilter =
           !ratingFilter || !ratingFilter.length
             ? true
-            : ratingFilter.includes(tournament.settings.ratingProvider);
+            : ratingFilter.includes(tournament.settings.ratingProvider) ||
+              (!tournament.settings.rated && ratingFilter.includes("unrated"));
 
         const inDateFilter = !dateFilter ? true : tournament.start > dateFilter;
 

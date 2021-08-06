@@ -83,6 +83,7 @@ export const Account = () => {
       borderRadius={10}
       p={5}
       bgcolor={theme.palette.background.paper}
+      overflow="auto"
     >
       <Helmet title="Account" />
       <Typography variant="h3" mb={5}>

@@ -16,7 +16,7 @@ import {
   TimeControlOptions,
   TournamentTypeOptions,
   VariantOptions,
-  RatingOptions,
+  RatingProviders,
 } from "constant";
 
 export const FilterBar = (props) => {
@@ -32,6 +32,20 @@ export const FilterBar = (props) => {
     dateFilter,
     setDateFilter,
   } = props;
+  const ExtraRatingOptions = useMemo(
+    () => [
+      {
+        label: "USCF",
+        value: RatingProviders.USCF,
+      },
+      {
+        label: "FIDE",
+        value: RatingProviders.FIDE,
+      },
+      { label: "UnRated", value: "unrated" },
+    ],
+    []
+  );
 
   const showChips = useMemo(
     () =>
@@ -93,7 +107,7 @@ export const FilterBar = (props) => {
           mx={2}
         />
         <MultiSelect
-          options={RatingOptions}
+          options={ExtraRatingOptions}
           value={ratingFilter}
           variant="outlined"
           displayEmpty
@@ -120,7 +134,7 @@ export const FilterBar = (props) => {
             setFilter={setVariantFilter}
           />
           <ChipArray
-            options={RatingOptions}
+            options={ExtraRatingOptions}
             filter={ratingFilter}
             setFilter={setRatingFilter}
           />
