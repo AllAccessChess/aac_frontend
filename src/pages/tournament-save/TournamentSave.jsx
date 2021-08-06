@@ -103,7 +103,6 @@ export const TournamentSave = () => {
       display="flex"
       flexDirection="column"
       alignItems="flex-start"
-      height="calc(100vh - 250px)"
     >
       <Helmet
         title={currentTournament ? "Update Tournament" : "Create Tournament"}

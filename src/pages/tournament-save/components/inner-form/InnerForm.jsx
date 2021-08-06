@@ -24,7 +24,7 @@ export const InnerForm = (props) => {
   return (
     <FitedForm noValidate onSubmit={handleSubmit}>
       <Box position="relative" width="100%" height="100%" py={2}>
-        <Box width="100%" height="100%" overflow="auto">
+        <Box width="100%" height="100%">
           <Box width="calc(100% - 240px)" p={5}>
             {errors.submit && (
               <Alert mt={2} mb={1} severity="warning">
@@ -76,7 +76,7 @@ export const InnerForm = (props) => {
           isSubmitting={isSubmitting}
           width="220px"
           right="20px"
-          top="20px"
+          top="28px"
         />
       </Box>
     </FitedForm>
