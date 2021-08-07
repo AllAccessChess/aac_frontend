@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-import ZoomClient, { loadStyleSheet } from "../client";
+import ZoomClient from "../client";
 
 const ZoomContext = createContext(null);
 
@@ -10,9 +10,6 @@ export const ZoomProvider = (props) => {
   const [zoomClient, setZoomClient] = useState(null);
 
   useEffect(() => {
-    // Load Stylesheets
-    loadStyleSheet("/zoom.css");
-
     if (!props.apiKey) {
       console.error("API Key is required for Zoom Provider");
       return;

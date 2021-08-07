@@ -11,4 +11,5 @@ export const config = {
     apiKey: process.env.REACT_APP_ZOOM_API_KEY,
     apiSecret: process.env.REACT_APP_ZOOM_API_SECRET,
   },
+  meeting: "jitsi",
 };

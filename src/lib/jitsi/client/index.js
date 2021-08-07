@@ -2,6 +2,7 @@
 
 import { snakeCaseString } from "utils/common";
 import DOMManager from "./domManager";
+import { loadScript } from "./helpers";
 
 export const LogLevel = Object.freeze({
   NONE: 4,
@@ -56,23 +57,29 @@ export default class JitsiClient extends EventTarget {
    * Initialize the SDK
    */
   initialize = () => {
-    if (!JitsiMeetJS && !window.JitsiMeetJS) {
-      this.handleError("JitsiMeetJS is not installed.");
-      throw new Error("JitsiMeetJS is not installed.");
-    }
+    const _this = this;
 
-    if (!JitsiMeetJS) {
-      JitsiMeetJS = window.JitsiMeetJS;
-    }
+    loadScript("https://code.jquery.com/jquery-3.5.1.min.js", () => {
+      loadScript("https://meet.jit.si/libs/lib-jitsi-meet.min.js", () => {
+        if (!JitsiMeetJS && !window.JitsiMeetJS) {
+          _this.handleError("JitsiMeetJS is not installed.");
+          throw new Error("JitsiMeetJS is not installed.");
+        }
 
-    this.handleLog(LogLevel.INFO, "Initializing.");
-    JitsiMeetJS.init({
-      disableAudioLevels: true,
-      enableAnalyticsLogging: true,
+        if (!JitsiMeetJS) {
+          JitsiMeetJS = window.JitsiMeetJS;
+        }
+
+        _this.handleLog(LogLevel.INFO, "Initializing.");
+        JitsiMeetJS.init({
+          disableAudioLevels: true,
+          enableAnalyticsLogging: true,
+        });
+
+        _this.handleLog(LogLevel.DEBUG, "Setting Log Level.");
+        JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.WARN);
+      });
     });
-
-    this.handleLog(LogLevel.DEBUG, "Setting Log Level.");
-    JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.WARN);
   };
 
   //=====================================================================

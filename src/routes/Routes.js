@@ -2,7 +2,11 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { withAuthGuard } from "components/hoc";
+import { config } from "config";
 import { AuthLayout, DetailLayout, GameLayout, MainLayout } from "layouts";
+import { JitsiProvider } from "lib/jitsi";
+import { StockFishProvider } from "lib/stock-fish";
+import { ZoomProvider } from "lib/zoom";
 import { Page404 } from "pages/error";
 import { authLayoutRoutes } from "./authLayoutRoutes";
 import { detailLayoutRoutes } from "./detailLayoutRoutes";
@@ -29,6 +33,21 @@ const renderChildRoutes = (Layout, routes) =>
         adminAccess
       );
 
+      const Provider = (props) =>
+        path.indexOf("/analysis") > -1 ? (
+          <StockFishProvider>{props.children}</StockFishProvider>
+        ) : path.indexOf("/match") > -1 ? (
+          config.meeting === "jitsi" ? (
+            <JitsiProvider>{props.children}</JitsiProvider>
+          ) : (
+            <ZoomProvider apiKey={config.zoom.apiKey}>
+              {props.children}
+            </ZoomProvider>
+          )
+        ) : (
+          <React.Fragment>{props.children}</React.Fragment>
+        );
+
       return children ? (
         renderChildRoutes(Layout, children)
       ) : Component ? (
@@ -37,9 +56,11 @@ const renderChildRoutes = (Layout, routes) =>
           path={path}
           exact
           render={(props) => (
-            <ComponentLayout>
-              <Component {...props} />
-            </ComponentLayout>
+            <Provider>
+              <ComponentLayout>
+                <Component {...props} />
+              </ComponentLayout>
+            </Provider>
           )}
         />
       ) : null;

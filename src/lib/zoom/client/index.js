@@ -55,6 +55,9 @@ export default class ZoomClient extends EventTarget {
    * Initialize the SDK
    */
   initialize = () => {
+    // Load Stylesheets
+    loadStyleSheet("/zoom.css");
+
     // Use javascript library from cloud
     ZoomMtg.setZoomJSLib("https://source.zoom.us/1.9.6/lib", "/av");
 

@@ -9,10 +9,6 @@ import {
   ThemeProvider as MuiThemeProvider,
 } from "@material-ui/core";
 
-import { config } from "config";
-import { JitsiProvider } from "lib/jitsi";
-import { StockFishProvider } from "lib/stock-fish";
-import { ZoomProvider } from "lib/zoom";
 import { themeSelector } from "redux/reducers";
 import { AppGlobalStyle } from "./AppGlobalStyle";
 import createTheme from "./theme";
@@ -27,11 +23,7 @@ export const AppProviders = (props) => {
           <CssBaseline />
           <ThemeProvider theme={createTheme(theme.currentTheme)}>
             <AppGlobalStyle />
-            <JitsiProvider>
-              <ZoomProvider apiKey={config.zoom.apiKey}>
-                <StockFishProvider>{props.children}</StockFishProvider>
-              </ZoomProvider>
-            </JitsiProvider>
+            {props.children}
           </ThemeProvider>
         </MuiThemeProvider>
       </MuiPickersUtilsProvider>
