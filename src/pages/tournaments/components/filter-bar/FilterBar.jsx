@@ -29,8 +29,12 @@ export const FilterBar = (props) => {
     setVariantFilter,
     ratingFilter,
     setRatingFilter,
-    dateFilter,
-    setDateFilter,
+    dateFromFilter,
+    setDateFromFilter,
+    dateToFilter,
+    setDateToFilter,
+    ratedFilter,
+    setRatedFilter,
   } = props;
   const ExtraRatingOptions = useMemo(
     () => [
@@ -42,7 +46,19 @@ export const FilterBar = (props) => {
         label: "FIDE",
         value: RatingProviders.FIDE,
       },
-      { label: "UnRated", value: "unrated" },
+    ],
+    []
+  );
+  const RatedOptions = useMemo(
+    () => [
+      {
+        label: "Rated",
+        value: "rated",
+      },
+      {
+        label: "Unrated",
+        value: "unrated",
+      },
     ],
     []
   );
@@ -53,8 +69,16 @@ export const FilterBar = (props) => {
       timeControlFilter.length ||
       variantFilter.length ||
       ratingFilter.length ||
-      dateFilter,
-    [typeFilter, timeControlFilter, variantFilter, ratingFilter, dateFilter]
+      dateFromFilter ||
+      dateToFilter,
+    [
+      typeFilter,
+      timeControlFilter,
+      variantFilter,
+      ratingFilter,
+      dateFromFilter,
+      dateToFilter,
+    ]
   );
 
   const handleClearAll = () => {
@@ -62,7 +86,8 @@ export const FilterBar = (props) => {
     setTimeControlFilter([]);
     setVariantFilter([]);
     setRatingFilter([]);
-    setDateFilter(null);
+    setDateFromFilter(null);
+    setDateToFilter(null);
   };
 
   return (
@@ -90,11 +115,21 @@ export const FilterBar = (props) => {
         <CustomDatePicker
           variant="inline"
           color="secondary"
-          placeholder="Start date"
+          placeholder="Date from"
           format="MM/dd/yyyy"
           value={null}
           onChange={(date) =>
-            setDateFilter(new Date(date.toDateString()).getTime())
+            setDateFromFilter(new Date(date.toDateString()).getTime())
+          }
+        />
+        <CustomDatePicker
+          variant="inline"
+          color="secondary"
+          placeholder="Date to"
+          format="MM/dd/yyyy"
+          value={null}
+          onChange={(date) =>
+            setDateToFilter(new Date(date.toDateString()).getTime())
           }
         />
         <MultiSelect
@@ -104,7 +139,7 @@ export const FilterBar = (props) => {
           displayEmpty
           onChange={(event) => setVariantFilter(event.target.value)}
           placeholder="Variant"
-          mx={2}
+          mr={2}
         />
         <MultiSelect
           options={ExtraRatingOptions}
@@ -113,6 +148,15 @@ export const FilterBar = (props) => {
           displayEmpty
           onChange={(event) => setRatingFilter(event.target.value)}
           placeholder="Rated by"
+          mr={2}
+        />
+        <MultiSelect
+          options={RatedOptions}
+          value={ratedFilter}
+          variant="outlined"
+          displayEmpty
+          onChange={(event) => setRatedFilter(event.target.value)}
+          placeholder="Is rated"
           mr={2}
         />
       </Box>
@@ -138,12 +182,27 @@ export const FilterBar = (props) => {
             filter={ratingFilter}
             setFilter={setRatingFilter}
           />
-          {dateFilter ? (
+          <ChipArray
+            options={RatedOptions}
+            filter={ratedFilter}
+            setFilter={setRatedFilter}
+          />
+          {dateFromFilter ? (
             <CustomChip
-              label={moment(dateFilter).format("> MM/DD/yyy")}
+              label={moment(dateFromFilter).format("> MM/DD/yyy")}
               color="primary"
               mr={2}
-              onDelete={() => setDateFilter(null)}
+              onDelete={() => setDateFromFilter(null)}
+            />
+          ) : (
+            <></>
+          )}
+          {dateToFilter ? (
+            <CustomChip
+              label={moment(dateToFilter).format("< MM/DD/yyy")}
+              color="primary"
+              mr={2}
+              onDelete={() => setDateToFilter(null)}
             />
           ) : (
             <></>

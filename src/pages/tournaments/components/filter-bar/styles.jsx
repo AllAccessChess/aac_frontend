@@ -21,6 +21,7 @@ export const CustomChip = styled(Chip)`
 
 export const CustomDatePicker = styled(OutlinedDatePicker)`
   width: 130px;
+  margin-right: 8px;
   .MuiInputBase-root::before {
     position: absolute;
     top: 45%;
