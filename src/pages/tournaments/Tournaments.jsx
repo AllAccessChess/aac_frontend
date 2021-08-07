@@ -27,7 +27,9 @@ export const Tournaments = () => {
   const [timeControlFilter, setTimeControlFilter] = useState([]);
   const [variantFilter, setVariantFilter] = useState([]);
   const [ratingFilter, setRatingFilter] = useState([]);
-  const [dateFilter, setDateFilter] = useState();
+  const [ratedFilter, setRatedFilter] = useState([]);
+  const [dateFromFilter, setDateFromFilter] = useState();
+  const [dateToFilter, setDateToFilter] = useState();
 
   const user = useSelector((state) => state.authReducer.user);
   const tournamentList = useSelector((state) => state.tournamentReducer.list);
@@ -79,10 +81,22 @@ export const Tournaments = () => {
         const inRatingFilter =
           !ratingFilter || !ratingFilter.length
             ? true
-            : ratingFilter.includes(tournament.settings.ratingProvider) ||
-              (!tournament.settings.rated && ratingFilter.includes("unrated"));
+            : ratingFilter.includes(tournament.settings.ratingProvider);
 
-        const inDateFilter = !dateFilter ? true : tournament.start > dateFilter;
+        const inRatedFilter =
+          !ratedFilter || !ratedFilter.length
+            ? true
+            : ratedFilter.includes(
+                tournament.settings.rated ? "rated" : "unrated"
+              );
+
+        const inDateFromFilter = !dateFromFilter
+          ? true
+          : tournament.start >= dateFromFilter;
+
+        const inDateToFilter = !dateToFilter
+          ? true
+          : tournament.start <= dateToFilter;
 
         return (
           inTabFilter &&
@@ -90,7 +104,9 @@ export const Tournaments = () => {
           inTimeControlFilter &&
           inVariantFilter &&
           inRatingFilter &&
-          inDateFilter
+          inDateFromFilter &&
+          inDateToFilter &&
+          inRatedFilter
         );
       }),
     [
@@ -101,7 +117,9 @@ export const Tournaments = () => {
       timeControlFilter,
       variantFilter,
       ratingFilter,
-      dateFilter,
+      ratedFilter,
+      dateFromFilter,
+      dateToFilter,
     ]
   );
 
@@ -182,12 +200,16 @@ export const Tournaments = () => {
           timeControlFilter={timeControlFilter}
           variantFilter={variantFilter}
           ratingFilter={ratingFilter}
-          dateFilter={dateFilter}
+          ratedFilter={ratedFilter}
+          dateFromFilter={dateFromFilter}
+          dateToFilter={dateToFilter}
           setTypeFilter={setTypeFilter}
           setTimeControlFilter={setTimeControlFilter}
           setVariantFilter={setVariantFilter}
           setRatingFilter={setRatingFilter}
-          setDateFilter={setDateFilter}
+          setDateFromFilter={setDateFromFilter}
+          setDateToFilter={setDateToFilter}
+          setRatedFilter={setRatedFilter}
         />
         {filteredTournaments.map((tournament) => (
           <Box
