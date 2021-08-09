@@ -49,7 +49,7 @@ export const MoveList = (props) => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell align="center">S.No.</TableCell>
+              <TableCell align="center">Seed</TableCell>
               <TableCell align="center">White</TableCell>
               <TableCell align="center">Black</TableCell>
             </TableRow>

@@ -28,7 +28,7 @@ export const TournamentCard = (props) => {
     onRegister,
     onUnRegister,
     // onFindMatch,
-    onJoinLobby,
+    onJoinMatch,
     onStartRound,
     onEdit,
     onTogglePublish,
@@ -263,15 +263,15 @@ export const TournamentCard = (props) => {
             </Button>
           )}
 
-          {onJoinLobby && (
+          {onJoinMatch && (
             <Button
               variant="contained"
               color="primary"
               mb={2}
               fullWidth
-              onClick={() => onJoinLobby()}
+              onClick={() => onJoinMatch()}
             >
-              Join Lobby
+              Join Match
             </Button>
           )}
           {tournament.start &&

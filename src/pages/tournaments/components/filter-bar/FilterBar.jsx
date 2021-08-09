@@ -31,8 +31,8 @@ export const FilterBar = (props) => {
     setRatingFilter,
     dateFromFilter,
     setDateFromFilter,
-    dateToFilter,
-    setDateToFilter,
+    // dateToFilter,
+    // setDateToFilter,
     ratedFilter,
     setRatedFilter,
   } = props;
@@ -69,15 +69,14 @@ export const FilterBar = (props) => {
       timeControlFilter.length ||
       variantFilter.length ||
       ratingFilter.length ||
-      dateFromFilter ||
-      dateToFilter,
+      dateFromFilter,
+    // dateToFilter,
     [
       typeFilter,
       timeControlFilter,
       variantFilter,
       ratingFilter,
-      dateFromFilter,
-      dateToFilter,
+      dateFromFilter, // dateToFilter,
     ]
   );
 
@@ -87,7 +86,7 @@ export const FilterBar = (props) => {
     setVariantFilter([]);
     setRatingFilter([]);
     setDateFromFilter(null);
-    setDateToFilter(null);
+    // setDateToFilter(null);
   };
 
   return (
@@ -122,7 +121,7 @@ export const FilterBar = (props) => {
             setDateFromFilter(new Date(date.toDateString()).getTime())
           }
         />
-        <CustomDatePicker
+        {/* <CustomDatePicker
           variant="inline"
           color="secondary"
           placeholder="Date to"
@@ -131,7 +130,7 @@ export const FilterBar = (props) => {
           onChange={(date) =>
             setDateToFilter(new Date(date.toDateString()).getTime())
           }
-        />
+        /> */}
         <MultiSelect
           options={VariantOptions}
           value={variantFilter}
@@ -197,7 +196,7 @@ export const FilterBar = (props) => {
           ) : (
             <></>
           )}
-          {dateToFilter ? (
+          {/* {dateToFilter ? (
             <CustomChip
               label={moment(dateToFilter).format("< MM/DD/yyy")}
               color="primary"
@@ -206,7 +205,7 @@ export const FilterBar = (props) => {
             />
           ) : (
             <></>
-          )}
+          )} */}
 
           <ClearButton
             variant="contained"

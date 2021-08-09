@@ -61,13 +61,15 @@ export const ChessBoard = (props) => {
     const dests = new Map();
     if (isPlaying) {
       let legals = {};
-      for (let move of legalMoves) {
-        const from = move.slice(0, 2);
-        const to = move.slice(2, 4);
-        if (!legals[from]) legals[from] = [];
-        legals[from].push(to);
+      if (legalMoves && legalMoves.length) {
+        for (let move of legalMoves) {
+          const from = move.slice(0, 2);
+          const to = move.slice(2, 4);
+          if (!legals[from]) legals[from] = [];
+          legals[from].push(to);
+        }
       }
-      if (chess.turn() === playerColorName && legalMoves.length) {
+      if (chess.turn() === playerColorName && legalMoves && legalMoves.length) {
         for (let from of Object.keys(legals)) {
           dests.set(from, legals[from]);
         }

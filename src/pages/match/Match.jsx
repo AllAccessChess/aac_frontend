@@ -696,7 +696,13 @@ export const Match = () => {
 
   return (
     <Grid container spacing={5} p={5} className={classes.wrapper}>
-      <Grid item md={3} sm={2}>
+      <Box
+        component={Grid}
+        item
+        sm={3}
+        md={3}
+        display={{ xs: "none", sm: "block" }}
+      >
         <Box display="flex" flexDirection="column" height="calc(100vh - 40px)">
           <Paper p={5}>
             <Info match={currentMatch} playerColor={playerColor} />
@@ -723,12 +729,13 @@ export const Match = () => {
             />
           </Box>
         </Box>
-      </Grid>
-      <Grid item md={6} sm={8}>
+      </Box>
+      <Box component={Grid} item xs={12} sm={9} md={6}>
         <Box
           display="flex"
           flexDirection="column"
           height="100%"
+          minWidth="400px"
           p={5}
           bgcolor={theme.palette.background.paper}
           borderRadius={8}
@@ -791,8 +798,13 @@ export const Match = () => {
             clock={playerColor ? blackClock : whiteClock}
           />
         </Box>
-      </Grid>
-      <Grid item md={3} sm={2}>
+      </Box>
+      <Box
+        component={Grid}
+        item
+        md={3}
+        display={{ xs: "none", sm: "none", md: "block" }}
+      >
         <Box
           display="flex"
           flexDirection="column"
@@ -810,9 +822,13 @@ export const Match = () => {
                 <Typography variant="h4" component="p">
                   Go to lobby
                 </Typography>
-                <Typography variant="h6" component="p">
-                  Next round starts in 5:00 mins
-                </Typography>
+                {currentMatch.tournament ? (
+                  <Typography variant="h6" component="p">
+                    Next round starts in 5:00 mins
+                  </Typography>
+                ) : (
+                  <></>
+                )}
               </Box>
             </Button>
           ) : (
@@ -825,7 +841,7 @@ export const Match = () => {
             onToggleUsingVideo={handleToggleUsingVideo}
           />
         </Box>
-      </Grid>
+      </Box>
     </Grid>
   );
 };

@@ -55,7 +55,7 @@ export const EndActions = (props) => {
           {playerColor === 0 ? "Black" : "White"} has offered a draw
         </Typography>
         <Grid container spacing={2}>
-          <Grid item md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <Button
               variant="contained"
               color="secondary"
@@ -66,7 +66,7 @@ export const EndActions = (props) => {
               Accept Draw
             </Button>
           </Grid>
-          <Grid item md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <Button
               variant="contained"
               color="primary"
@@ -89,7 +89,7 @@ export const EndActions = (props) => {
           Are you sure you want to resign?
         </Typography>
         <Grid container spacing={2}>
-          <Grid item md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <Button
               variant="contained"
               color="secondary"
@@ -101,7 +101,7 @@ export const EndActions = (props) => {
               Resign
             </Button>
           </Grid>
-          <Grid item md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <Button
               variant="contained"
               color="primary"
@@ -124,7 +124,7 @@ export const EndActions = (props) => {
           Are you sure you want to offer draw?
         </Typography>
         <Grid container spacing={2}>
-          <Grid item md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <Button
               variant="contained"
               color="secondary"
@@ -135,7 +135,7 @@ export const EndActions = (props) => {
               Offer Draw
             </Button>
           </Grid>
-          <Grid item md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <Button
               variant="contained"
               color="primary"
@@ -154,7 +154,7 @@ export const EndActions = (props) => {
   return (
     <Box px={2}>
       <Grid container spacing={2}>
-        <Grid item md={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Button
             variant="contained"
             color="primary"
@@ -165,7 +165,7 @@ export const EndActions = (props) => {
             Offer Draw
           </Button>
         </Grid>
-        <Grid item md={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Button
             variant="contained"
             color="primary"

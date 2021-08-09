@@ -110,7 +110,7 @@ export const TournamentDetail = () => {
       currentTournament.state === TournamentStatus.ONGOING,
     [user, currentTournament]
   );
-  const joinLobbyCondition = useMemo(
+  const joinMatchCondition = useMemo(
     () =>
       user &&
       user.id &&
@@ -173,7 +173,7 @@ export const TournamentDetail = () => {
     history.push("/match");
   };
 
-  const handleJoinLobby = () => {
+  const handleJoinMatch = () => {
     history.push(`/match/${currentTournament.id}`);
   };
 
@@ -231,7 +231,7 @@ export const TournamentDetail = () => {
           onRegister={registerCondition && handleRegister}
           onUnRegister={unRegisterCondition && handleUnRegister}
           onFindMatch={findMatchCondition && handleFindMatch}
-          onJoinLobby={joinLobbyCondition && handleJoinLobby}
+          onJoinMatch={joinMatchCondition && handleJoinMatch}
           onStartRound={startRoundCondition && handleStartRound}
         />
       </Box>

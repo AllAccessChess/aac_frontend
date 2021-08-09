@@ -37,7 +37,9 @@ const MainBody = (props) => {
   );
 };
 
-const MainBodyWithNotification = withNotification(MainBody);
+const MainBodyWithNotification = withNotification(MainBody, {
+  hideTournamentLevel: true,
+});
 
 const Layout = (props) => {
   const user = useSelector((state) => state.authReducer.user);
