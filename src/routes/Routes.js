@@ -36,7 +36,7 @@ const renderChildRoutes = (Layout, routes) =>
       const Provider = (props) =>
         path.indexOf("/analysis") > -1 ? (
           <StockFishProvider>{props.children}</StockFishProvider>
-        ) : path.indexOf("/match") > -1 ? (
+        ) : path.match(/\/(match|spectate)/) ? (
           config.meeting === "jitsi" ? (
             <JitsiProvider>{props.children}</JitsiProvider>
           ) : (
