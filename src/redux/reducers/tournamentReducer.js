@@ -151,7 +151,9 @@ export const startRound = (tournamentID, bracketID = "all") => async (
   dispatch(setLoading(false));
 };
 
-export const getPairings = (tournamentId, roundId) => async (dispatch) => {
+export const getPairings = (tournamentId, bracketId, roundId) => async (
+  dispatch
+) => {
   dispatch(setLoading(true));
   try {
     const {
@@ -159,7 +161,7 @@ export const getPairings = (tournamentId, roundId) => async (dispatch) => {
       players,
       unpaired,
       byes,
-    } = await TournamentService.getPairings(tournamentId, roundId);
+    } = await TournamentService.getPairings(tournamentId, bracketId, roundId);
 
     dispatch(
       setPairings(validatePairing({ pairings, players, unpaired, byes }))
@@ -170,9 +172,12 @@ export const getPairings = (tournamentId, roundId) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
-export const updatePairings = (tournamentId, roundId, newPairings) => async (
-  dispatch
-) => {
+export const updatePairings = (
+  tournamentId,
+  bracketId,
+  roundId,
+  newPairings
+) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const {
@@ -182,6 +187,7 @@ export const updatePairings = (tournamentId, roundId, newPairings) => async (
       byes,
     } = await TournamentService.updatePairings(
       tournamentId,
+      bracketId,
       roundId,
       newPairings
     );

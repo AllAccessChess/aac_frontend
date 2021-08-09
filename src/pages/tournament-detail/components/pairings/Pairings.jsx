@@ -139,7 +139,7 @@ export const Pairings = (props) => {
         {currentBracket.rounds.map((round, index) => (
           <TabPanel key={index} value={tabValue} index={index}>
             {isAdmin(user) &&
-              currentBracket.state === TournamentStatus.ONGOING &&
+              tournament.state === TournamentStatus.ONGOING &&
               round.state === RoundStatus.SETUP && (
                 <Box my={5} display="flex" justifyContent="flex-end">
                   <Button
