@@ -375,6 +375,7 @@ export const AdminUsers = () => {
                                   currentPlayer.ratings.uscf.id) ||
                                 ""
                               }
+                              disabled={uscfSubmitting}
                               onChange={handleUSCFIDChange}
                             />
                             {uscfSubmitting && (
