@@ -58,7 +58,7 @@ export default class JitsiClient extends EventTarget {
   /**
    * Initialize the SDK
    */
-  initialize = () => {
+  initialize = (callback) => {
     const _this = this;
 
     loadScript("https://code.jquery.com/jquery-3.5.1.min.js", () => {
@@ -76,6 +76,10 @@ export default class JitsiClient extends EventTarget {
 
         _this.handleLog(LogLevel.DEBUG, "Setting Log Level.");
         _this.JitsiMeetJS.setLogLevel(this.JitsiMeetJS.logLevels.WARN);
+
+        if (callback) {
+          callback();
+        }
       });
     });
   };

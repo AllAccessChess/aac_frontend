@@ -15,8 +15,6 @@ export const JitsiProvider = (props) => {
       // Create a new Jitsi Client
       const client = new JitsiClient("jitsi.allaccesschess.net");
 
-      client.initialize();
-
       setJitsiClient(client);
     } catch (err) {}
   }, []);

@@ -31,6 +31,7 @@ export default class GameClient extends EventTarget {
           }
         } else if (msg.pong) {
           // This is Ping Pong
+          this.triggerEvent(GameEvents.PONG, msg);
         }
         if (msg.user) {
           this.triggerEvent(GameEvents.AUTHENTICATED, msg);

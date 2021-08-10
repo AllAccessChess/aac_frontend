@@ -12,6 +12,13 @@ import { useLocation } from "react-router-dom";
 import useInterval from "react-useinterval";
 import { useHistory, useParams } from "react-router";
 import { useTheme } from "@material-ui/core";
+import {
+  SignalCellular0Bar as SignalCellular0BarIcon,
+  SignalCellular1Bar as SignalCellular1BarIcon,
+  SignalCellular2Bar as SignalCellular2BarIcon,
+  SignalCellular3Bar as SignalCellular3BarIcon,
+  SignalCellular4Bar as SignalCellular4BarIcon,
+} from "@material-ui/icons";
 
 import { config } from "config";
 import {
@@ -81,6 +88,7 @@ export const Match = () => {
   const [usingVideo, setUsingVideo] = useState(true);
   const [pastMoveIndex, setPastMoveIndex] = useState(-1);
   const [legalMoves, setLegalMoves] = useState([]);
+  const [latency, setLatency] = useState(0);
 
   const [currentMatch, currentMatchRef] = useValueRef(
     useSelector((state) => state.matchReducer.current)
@@ -150,6 +158,7 @@ export const Match = () => {
   // const userCountRef = useRef(1);
   const chessContainerRef = createRef(null);
   const chessgroundRef = useRef();
+  const pingRef = useRef(null);
 
   // const { zoomClient } = useZoomContext();
   const { jitsiClient } = useJitsiClient();
@@ -437,6 +446,9 @@ export const Match = () => {
     },
     [isSpectator, params, setFen, chess, setGameStatus]
   );
+  const onPong = useCallback((data) => {
+    setLatency(new Date().getTime() - pingRef.current.getTime());
+  }, []);
 
   const setUpHandlers = useCallback(() => {
     if (gameClientRef.current) {
@@ -445,6 +457,7 @@ export const Match = () => {
       gameClientRef.current.on(GameEvents.AUTHENTICATED, onAuthenticatedSocket);
       gameClientRef.current.on(GameEvents.OFFEREDDRAW, onOfferedDraw);
       gameClientRef.current.on(GameEvents.EXITGAME, onExitGame);
+      gameClientRef.current.on(GameEvents.PONG, onPong);
     }
     if (isSpectator) {
       window.addEventListener("unload", onExitSpectating);
@@ -458,6 +471,7 @@ export const Match = () => {
     onExitGame,
     isSpectator,
     onExitSpectating,
+    onPong,
   ]);
 
   const endHandlers = useCallback(() => {
@@ -470,6 +484,7 @@ export const Match = () => {
       );
       gameClientRef.current.off(GameEvents.OFFEREDDRAW, onOfferedDraw);
       gameClientRef.current.off(GameEvents.EXITGAME, onExitGame);
+      gameClientRef.current.off(GameEvents.PONG, onPong);
     }
     if (isSpectator) {
       window.removeEventListener("unload", onExitSpectating);
@@ -483,6 +498,7 @@ export const Match = () => {
     onExitGame,
     isSpectator,
     onExitSpectating,
+    onPong,
   ]);
 
   //!!! End of Listeners, you can now use states!
@@ -560,15 +576,17 @@ export const Match = () => {
       // );
 
       if (jitsiClient) {
-        jitsiClient.joinMeeting({
-          meetingId: currentMatch.meeting.id,
-          userName: isDirector
-            ? `${user.name || user.username}(Tournament Director)`
-            : getValidUserName(
-                currentMatch,
-                user.id,
-                user.name || user.username
-              ),
+        jitsiClient.initialize(() => {
+          jitsiClient.joinMeeting({
+            meetingId: currentMatch.meeting.id,
+            userName: isDirector
+              ? `${user.name || user.username}(Tournament Director)`
+              : getValidUserName(
+                  currentMatch,
+                  user.id,
+                  user.name || user.username
+                ),
+          });
         });
       }
     }
@@ -641,6 +659,7 @@ export const Match = () => {
         gameClientRef.current.sendData({
           action: GameActions.PING,
         });
+        pingRef.current = new Date();
       }
     },
     gameStatus !== GameStatus.EXITED ? 10000 : null
@@ -671,6 +690,17 @@ export const Match = () => {
         </Box>
       </LoadingScreen>
     );
+
+  const LatencyIcon =
+    latency < 100
+      ? SignalCellular4BarIcon
+      : latency < 200
+      ? SignalCellular3BarIcon
+      : latency < 300
+      ? SignalCellular2BarIcon
+      : latency < 400
+      ? SignalCellular1BarIcon
+      : SignalCellular0BarIcon;
 
   return (
     <Grid container spacing={5} p={5} className={classes.wrapper}>
@@ -718,6 +748,17 @@ export const Match = () => {
           bgcolor={theme.palette.background.paper}
           borderRadius={8}
         >
+          <Box
+            width="100%"
+            display="flex"
+            alignItems="flex-end"
+            justifyContent="flex-end"
+          >
+            <Typography variant="body2" mr={2}>
+              Latency: {latency}ms
+            </Typography>
+            <LatencyIcon size="small" />
+          </Box>
           <Timer
             name={
               playerColor
