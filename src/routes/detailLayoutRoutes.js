@@ -7,7 +7,6 @@ const AdminGamesNew = loadable(() => import("pages/admin/games/new"));
 const AdminUsers = loadable(() => import("pages/admin/users"));
 
 // Tournament Detail
-const TournamentDetail = loadable(() => import("pages/tournament-detail"));
 const TournamentSave = loadable(() => import("pages/tournament-save"));
 
 // Paring
@@ -41,14 +40,6 @@ export const detailLayoutRoutes = [
     guarded: true,
     redirectToSignIn: true,
     adminAccess: true,
-  },
-  {
-    id: "tournament-detail",
-    path: "/tournament/:id",
-    name: "Tournament Detail",
-    component: TournamentDetail,
-    icon: TournamentIcon,
-    guarded: true,
   },
   {
     id: "pairing",
