@@ -111,7 +111,7 @@ export const BracketPairing = () => {
                   players={players}
                   bracket={bracket}
                   prevBracket={index > 0 ? brackets[index - 1] : null}
-                  showTree={roundNum === 1}
+                  showTree={roundNum === 0}
                   last={index === brackets.length - 1}
                   onUpdate={handleUpdatePairings}
                   onMerge={handleUpdateMerge}
