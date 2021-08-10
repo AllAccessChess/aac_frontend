@@ -18,7 +18,7 @@
     "@material-ui/styles": "^4.11.3",
     "@material-ui/system": "^4.11.3",
     "@reduxjs/toolkit": "^1.5.0",
-    "@zoomus/websdk": "^1.9.6",
+    "@zoomus/websdk": "1.9.6",
     "axios": "^0.21.1",
     "axios-mock-adapter": "^1.19.0",
     "chess.js": "^0.12.0",
