@@ -445,3 +445,48 @@ export const validateUSCFID = (uscfID) => {
   if (uscfID.length !== VALID_USCF_LENGTH) return false;
   return /^\d+$/.test(uscfID);
 };
+
+export const getBracketPairings = (
+  tournament,
+  brackets,
+  bracketIndex,
+  roundIndex
+) => {
+  let boards = [],
+    byes = [],
+    players = [];
+
+  boards = tournament.brackets[bracketIndex].rounds[roundIndex].boards;
+  byes = tournament.brackets[bracketIndex].rounds[roundIndex].byes;
+  players = tournament.brackets[bracketIndex].players;
+
+  for (let index = bracketIndex - 1; index >= 0; index--) {
+    const bracket = brackets.find((bracket) => bracket.index === index);
+
+    if (bracket && bracket.merged) {
+      boards = [
+        ...boards,
+        ...tournament.brackets[index].rounds[roundIndex].boards,
+      ];
+      byes = [...byes, ...tournament.brackets[index].rounds[roundIndex].byes];
+      players = [...players, ...tournament.brackets[index].players];
+    } else {
+      break;
+    }
+  }
+
+  const unpaired = players
+    .filter(
+      (player) =>
+        byes.indexOf(player.id) === -1 &&
+        !boards.find((board) => board.playerIds.indexOf(player.id) !== -1)
+    )
+    .map((player) => player.id);
+
+  return {
+    boards,
+    byes,
+    players,
+    unpaired,
+  };
+};

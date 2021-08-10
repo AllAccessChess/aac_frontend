@@ -12,6 +12,7 @@ const TournamentSave = loadable(() => import("pages/tournament-save"));
 
 // Paring
 const Pairing = loadable(() => import("pages/pairing"));
+const BracketPairing = loadable(() => import("pages/bracket-pairing"));
 
 export const detailLayoutRoutes = [
   // Admin Detail
@@ -49,6 +50,15 @@ export const detailLayoutRoutes = [
     component: TournamentDetail,
     icon: TournamentIcon,
     guarded: true,
+  },
+  {
+    id: "pairings",
+    path: "/tournament/:tournamentId/:roundId/pairing",
+    name: "Pairings",
+    component: BracketPairing,
+    icon: TournamentIcon,
+    guarded: true,
+    redirectToSignIn: true,
   },
   {
     id: "pairing",
