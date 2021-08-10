@@ -12,8 +12,6 @@ export const LogLevel = Object.freeze({
   DEBUG: 0,
 });
 
-let JitsiMeetJS = window.JitsiMeetJS;
-
 export default class JitsiClient extends EventTarget {
   /**
    * constructor
@@ -47,6 +45,10 @@ export default class JitsiClient extends EventTarget {
     return logStrs[this.logLevel];
   }
 
+  get JitsiMeetJS() {
+    return window.JitsiMeetJS;
+  }
+
   //=====================================================================
 
   /********************
@@ -61,23 +63,19 @@ export default class JitsiClient extends EventTarget {
 
     loadScript("https://code.jquery.com/jquery-3.5.1.min.js", () => {
       loadScript("https://meet.jit.si/libs/lib-jitsi-meet.min.js", () => {
-        if (!JitsiMeetJS && !window.JitsiMeetJS) {
+        if (!_this.JitsiMeetJS) {
           _this.handleError("JitsiMeetJS is not installed.");
           throw new Error("JitsiMeetJS is not installed.");
         }
 
-        if (!JitsiMeetJS) {
-          JitsiMeetJS = window.JitsiMeetJS;
-        }
-
         _this.handleLog(LogLevel.INFO, "Initializing.");
-        JitsiMeetJS.init({
+        _this.JitsiMeetJS.init({
           disableAudioLevels: true,
           enableAnalyticsLogging: true,
         });
 
         _this.handleLog(LogLevel.DEBUG, "Setting Log Level.");
-        JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.WARN);
+        _this.JitsiMeetJS.setLogLevel(this.JitsiMeetJS.logLevels.WARN);
       });
     });
   };
@@ -93,7 +91,7 @@ export default class JitsiClient extends EventTarget {
    */
   connect = () => {
     this.handleLog(LogLevel.DEBUG, "Creating Connection.");
-    this.connection = new JitsiMeetJS.JitsiConnection(null, null, {
+    this.connection = new this.JitsiMeetJS.JitsiConnection(null, null, {
       hosts: {
         domain: "meet.jitsi",
         muc: "muc.meet.jitsi",
@@ -126,17 +124,17 @@ export default class JitsiClient extends EventTarget {
     this.handleLog(LogLevel.DEBUG, "Setting Up Connection Event Handlers.");
 
     this.connection.addEventListener(
-      JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
+      this.JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
       this.onConnectionSuccess
     );
 
     this.connection.addEventListener(
-      JitsiMeetJS.events.connection.CONNECTION_FAILED,
+      this.JitsiMeetJS.events.connection.CONNECTION_FAILED,
       this.onConnectionFailed
     );
 
     this.connection.addEventListener(
-      JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
+      this.JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
       this.onConnectionDisconnected
     );
   };
@@ -148,17 +146,17 @@ export default class JitsiClient extends EventTarget {
     this.handleLog(LogLevel.DEBUG, "Removing Connection Event Handlers.");
 
     this.connection.removeEventListener(
-      JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
+      this.JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
       this.onConnectionSuccess
     );
 
     this.connection.removeEventListener(
-      JitsiMeetJS.events.connection.CONNECTION_FAILED,
+      this.JitsiMeetJS.events.connection.CONNECTION_FAILED,
       this.onConnectionFailed
     );
 
     this.connection.removeEventListener(
-      JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
+      this.JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
       this.onConnectionDisconnected
     );
   };
@@ -235,17 +233,17 @@ export default class JitsiClient extends EventTarget {
     this.handleLog(LogLevel.DEBUG, "Setting Up Conference Event Handlers.");
 
     this.conference.on(
-      JitsiMeetJS.events.conference.CONFERENCE_JOINED,
+      this.JitsiMeetJS.events.conference.CONFERENCE_JOINED,
       this.onConferenceJoined
     );
 
     this.conference.on(
-      JitsiMeetJS.events.conference.TRACK_ADDED,
+      this.JitsiMeetJS.events.conference.TRACK_ADDED,
       this.onRemoteTrack
     );
 
     this.conference.on(
-      JitsiMeetJS.events.conference.CONFERENCE_LEFT,
+      this.JitsiMeetJS.events.conference.CONFERENCE_LEFT,
       this.onConferenceLeft
     );
   };
@@ -257,17 +255,17 @@ export default class JitsiClient extends EventTarget {
     this.handleLog(LogLevel.DEBUG, "Removing Conference Event Handlers.");
 
     this.conference.off(
-      JitsiMeetJS.events.conference.CONFERENCE_JOINED,
+      this.JitsiMeetJS.events.conference.CONFERENCE_JOINED,
       this.onConferenceJoined
     );
 
     this.conference.off(
-      JitsiMeetJS.events.conference.TRACK_ADDED,
+      this.JitsiMeetJS.events.conference.TRACK_ADDED,
       this.onRemoteTrack
     );
 
     this.conference.off(
-      JitsiMeetJS.events.conference.CONFERENCE_LEFT,
+      this.JitsiMeetJS.events.conference.CONFERENCE_LEFT,
       this.onConferenceLeft
     );
   };
@@ -282,7 +280,7 @@ export default class JitsiClient extends EventTarget {
 
     this.conference.setDisplayName(this.userName);
 
-    JitsiMeetJS.createLocalTracks({ devices: ["audio", "video"] })
+    this.JitsiMeetJS.createLocalTracks({ devices: ["audio", "video"] })
       .then(this.onLocalTracks)
       .catch((error) => {
         throw error;
