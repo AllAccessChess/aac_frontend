@@ -31,7 +31,7 @@ import {
   Paper,
   Typography,
 } from "components/material-ui";
-import { useWindowSize } from "hooks";
+import { useStateRef, useValueRef, useWindowSize } from "hooks";
 import { useJitsiClient } from "lib/jitsi";
 // import { useZoomContext } from "lib/zoom";
 // import { generateSignature, getValidUserName } from "lib/zoom/client/helpers";
@@ -66,30 +66,35 @@ export const Match = () => {
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState();
   const [gameMessage, setGameMessage] = useState("");
-  const [gameStatus, setGameStatus] = useState(GameStatus.IDLE);
-  const [clockActive, setClockActive] = useState(false);
-  const [players, setPlayers] = useState([]);
+  const [gameStatus, setGameStatus, gameStatusRef] = useStateRef(
+    GameStatus.IDLE
+  );
+  const [, setClockActive, clockActiveRef] = useStateRef(false);
+  const [players, setPlayers, playersRef] = useStateRef([]);
   // const [meetingJoining, setMeetingJoining] = useState(false);
   const [chessBoardSize, setChessBoardSize] = useState(0);
   const [askingDraw, setAskingDraw] = useState(false);
   const [whiteClock, setWhiteClock] = useState(300);
   const [blackClock, setBlackClock] = useState(300);
-  const [turn, setTurn] = useState(0);
-  const [premove, setPremove] = useState(null);
+  const [, setTurn, turnRef] = useStateRef(0);
+  const [, setPremove, premoveRef] = useStateRef(null);
   const [usingVideo, setUsingVideo] = useState(true);
   const [pastMoveIndex, setPastMoveIndex] = useState(-1);
   const [legalMoves, setLegalMoves] = useState([]);
 
-  const currentMatch = useSelector((state) => state.matchReducer.current);
-  const actionHistory = useSelector((state) => state.matchReducer.history);
+  const [currentMatch, currentMatchRef] = useValueRef(
+    useSelector((state) => state.matchReducer.current)
+  );
+  const [actionHistory, historyRef] = useValueRef(
+    useSelector((state) => state.matchReducer.history)
+  );
   const user = useSelector((state) => state.authReducer.user);
-  const currentTournament = useSelector(
-    (state) => state.tournamentReducer.current
+  const [currentTournament, currentTournamentRef] = useValueRef(
+    useSelector((state) => state.tournamentReducer.current)
   );
 
-  const isSpectator = useMemo(
-    () => location.pathname.indexOf("/spectate") === 0,
-    [location]
+  const [isSpectator, isSpectatorRef] = useValueRef(
+    useMemo(() => location.pathname.indexOf("/spectate") === 0, [location])
   );
 
   const isDirector = useMemo(
@@ -99,14 +104,16 @@ export const Match = () => {
     [location]
   );
 
-  const playerColor = useMemo(
-    () =>
-      !user || !players.length || isSpectator
-        ? 0
-        : user.id === players[0].id
-        ? 0 // white
-        : 1, // black
-    [user, players, isSpectator]
+  const [playerColor, playerColorRef] = useValueRef(
+    useMemo(
+      () =>
+        !user || !players.length || isSpectator
+          ? 0
+          : user.id === players[0].id
+          ? 0 // white
+          : 1, // black
+      [user, players, isSpectator]
+    )
   );
 
   const pieceDifference = useMemo(() => {
@@ -142,15 +149,6 @@ export const Match = () => {
   // const zoomChatRef = useRef(null);
   // const userCountRef = useRef(1);
   const chessContainerRef = createRef(null);
-  const historyRef = useRef(actionHistory);
-  const playersRef = useRef(players);
-  const playerColorRef = useRef(playerColor);
-  const isSpectatorRef = useRef(isSpectator);
-  const premoveRef = useRef(premove);
-  const currentMatchRef = useRef(currentMatch);
-  const gameStatusRef = useRef(gameStatus);
-  const turnRef = useRef(turn);
-  const clockActiveRef = useRef(clockActive);
   const chessgroundRef = useRef();
 
   // const { zoomClient } = useZoomContext();
@@ -218,7 +216,7 @@ export const Match = () => {
         actionHistory[index].content.to,
       ]);
     },
-    [actionHistory, setPastMoveIndex, setLastMove, setFen]
+    [actionHistory, setPastMoveIndex, setLastMove, setFen, setPremove]
   );
 
   //!!! From here, You should use Refs, not state!
@@ -241,7 +239,7 @@ export const Match = () => {
         }
       }
     },
-    [setGameMessage, setGameStatus]
+    [setGameMessage, setGameStatus, currentMatchRef, setClockActive]
   );
 
   const onExitSpectating = useCallback(() => {
@@ -303,7 +301,9 @@ export const Match = () => {
         dispatch(setCurrentMatch(data.game));
         if (gameStatusRef.current !== GameStatus.EXITED)
           setGameStatus(GameStatus.PLAYING);
-
+        if (!currentTournamentRef.current && data.game.tournament) {
+          dispatch(getTournament(data.game.tournament.id));
+        }
         if (
           data.game.reason >= GameEndReason.CHECKMATE &&
           data.game.reason <= GameEndReason.AGREEMENT
@@ -365,6 +365,14 @@ export const Match = () => {
       setTurn,
       onExitGame,
       handleMove,
+      gameStatusRef,
+      historyRef,
+      isSpectatorRef,
+      playerColorRef,
+      currentTournamentRef,
+      playersRef,
+      premoveRef,
+      setClockActive,
     ]
   );
   const onOfferedDraw = useCallback(
@@ -374,7 +382,7 @@ export const Match = () => {
         setAskingDraw(true);
       }
     },
-    [setAskingDraw]
+    [setAskingDraw, playerColorRef]
   );
   const onOpenedSocket = useCallback(() => {
     const authToken = getAuthToken();
@@ -427,7 +435,7 @@ export const Match = () => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [isSpectator, params, setFen, chess]
+    [isSpectator, params, setFen, chess, setGameStatus]
   );
 
   const setUpHandlers = useCallback(() => {
@@ -605,14 +613,6 @@ export const Match = () => {
   // );
 
   useEffect(() => {
-    turnRef.current = turn;
-  }, [turn]);
-
-  useEffect(() => {
-    clockActiveRef.current = clockActive;
-  }, [clockActive]);
-
-  useEffect(() => {
     const worker = new Worker("/clock.js");
 
     const clockHandler = () => {
@@ -630,6 +630,7 @@ export const Match = () => {
     return () => {
       worker.terminate();
     };
+    // eslint-disable-next-line
   }, []);
 
   // Interval for Ping-Pong ;)
@@ -644,29 +645,6 @@ export const Match = () => {
     },
     gameStatus !== GameStatus.EXITED ? 10000 : null
   );
-
-  // Setting Refs on Change of States
-  useEffect(() => {
-    historyRef.current = actionHistory;
-  }, [actionHistory]);
-  useEffect(() => {
-    playersRef.current = players;
-  }, [players]);
-  useEffect(() => {
-    playerColorRef.current = playerColor;
-  }, [playerColor]);
-  useEffect(() => {
-    isSpectatorRef.current = isSpectator;
-  }, [isSpectator]);
-  useEffect(() => {
-    premoveRef.current = premove;
-  }, [premove]);
-  useEffect(() => {
-    currentMatchRef.current = currentMatch;
-  }, [currentMatch]);
-  useEffect(() => {
-    gameStatusRef.current = gameStatus;
-  }, [gameStatus]);
 
   const handleToggleUsingVideo = () => {
     setUsingVideo((usingVideo) => !usingVideo);
@@ -822,7 +800,9 @@ export const Match = () => {
                 <Typography variant="h4" component="p">
                   Go to lobby
                 </Typography>
-                {currentMatch.tournament ? (
+                {currentMatch.tournament &&
+                currentMatch.tournament.round <
+                  currentTournament.settings.numRounds - 1 ? (
                   <Typography variant="h6" component="p">
                     Next round starts in 5:00 mins
                   </Typography>

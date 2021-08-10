@@ -18,6 +18,7 @@ const Settings = loadable(() => import("pages/settings"));
 const Tournaments = loadable(() => import("pages/tournaments"));
 const Dashboard = loadable(() => import("pages/dashboard"));
 const Analysis = loadable(() => import("pages/analysis"));
+const TournamentDetail = loadable(() => import("pages/tournament-detail"));
 
 // Main Layout Routes
 export const mainLayoutRoutes = [
@@ -39,6 +40,14 @@ export const mainLayoutRoutes = [
     icon: KnightIcon,
     guarded: true,
     sidebar: true,
+  },
+  {
+    id: "tournament-detail",
+    path: "/tournament/:id",
+    name: "Tournament Detail",
+    component: TournamentDetail,
+    icon: KnightIcon,
+    guarded: true,
   },
   {
     id: "account",

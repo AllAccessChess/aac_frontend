@@ -33,7 +33,6 @@ export const TournamentCard = (props) => {
     onEdit,
     onTogglePublish,
   } = props;
-  const offsetInMileSeconds = 300000;
 
   const [remainTimeForTournament, setRemainTimeForTournament] = useState(
     tournament.start ? tournament.start - new Date().getTime() : 0
@@ -274,13 +273,9 @@ export const TournamentCard = (props) => {
               Join Match
             </Button>
           )}
-          {tournament.start &&
-          remainTimeForTournament - offsetInMileSeconds > 0 ? (
+          {tournament.start && remainTimeForTournament > 0 ? (
             <Typography variant="body2" color="textSecondary">
-              Closing in{" "}
-              {getRemainingTimeString(
-                remainTimeForTournament - offsetInMileSeconds
-              )}
+              Closing in {getRemainingTimeString(remainTimeForTournament)}
             </Typography>
           ) : currentRound && currentRound.state < RoundStatus.PLAYING ? (
             <Typography variant="body2" color="textSecondary">

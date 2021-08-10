@@ -1,7 +1,6 @@
 import loadable from "@loadable/component";
 
 const Match = loadable(() => import("pages/match"));
-const Example = loadable(() => import("pages/example"));
 
 export const gameLayoutRoutes = [
   {
@@ -31,14 +30,6 @@ export const gameLayoutRoutes = [
     path: "/spectate/:id/td",
     name: "Director",
     component: Match,
-    guarded: true,
-    redirectToSignIn: true,
-  },
-  {
-    id: "example",
-    path: "/example",
-    name: "Example",
-    component: Example,
     guarded: true,
     redirectToSignIn: true,
   },
