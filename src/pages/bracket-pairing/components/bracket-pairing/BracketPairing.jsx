@@ -8,11 +8,14 @@ import {
   ExpandLess as ExpandLessIcon,
 } from "@material-ui/icons";
 
-import { Box, Button, Typography } from "components/material-ui";
+import { Box, Button, Grid, Typography } from "components/material-ui";
 import { redoPairing, reorderList } from "utils/common";
 
 import {
+  BoardHeader,
+  BoardSquare,
   Container,
+  DroppableBox,
   Header,
   Tree,
   TreeButton,
@@ -111,15 +114,9 @@ export const BracketPairing = (props) => {
   const renderDroppableList = (id, list) => (
     <Droppable droppableId={id} type="droppableItem">
       {(provided, snapshot) => (
-        <Box
+        <DroppableBox
           ref={provided.innerRef}
-          p={2}
-          border={`1px dashed ${
-            snapshot.isDraggingOver
-              ? theme.palette.secondary.main
-              : theme.palette.primary.light
-          }`}
-          width={250}
+          draggingover={snapshot.isDraggingOver ? "true" : "false"}
         >
           {list.map((item, index) => {
             const player = players.find((player) => player.id === item);
@@ -145,7 +142,7 @@ export const BracketPairing = (props) => {
                     border={`1px ${player ? "solid" : "dashed"} ${
                       theme.palette.primary.main
                     }`}
-                    my={3}
+                    my="1.5rem"
                     bgcolor={
                       snapshot.isDragging
                         ? theme.palette.primary.dark
@@ -159,14 +156,17 @@ export const BracketPairing = (props) => {
                     position="relative"
                   >
                     <Box
-                      p={2}
                       flexGrow={1}
                       display="flex"
                       justifyContent="center"
+                      alignItems="center"
+                      height={40}
                     >
                       <Typography variant="body1">
                         {player
-                          ? `${player.name} (${player.score || 0})`
+                          ? `${player.name} (${player.rating || 0}) - ${
+                              player.score || 0
+                            }`
                           : "Empty"}
                       </Typography>
                     </Box>
@@ -194,13 +194,13 @@ export const BracketPairing = (props) => {
             );
           })}
           {provided.placeholder}
-        </Box>
+        </DroppableBox>
       )}
     </Droppable>
   );
 
   const toggleExpanded = () => {
-    if (!bracket.merged) {
+    if (!bracket.merged && !!players.length) {
       setExpanded((expanded) => !expanded);
     }
   };
@@ -210,19 +210,19 @@ export const BracketPairing = (props) => {
       <Header
         onClick={toggleExpanded}
         bgcolor={
-          bracket.merged
+          bracket.merged || players.length === 0
             ? theme.palette.primary.dark
             : theme.palette.primary.main
         }
-        merged={bracket.merged.toString()}
+        merged={(bracket.merged || players.length === 0).toString()}
         expanded={expanded.toString()}
       >
         <Typography>
-          Under {bracket.upper}({players.length})
+          Under {bracket.upper} ({players.length} Players)
         </Typography>
         {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
       </Header>
-      {!bracket.merged && expanded && (
+      {expanded && (
         <Container expanded={expanded.toString()}>
           <Box display="flex" mb="2rem">
             <DragDropContext onDragEnd={onDragEnd}>
@@ -235,10 +235,52 @@ export const BracketPairing = (props) => {
                 borderRadius={12}
                 p={5}
               >
-                <Typography variant="h3">Pairings</Typography>
-                <Box display="flex" mt={5}>
-                  {renderDroppableList("white", white)}
-                  {renderDroppableList("black", black)}
+                <Box mb={5}>
+                  <Typography variant="h3">Boards</Typography>
+                </Box>
+                <Box display="flex" position="relative">
+                  <Box>
+                    <Grid container spacing={3}>
+                      <Grid item md={12}>
+                        <Box mt="42px" p="1rem">
+                          {white.map((_item, index) => (
+                            <Box
+                              my="1.5rem"
+                              key={`bracket-${bracket.id}-round-${index}`}
+                            >
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                height={42}
+                              >
+                                <Typography variant="body1">
+                                  {index + 1}.
+                                </Typography>
+                              </Box>
+                              <BoardSquare />
+                            </Box>
+                          ))}
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <Box flexGrow={1}>
+                    <Grid container spacing={3}>
+                      <Grid item md={6}>
+                        <BoardHeader>
+                          <Typography variant="body1">White</Typography>
+                        </BoardHeader>
+                        {renderDroppableList("white", white)}
+                      </Grid>
+                      <Grid item md={6}>
+                        <BoardHeader>
+                          <Typography variant="body1">Black</Typography>
+                        </BoardHeader>
+                        {renderDroppableList("black", black)}
+                      </Grid>
+                    </Grid>
+                  </Box>
                 </Box>
               </Box>
               <Box
@@ -250,10 +292,10 @@ export const BracketPairing = (props) => {
                 mr={5}
                 p={5}
               >
-                <Typography variant="h3">Unpaired</Typography>
-                <Box display="flex" mt={5}>
-                  {renderDroppableList("unpaired", unpaired)}
+                <Box mb={5}>
+                  <Typography variant="h3">Unpaired</Typography>
                 </Box>
+                {renderDroppableList("unpaired", unpaired)}
               </Box>
               <Box
                 display="flex"
@@ -263,10 +305,10 @@ export const BracketPairing = (props) => {
                 borderRadius={12}
                 p={5}
               >
-                <Typography variant="h3">Byes</Typography>
-                <Box display="flex" mt={5}>
-                  {renderDroppableList("byes", byes)}
+                <Box mb={5}>
+                  <Typography variant="h3">Byes</Typography>
                 </Box>
+                {renderDroppableList("byes", byes)}
               </Box>
             </DragDropContext>
           </Box>

@@ -79,3 +79,25 @@ export const TreeButton = styled(IconButton)`
         : props.theme.palette.primary.main};
   }
 `;
+
+export const BoardHeader = styled(Box)`
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+`;
+
+export const DroppableBox = styled(Box)`
+  width: 240px;
+  padding: 1rem;
+`;
+
+export const BoardSquare = styled(Box)`
+  position: absolute;
+  height: 54px;
+  width: 100%;
+  transform: translate(-16px, calc(-100% + 4px));
+  border-radius: 0.25rem;
+  border: 1px solid ${(props) => props.theme.palette.secondary.main};
+`;

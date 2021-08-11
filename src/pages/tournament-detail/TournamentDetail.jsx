@@ -182,7 +182,7 @@ export const TournamentDetail = () => {
   };
 
   const handleManagePairings = (bracketId, roundId) => {
-    history.push(`/tournament/${params.id}/${bracketId}/${roundId}/pairing`);
+    history.push(`/tournament/${params.id}/${roundId}/pairing`);
   };
 
   const handleUpdateTournament = (

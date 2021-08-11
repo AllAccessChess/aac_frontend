@@ -59,7 +59,8 @@ export const BracketPairing = () => {
         );
       }
     }
-  }, [brackets, dispatch, tournament]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [brackets]);
 
   const handleUpdatePairings = (bracketIndex, pairings) => {
     dispatch(
@@ -86,7 +87,7 @@ export const BracketPairing = () => {
       flexGrow={1}
       width="100%"
     >
-      {tournament.loading || !tournament.current ? (
+      {tournament.loading || !tournament.current || !brackets ? (
         <CircularProgress />
       ) : (
         <React.Fragment>
