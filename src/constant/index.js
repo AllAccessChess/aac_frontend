@@ -63,6 +63,7 @@ export const GameEvents = Object.freeze({
   OFFEREDDRAW: "OFFEREDDRAW",
   EXITGAME: "EXITGAME",
   PONG: "PONG",
+  ERROR: "ERROR",
 });
 
 export const GameStatus = Object.freeze({

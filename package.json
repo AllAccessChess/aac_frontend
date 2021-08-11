@@ -52,6 +52,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.2.1",
+    "use-sound": "^4.0.1",
     "yup": "^0.32.9"
   },
   "scripts": {

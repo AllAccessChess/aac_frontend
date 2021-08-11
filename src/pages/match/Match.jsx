@@ -7,6 +7,7 @@ import React, {
   useMemo,
 } from "react";
 import Chess from "chess.js";
+import useSound from "use-sound";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import useInterval from "react-useinterval";
@@ -61,7 +62,12 @@ import {
   Timer,
   MaterialCaptcha,
 } from "./components";
+import moveSound from "assets/sounds/move.mp3";
+import startSound from "assets/sounds/start.mp3";
+import lowtimeSound from "assets/sounds/lowtime.mp3";
+import checkSound from "assets/sounds/check.mp3";
 import { useStyles } from "./styles";
+import { showError } from "redux/reducers/messageReducer";
 
 export const Match = () => {
   const dispatch = useDispatch();
@@ -76,13 +82,16 @@ export const Match = () => {
   const [gameStatus, setGameStatus, gameStatusRef] = useStateRef(
     GameStatus.IDLE
   );
-  const [, setClockActive, clockActiveRef] = useStateRef(false);
+  const [clockActive, setClockActive, clockActiveRef] = useStateRef(false);
+  const [alertedLowTime, setAlertedLowTime, alertedLowTimeRef] = useStateRef(
+    false
+  );
   const [players, setPlayers, playersRef] = useStateRef([]);
   // const [meetingJoining, setMeetingJoining] = useState(false);
   const [chessBoardSize, setChessBoardSize] = useState(0);
   const [askingDraw, setAskingDraw] = useState(false);
-  const [whiteClock, setWhiteClock] = useState(300);
-  const [blackClock, setBlackClock] = useState(300);
+  const [whiteClock, setWhiteClock, whiteClockRef] = useStateRef(300);
+  const [blackClock, setBlackClock, blackClockRef] = useStateRef(300);
   const [, setTurn, turnRef] = useStateRef(0);
   const [, setPremove, premoveRef] = useStateRef(null);
   const [usingVideo, setUsingVideo] = useState(true);
@@ -166,6 +175,14 @@ export const Match = () => {
   const classes = useStyles();
   const theme = useTheme();
   const windowSize = useWindowSize();
+
+  const SoundVolume = useMemo(() => 0.25, []);
+  const LowTime = useMemo(() => 60, []);
+
+  const [playMoveSound] = useSound(moveSound, { volume: SoundVolume });
+  const [playStartSound] = useSound(startSound, { volume: SoundVolume });
+  const [playLowtimeSound] = useSound(lowtimeSound, { volume: SoundVolume });
+  const [playCheckSound] = useSound(checkSound, { volume: SoundVolume });
 
   const handleOfferDraw = useCallback(() => {
     console.log("Offering Draw");
@@ -288,6 +305,11 @@ export const Match = () => {
       setPremove(null);
       const move = chess.move({ from, to, promotion: promot });
       if (!move) return;
+      if (chess.in_check()) {
+        playCheckSound();
+      } else {
+        playMoveSound();
+      }
       dispatch(
         addHistoryItem({ action: "move", content: move, fen: chess.fen() })
       );
@@ -301,7 +323,15 @@ export const Match = () => {
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dispatch, chess, setFen, setLastMove, setPremove]
+    [
+      dispatch,
+      chess,
+      setFen,
+      setLastMove,
+      setPremove,
+      playMoveSound,
+      playCheckSound,
+    ]
   );
 
   const getResponse = useCallback(
@@ -449,6 +479,13 @@ export const Match = () => {
   const onPong = useCallback((data) => {
     setLatency(new Date().getTime() - pingRef.current.getTime());
   }, []);
+  const onError = useCallback(
+    (data) => {
+      dispatch(showError(data.error));
+      handleGoBack();
+    },
+    [dispatch, handleGoBack]
+  );
 
   const setUpHandlers = useCallback(() => {
     if (gameClientRef.current) {
@@ -458,6 +495,7 @@ export const Match = () => {
       gameClientRef.current.on(GameEvents.OFFEREDDRAW, onOfferedDraw);
       gameClientRef.current.on(GameEvents.EXITGAME, onExitGame);
       gameClientRef.current.on(GameEvents.PONG, onPong);
+      gameClientRef.current.on(GameEvents.ERROR, onError);
     }
     if (isSpectator) {
       window.addEventListener("unload", onExitSpectating);
@@ -485,6 +523,7 @@ export const Match = () => {
       gameClientRef.current.off(GameEvents.OFFEREDDRAW, onOfferedDraw);
       gameClientRef.current.off(GameEvents.EXITGAME, onExitGame);
       gameClientRef.current.off(GameEvents.PONG, onPong);
+      gameClientRef.current.off(GameEvents.ERROR, onError);
     }
     if (isSpectator) {
       window.removeEventListener("unload", onExitSpectating);
@@ -629,6 +668,18 @@ export const Match = () => {
   //   },
   //   gameStatus === GameStatus.PLAYING ? 100 : null
   // );
+  useEffect(() => {
+    if (clockActive) {
+      playStartSound();
+    }
+    // eslint-disable-next-line
+  }, [clockActive]);
+  useEffect(() => {
+    if (alertedLowTime) {
+      playLowtimeSound();
+    }
+    // eslint-disable-next-line
+  }, [alertedLowTime]);
 
   useEffect(() => {
     const worker = new Worker("/clock.js");
@@ -637,8 +688,22 @@ export const Match = () => {
       if (clockActiveRef.current) {
         if (turnRef.current === 0) {
           setWhiteClock((clock) => clock - 0.1);
+          if (
+            playerColorRef.current === 0 &&
+            whiteClockRef.current <= LowTime &&
+            !alertedLowTimeRef.current
+          ) {
+            setAlertedLowTime(true);
+          }
         } else {
           setBlackClock((clock) => clock - 0.1);
+          if (
+            playerColorRef.current === 1 &&
+            blackClockRef.current <= LowTime &&
+            !alertedLowTimeRef.current
+          ) {
+            setAlertedLowTime(true);
+          }
         }
       }
     };

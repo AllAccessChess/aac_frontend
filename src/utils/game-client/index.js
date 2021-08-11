@@ -36,6 +36,8 @@ export default class GameClient extends EventTarget {
         if (msg.user) {
           this.triggerEvent(GameEvents.AUTHENTICATED, msg);
         }
+      } else if (msg.status === "error") {
+        this.triggerEvent(GameEvents.ERROR, msg);
       }
     };
 
