@@ -33,7 +33,7 @@ export const PlayerAutoComplete = (props) => {
 
       UserService.searchUsers(term)
         .then((response) => {
-          if (mountedRef.current) {
+          if (mountedRef.current && response.users && response.users.length) {
             setUsers(response.users);
           }
         })
@@ -41,7 +41,7 @@ export const PlayerAutoComplete = (props) => {
           if (props.onError) {
             props.onError(error);
           }
-          setUsers([]);
+          // setUsers([]);
         });
     }, 1000);
     //eslint-disable-next-line react-hooks/exhaustive-deps
