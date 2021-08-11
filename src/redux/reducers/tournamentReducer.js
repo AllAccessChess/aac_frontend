@@ -192,6 +192,8 @@ export const updatePairings = (
       newPairings
     );
     dispatch(setPairings({ pairings, players, unpaired, byes }));
+    const { tournament } = await TournamentService.getTournament(tournamentId);
+    dispatch(setCurrent(tournament));
     dispatch(
       setMessage({
         message: "Updated pairings for the round!",
@@ -238,6 +240,7 @@ export const updateTournament = (payload, callback, fallback) => async (
   try {
     const { tournament } = await TournamentService.updateTournament(payload);
     dispatch(updateListItem(tournament));
+    dispatch(setCurrent(tournament));
     if (callback) callback(tournament);
   } catch (err) {
     dispatch(setMessage({ message: err.message }));
