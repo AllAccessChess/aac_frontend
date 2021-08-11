@@ -10,9 +10,9 @@ export const Info = (props) => {
   return (
     <Box display="flex" flexDirection="column">
       <Typography variant="h4" mb={3}>
-        Round 1
+        {match.tournament ? `Round ${match.tournament.round + 1}: ` : ""}
         {match.settings
-          ? `: ${match.settings.startTime} + ${
+          ? `${match.settings.startTime} + ${
               match.settings.increment
             } ${capitalizeFirstLetter(match.settings.timeCategory)}`
           : ""}
