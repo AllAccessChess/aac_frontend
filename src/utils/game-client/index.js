@@ -47,12 +47,18 @@ export default class GameClient extends EventTarget {
     };
 
     this.ws.onerror = (event) => {
-      console.log(`WS error: ${JSON.stringify(event.data)}`);
+      console.log(`WS error: ${JSON.stringify(event)}`);
     };
 
     this.ws.onclose = (event) => {
       console.log("WS closed: ", event);
-      this.ws = undefined;
+      if (event.code > 1001) {
+        // Unexpected closed
+        console.log("Reconnecting");
+        this.connect();
+      } else {
+        this.ws = undefined;
+      }
     };
   };
 
@@ -60,7 +66,7 @@ export default class GameClient extends EventTarget {
    * WebSocket Communication *
    ***************************/
   sendData = (data) => {
-    if (this.ws) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       // console.log(`-> SS: ${data}`);
       this.ws.send(JSON.stringify(data));
     }
@@ -72,7 +78,7 @@ export default class GameClient extends EventTarget {
   };
 
   disconnect = () => {
-    if (this.ws) this.ws.close();
+    if (this.ws) this.ws.close(1000, "Game Finished!");
   };
 
   /***************************

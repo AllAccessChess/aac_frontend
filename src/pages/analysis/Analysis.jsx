@@ -5,10 +5,12 @@ import React, {
   useState,
   useCallback,
   useRef,
+  useMemo,
 } from "react";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import useSound from "use-sound";
 import { v4 as uuidv4 } from "uuid";
 import { useTheme } from "@material-ui/core";
 import { MyLocation as MyLocationIcon } from "@material-ui/icons";
@@ -26,6 +28,8 @@ import {
 } from "utils/common";
 import { MoveTree, Progress } from "./components";
 import { MoveTreeHeader, MoveTreeWrapper, PossibleMovesText } from "./styles";
+import moveSound from "assets/sounds/move.mp3";
+import capturedSound from "assets/sounds/captured.mp3";
 
 export const Analysis = () => {
   const dispatch = useDispatch();
@@ -58,6 +62,10 @@ export const Analysis = () => {
   const threatEnabledRef = useRef(threatEnabled);
 
   const { stockFishClient } = useStockFishClient();
+  const SoundVolume = useMemo(() => 0.25, []);
+
+  const [playMoveSound] = useSound(moveSound, { volume: SoundVolume });
+  const [playCapturedSound] = useSound(capturedSound, { volume: SoundVolume });
 
   useEffect(() => {
     return () => {
@@ -189,6 +197,11 @@ export const Analysis = () => {
       const fen = chess.current.fen();
 
       if (!move || !fen) return;
+      if (move.captured) {
+        playCapturedSound();
+      } else {
+        playMoveSound();
+      }
 
       const moveId = uuidv4();
       const moveTree = addToMoveTree(
@@ -206,7 +219,7 @@ export const Analysis = () => {
       setLastMove([from, to]);
       setPlayerColor((playerColor) => 1 - playerColor);
     },
-    [currentMoveId, moveVariation]
+    [currentMoveId, moveVariation, playCapturedSound, playMoveSound]
   );
 
   const handleShowPast = useCallback(

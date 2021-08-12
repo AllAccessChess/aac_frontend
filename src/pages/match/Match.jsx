@@ -65,7 +65,7 @@ import {
 import moveSound from "assets/sounds/move.mp3";
 import startSound from "assets/sounds/start.mp3";
 import lowtimeSound from "assets/sounds/lowtime.mp3";
-import checkSound from "assets/sounds/check.mp3";
+import capturedSound from "assets/sounds/captured.mp3";
 import { useStyles } from "./styles";
 import { showError } from "redux/reducers/messageReducer";
 
@@ -182,7 +182,7 @@ export const Match = () => {
   const [playMoveSound] = useSound(moveSound, { volume: SoundVolume });
   const [playStartSound] = useSound(startSound, { volume: SoundVolume });
   const [playLowtimeSound] = useSound(lowtimeSound, { volume: SoundVolume });
-  const [playCheckSound] = useSound(checkSound, { volume: SoundVolume });
+  const [playCapturedSound] = useSound(capturedSound, { volume: SoundVolume });
   const timestampRef = useRef(new Date().getTime());
 
   const handleOfferDraw = useCallback(() => {
@@ -256,6 +256,8 @@ export const Match = () => {
       if (gameResult && gameResult !== GameResults.ONGOING) {
         setGameStatus(GameStatus.EXITED);
         setClockActive(false);
+        setWhiteClock(game.clocks[0].time / 1000);
+        setBlackClock(game.clocks[1].time / 1000);
 
         if (gameResult === GameResults.DRAW) {
           setGameMessage(`Game drawn by ${GameEndReasonMessage[endReason]}`);
@@ -266,7 +268,14 @@ export const Match = () => {
         }
       }
     },
-    [setGameMessage, setGameStatus, currentMatchRef, setClockActive]
+    [
+      setGameMessage,
+      setWhiteClock,
+      setBlackClock,
+      setGameStatus,
+      currentMatchRef,
+      setClockActive,
+    ]
   );
 
   const onExitSpectating = useCallback(() => {
@@ -306,8 +315,8 @@ export const Match = () => {
       setPremove(null);
       const move = chess.move({ from, to, promotion: promot });
       if (!move) return;
-      if (chess.in_check()) {
-        playCheckSound();
+      if (move.captured) {
+        playCapturedSound();
       } else {
         playMoveSound();
       }
@@ -331,7 +340,7 @@ export const Match = () => {
       setLastMove,
       setPremove,
       playMoveSound,
-      playCheckSound,
+      playCapturedSound,
     ]
   );
 
