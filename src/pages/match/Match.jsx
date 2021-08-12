@@ -256,6 +256,8 @@ export const Match = () => {
       if (gameResult && gameResult !== GameResults.ONGOING) {
         setGameStatus(GameStatus.EXITED);
         setClockActive(false);
+        setWhiteClock(game.clocks[0].time / 1000);
+        setBlackClock(game.clocks[1].time / 1000);
 
         if (gameResult === GameResults.DRAW) {
           setGameMessage(`Game drawn by ${GameEndReasonMessage[endReason]}`);
@@ -266,7 +268,14 @@ export const Match = () => {
         }
       }
     },
-    [setGameMessage, setGameStatus, currentMatchRef, setClockActive]
+    [
+      setGameMessage,
+      setWhiteClock,
+      setBlackClock,
+      setGameStatus,
+      currentMatchRef,
+      setClockActive,
+    ]
   );
 
   const onExitSpectating = useCallback(() => {
