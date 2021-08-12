@@ -1,3 +1,7 @@
+let prevTime = new Date().getTime();
+
 setInterval(() => {
-  postMessage("clock");
+  let curTime = new Date().getTime();
+  postMessage({ type: "interval", duration: curTime - prevTime });
+  prevTime = curTime;
 }, 100);
