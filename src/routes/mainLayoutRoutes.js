@@ -1,5 +1,8 @@
 import loadable from "@loadable/component";
-import { Dashboard as DashboardIcon } from "@material-ui/icons";
+import {
+  Dashboard as DashboardIcon,
+  SupervisorAccount as TournamentIcon,
+} from "@material-ui/icons";
 
 import {
   DollarIcon,
@@ -19,6 +22,18 @@ const Tournaments = loadable(() => import("pages/tournaments"));
 const Dashboard = loadable(() => import("pages/dashboard"));
 const Analysis = loadable(() => import("pages/analysis"));
 const TournamentDetail = loadable(() => import("pages/tournament-detail"));
+
+// Admin Detail
+const AdminGames = loadable(() => import("pages/admin/games"));
+const AdminGamesNew = loadable(() => import("pages/admin/games/new"));
+const AdminUsers = loadable(() => import("pages/admin/users"));
+
+// Tournament Detail
+const TournamentSave = loadable(() => import("pages/tournament-save"));
+
+// Paring
+const Pairing = loadable(() => import("pages/pairing"));
+const BracketPairing = loadable(() => import("pages/bracket-pairing"));
 
 // Main Layout Routes
 export const mainLayoutRoutes = [
@@ -108,5 +123,70 @@ export const mainLayoutRoutes = [
     guarded: true,
     redirectToSignIn: true,
     sidebar: true,
+  },
+  {
+    id: "admin-games",
+    path: "/admin/games",
+    name: "Admin Games",
+    component: AdminGames,
+    guarded: true,
+    redirectToSignIn: true,
+    adminAccess: true,
+  },
+  {
+    id: "admin-games-new",
+    path: "/admin/games/new",
+    name: "Admin Games New",
+    component: AdminGamesNew,
+    guarded: true,
+    redirectToSignIn: true,
+    adminAccess: true,
+  },
+  {
+    id: "admin-users",
+    path: "/admin/users",
+    name: "Admin Users",
+    component: AdminUsers,
+    guarded: true,
+    redirectToSignIn: true,
+    adminAccess: true,
+  },
+  {
+    id: "bracket-pairing",
+    path: "/tournament/:tournamentId/:roundId/pairing",
+    name: "BracketPairing",
+    component: BracketPairing,
+    icon: TournamentIcon,
+    guarded: true,
+    redirectToSignIn: true,
+  },
+  {
+    id: "pairing",
+    path: "/tournament/:tournamentId/:bracketId/:roundId/pairing",
+    name: "Pairing",
+    component: Pairing,
+    icon: TournamentIcon,
+    guarded: true,
+    redirectToSignIn: true,
+  },
+  {
+    id: "tournament-create",
+    path: "/tournament-save",
+    name: "Tournament Create",
+    component: TournamentSave,
+    icon: TournamentIcon,
+    guarded: true,
+    redirectToSignIn: true,
+    adminAccess: true,
+  },
+  {
+    id: "tournament-update",
+    path: "/tournament-save/:id",
+    name: "Tournament Update",
+    component: TournamentSave,
+    icon: TournamentIcon,
+    guarded: true,
+    redirectToSignIn: true,
+    adminAccess: true,
   },
 ];

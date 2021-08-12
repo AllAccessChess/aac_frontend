@@ -110,7 +110,7 @@ export const Members = (props) => {
               <TableRow>
                 <TableCell>
                   <Typography variant="body1" color="textSecondary">
-                    S.No
+                    Seed
                   </Typography>
                 </TableCell>
                 {sortableCells.map((cell) => (
