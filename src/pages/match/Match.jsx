@@ -691,7 +691,7 @@ export const Match = () => {
         timestampRef.current = newTimestamp;
 
         if (turnRef.current === 0) {
-          setWhiteClock((clock) => clock - dur);
+          setWhiteClock((clock) => Math.max(0, clock - dur));
           if (
             playerColorRef.current === 0 &&
             whiteClockRef.current <= LowTime &&
@@ -700,7 +700,7 @@ export const Match = () => {
             setAlertedLowTime(true);
           }
         } else {
-          setBlackClock((clock) => clock - dur);
+          setBlackClock((clock) => Math.max(0, clock - dur));
           if (
             playerColorRef.current === 1 &&
             blackClockRef.current <= LowTime &&
