@@ -354,9 +354,9 @@ export const Match = () => {
         if (!playersRef.length && data.game.players.length > 1)
           setPlayers(data.game.players);
         if (data.game.clocks) {
+          timestampRef.current = new Date().getTime();
           setWhiteClock(data.game.clocks[0].time / 1000);
           setBlackClock(data.game.clocks[1].time / 1000);
-          timestampRef.current = new Date().getTime();
 
           setClockActive(
             data.game.clocks[0].active || data.game.clocks[1].active
@@ -684,42 +684,36 @@ export const Match = () => {
   }, [alertedLowTime]);
 
   useEffect(() => {
-    const worker = new Worker("/clock.js");
+    const clockHandler = setInterval(() => {
+      if (clockActiveRef.current) {
+        const newTimestamp = new Date().getTime();
+        const dur = (newTimestamp - timestampRef.current) / 1000;
+        timestampRef.current = newTimestamp;
 
-    const clockHandler = (message) => {
-      if (message.data.type === "interval") {
-        if (clockActiveRef.current) {
-          const newTimestamp = new Date().getTime();
-          const dur = (newTimestamp - timestampRef.current) / 1000;
-          timestampRef.current = newTimestamp;
-
-          if (turnRef.current === 0) {
-            setWhiteClock((clock) => clock - dur);
-            if (
-              playerColorRef.current === 0 &&
-              whiteClockRef.current <= LowTime &&
-              !alertedLowTimeRef.current
-            ) {
-              setAlertedLowTime(true);
-            }
-          } else {
-            setBlackClock((clock) => clock - dur);
-            if (
-              playerColorRef.current === 1 &&
-              blackClockRef.current <= LowTime &&
-              !alertedLowTimeRef.current
-            ) {
-              setAlertedLowTime(true);
-            }
+        if (turnRef.current === 0) {
+          setWhiteClock((clock) => clock - dur);
+          if (
+            playerColorRef.current === 0 &&
+            whiteClockRef.current <= LowTime &&
+            !alertedLowTimeRef.current
+          ) {
+            setAlertedLowTime(true);
+          }
+        } else {
+          setBlackClock((clock) => clock - dur);
+          if (
+            playerColorRef.current === 1 &&
+            blackClockRef.current <= LowTime &&
+            !alertedLowTimeRef.current
+          ) {
+            setAlertedLowTime(true);
           }
         }
       }
-    };
-
-    worker.onmessage = clockHandler;
+    }, 100);
 
     return () => {
-      worker.terminate();
+      clearInterval(clockHandler);
     };
     // eslint-disable-next-line
   }, []);
