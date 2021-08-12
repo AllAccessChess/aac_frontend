@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { alpha } from "@material-ui/core/styles";
 
 import { Box, IconButton } from "components/material-ui";
 
@@ -91,6 +92,7 @@ export const BoardHeader = styled(Box)`
 export const DroppableBox = styled(Box)`
   width: 240px;
   padding: 1rem;
+  border: 1px dashed ${(props) => props.theme.palette.secondary.main};
 `;
 
 export const BoardSquare = styled(Box)`
@@ -100,4 +102,34 @@ export const BoardSquare = styled(Box)`
   transform: translate(-16px, calc(-100% + 4px));
   border-radius: 0.25rem;
   border: 1px solid ${(props) => props.theme.palette.secondary.main};
+`;
+
+export const DragFocus = styled(Box)`
+  position: absolute;
+  opacity: ${(props) => (props.dragging === "true" ? 1 : 0)};
+  left: 26px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  background: ${(props) => props.theme.palette.secondary.main};
+  border-radius: 8px;
+  animation: pulse 1s infinite;
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0
+        ${(props) => alpha(props.theme.palette.secondary.main, 0.7)};
+    }
+
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px transparent;
+    }
+
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
 `;
