@@ -1,4 +1,4 @@
-import { RoundStatus, VALID_USCF_LENGTH } from "constant";
+import { GameResults, RoundStatus, VALID_USCF_LENGTH } from "constant";
 
 export const mathRound2 = (num) =>
   Math.round((num + Number.EPSILON) * 100) / 100;
@@ -227,7 +227,9 @@ export const isAdmin = (user) => {
   return user && user.permissions && user.permissions.includes("admin");
 };
 
-export const getRoundStateString = (state, isOwner = false) => {
+export const getRoundStateString = (state, matchResult, isOwner = false) => {
+  if (matchResult !== GameResults.ONGOING) return "Finished";
+
   const roundStateString = {
     [RoundStatus.FINISHED]: "Finished",
     [RoundStatus.PLAYING]: isOwner ? "Play Now" : "Watch Live",

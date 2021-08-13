@@ -281,7 +281,8 @@ export const Pairings = (props) => {
                             </Box>
                           </TableCell>
                           <TableCell align="center">
-                            {round.state === RoundStatus.PLAYING ? (
+                            {round.state === RoundStatus.PLAYING &&
+                            match.result === GameResults.ONGOING ? (
                               <Box
                                 display="flex"
                                 alignItems="center"
@@ -305,6 +306,7 @@ export const Pairings = (props) => {
                                       <Typography variant="body1">
                                         {getRoundStateString(
                                           round.state,
+                                          match.result,
                                           isOwner
                                         )}
                                       </Typography>
@@ -333,7 +335,10 @@ export const Pairings = (props) => {
                                 justifyContent="center"
                               >
                                 <Typography variant="body1">
-                                  {getRoundStateString(round.state)}
+                                  {getRoundStateString(
+                                    round.state,
+                                    match.result
+                                  )}
                                 </Typography>
                                 <Typography>&nbsp;|&nbsp;</Typography>
                                 <Link
