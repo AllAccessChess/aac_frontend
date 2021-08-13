@@ -239,7 +239,7 @@ export const BracketPairing = (props) => {
         expanded={expanded.toString()}
       >
         <Typography>
-          Under {bracket.upper} ({players.length} Players)
+          {bracket.lower} - {bracket.upper} ({players.length} Players)
         </Typography>
         {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
       </Header>

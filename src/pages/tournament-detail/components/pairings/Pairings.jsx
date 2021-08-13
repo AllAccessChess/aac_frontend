@@ -125,7 +125,9 @@ export const Pairings = (props) => {
           >
             {tournament.brackets.map((bracket, index) => (
               <MenuItem value={index} key={index}>
-                {bracket.upper ? `< ${bracket.upper}` : `>= ${bracket.lower}`}
+                {bracket.upper
+                  ? `${bracket.lower} - ${bracket.upper}`
+                  : `>= ${bracket.lower}`}
               </MenuItem>
             ))}
           </InlineFilledSelect>

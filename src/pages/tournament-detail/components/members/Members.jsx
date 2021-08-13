@@ -24,7 +24,9 @@ export const Members = (props) => {
   const tabs = useMemo(
     () =>
       tournament.brackets.map((bracket) =>
-        bracket.upper ? `Under ${bracket.upper}` : `Over ${bracket.lower}`
+        bracket.upper
+          ? `${bracket.lower} - ${bracket.upper}`
+          : `Over ${bracket.lower}`
       ),
     [tournament]
   );
