@@ -92,7 +92,7 @@ export const BoardHeader = styled(Box)`
 export const DroppableBox = styled(Box)`
   width: 240px;
   padding: 1rem;
-  border: 1px dashed ${(props) => props.theme.palette.secondary.main};
+  overflow: hidden;
 `;
 
 export const BoardSquare = styled(Box)`
@@ -132,4 +132,11 @@ export const DragFocus = styled(Box)`
       box-shadow: 0 0 0 0 transparent;
     }
   }
+`;
+
+export const BoardContainer = styled(Box)`
+  display: flex;
+  max-height: 400px;
+  overflow: auto;
+  padding: 1rem;
 `;

@@ -13,6 +13,7 @@ import { Box, Button, Grid, Typography } from "components/material-ui";
 import { clearEmptyPairing, redoPairing, reorderList } from "utils/common";
 
 import {
+  BoardContainer,
   BoardHeader,
   BoardSquare,
   Container,
@@ -258,50 +259,52 @@ export const BracketPairing = (props) => {
                 <Box mb={5}>
                   <Typography variant="h3">Boards</Typography>
                 </Box>
-                <Box display="flex" position="relative">
-                  <Box>
-                    <Grid container spacing={3}>
-                      <Grid item md={12}>
-                        <Box mt="42px" p="1rem">
-                          {white.map((_item, index) => (
-                            <Box
-                              my="1.5rem"
-                              key={`bracket-${bracket.id}-round-${index}`}
-                            >
+                <BoardContainer>
+                  <Box display="flex" position="relative">
+                    <Box>
+                      <Grid container spacing={3}>
+                        <Grid item md={12}>
+                          <Box mt="28px" p="1rem">
+                            {white.map((_item, index) => (
                               <Box
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                                height={42}
+                                my="1.5rem"
+                                key={`bracket-${bracket.id}-round-${index}`}
                               >
-                                <Typography variant="body1">
-                                  {index + 1}.
-                                </Typography>
+                                <Box
+                                  display="flex"
+                                  alignItems="center"
+                                  justifyContent="center"
+                                  height={42}
+                                >
+                                  <Typography variant="body1">
+                                    {index + 1}.
+                                  </Typography>
+                                </Box>
+                                <BoardSquare />
                               </Box>
-                              <BoardSquare />
-                            </Box>
-                          ))}
-                        </Box>
+                            ))}
+                          </Box>
+                        </Grid>
                       </Grid>
-                    </Grid>
+                    </Box>
+                    <Box flexGrow={1}>
+                      <Grid container spacing={3}>
+                        <Grid item md={6}>
+                          <BoardHeader mb="-16px">
+                            <Typography variant="body1">White</Typography>
+                          </BoardHeader>
+                          {renderDroppableList("white", white)}
+                        </Grid>
+                        <Grid item md={6}>
+                          <BoardHeader mb="-16px">
+                            <Typography variant="body1">Black</Typography>
+                          </BoardHeader>
+                          {renderDroppableList("black", black)}
+                        </Grid>
+                      </Grid>
+                    </Box>
                   </Box>
-                  <Box flexGrow={1}>
-                    <Grid container spacing={3}>
-                      <Grid item md={6}>
-                        <BoardHeader>
-                          <Typography variant="body1">White</Typography>
-                        </BoardHeader>
-                        {renderDroppableList("white", white)}
-                      </Grid>
-                      <Grid item md={6}>
-                        <BoardHeader>
-                          <Typography variant="body1">Black</Typography>
-                        </BoardHeader>
-                        {renderDroppableList("black", black)}
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Box>
+                </BoardContainer>
               </Box>
               <Box display="flex" flexDirection="column">
                 <Box
