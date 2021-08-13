@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { FormControl } from "components/material-ui";
 
 export const CustomFormControl = styled(FormControl)`
-  width: 180px;
+  min-width: 200px;
   background: #0366d0;
   display: flex;
   flex-direction: row;

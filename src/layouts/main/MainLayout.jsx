@@ -42,6 +42,7 @@ const Layout = (props) => {
           flexDirection="column"
           height="100%"
           p={5}
+          id="mainlayout-wrapper"
         >
           <MainWithNotification {...props} />
         </Container>

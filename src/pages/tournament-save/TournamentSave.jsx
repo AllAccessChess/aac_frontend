@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useRef } from "react";
 import { Formik } from "formik";
 import { Helmet } from "react-helmet";
 import _ from "lodash";
@@ -22,6 +22,7 @@ export const TournamentSave = () => {
   const history = useHistory();
   const params = useParams();
   const theme = useTheme();
+  const innerBoxRef = useRef();
 
   const currentTournament = useSelector(
     (state) => state.tournamentReducer.current
@@ -100,6 +101,7 @@ export const TournamentSave = () => {
   return (
     <Box
       width="100%"
+      height="100%"
       display="flex"
       flexDirection="column"
       alignItems="flex-start"
@@ -124,6 +126,7 @@ export const TournamentSave = () => {
           height="calc(100% - 65px)"
           borderRadius="0 0 10px 10px"
           bgcolor={theme.palette.background.paper}
+          ref={innerBoxRef}
         >
           <Formik
             enableReinitialize
@@ -186,6 +189,7 @@ export const TournamentSave = () => {
                 {...formProps}
                 initialValues={initialValues}
                 isUpdate={!!currentTournament}
+                innerBoxRef={innerBoxRef}
               />
             )}
           </Formik>

@@ -1,14 +1,23 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 import { Alert, Box, Button } from "components/material-ui";
 import { GeneralInformation, Rounds, Steps, Sections } from "./components";
 import { FitedForm } from "./styles";
 
 export const InnerForm = (props) => {
-  const { errors, isUpdate, handleSubmit, isSubmitting } = props;
+  const { errors, isUpdate, handleSubmit, isSubmitting, innerBoxRef } = props;
+  const notificationList = useSelector(
+    (state) => state.notificationReducer.list
+  );
 
   const [activeStep, setActiveStep] = useState(0);
   const [verified, setVerified] = useState([false, false, false]);
+  const [stepPosition, setStepPosition] = useState({
+    right: 20,
+    top: 28,
+    position: "absolute",
+  });
 
   const handleSetVeified = useCallback(
     (index, value) => {
@@ -20,6 +29,30 @@ export const InnerForm = (props) => {
     },
     [setVerified]
   );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setStepPosition({
+        right: 40,
+        top: Math.max(
+          innerBoxRef.current.getBoundingClientRect().top + 28,
+          100
+        ),
+        position: "fixed",
+      });
+    };
+
+    document
+      .getElementById("mainlayout-wrapper")
+      .addEventListener("scroll", handleScroll);
+
+    return () =>
+      document.getElementById("mainlayout-wrapper")
+        ? document
+            .getElementById("mainlayout-wrapper")
+            .removeEventListener("scroll", handleScroll)
+        : null;
+  }, [innerBoxRef, notificationList]);
 
   return (
     <FitedForm noValidate onSubmit={handleSubmit}>
@@ -75,8 +108,9 @@ export const InnerForm = (props) => {
           verified={verified}
           isSubmitting={isSubmitting}
           width="220px"
-          right="20px"
-          top="28px"
+          right={stepPosition.right}
+          top={stepPosition.top}
+          position={stepPosition.position}
         />
       </Box>
     </FitedForm>
