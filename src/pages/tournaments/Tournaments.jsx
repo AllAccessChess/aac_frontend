@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useMemo, useCallback } from "react";
 import _ from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -13,6 +13,7 @@ import { CustomTab, CustomTabs } from "./styles";
 import {
   getTournamentList,
   publishTournament,
+  setFilters,
   unPublishTournament,
 } from "redux/reducers/tournamentReducer";
 import { isAdmin } from "utils/common";
@@ -21,18 +22,10 @@ export const Tournaments = () => {
   const history = useHistory();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const [tabValue, setTabValue] = useState(0);
-
-  const [typeFilter, setTypeFilter] = useState([]);
-  const [timeControlFilter, setTimeControlFilter] = useState([]);
-  const [variantFilter, setVariantFilter] = useState([]);
-  const [ratingFilter, setRatingFilter] = useState([]);
-  const [ratedFilter, setRatedFilter] = useState([]);
-  const [dateFromFilter, setDateFromFilter] = useState();
-  // const [dateToFilter, setDateToFilter] = useState();
 
   const user = useSelector((state) => state.authReducer.user);
   const tournamentList = useSelector((state) => state.tournamentReducer.list);
+  const filters = useSelector((state) => state.tournamentReducer.filters);
 
   const editTournamentPermission = useMemo(
     () => user && user.id && isAdmin(user),
@@ -44,15 +37,16 @@ export const Tournaments = () => {
       _.orderBy(
         tournamentList,
         ["start"],
-        [tabValue === 0 ? "asc" : "desc"]
+        [filters.tab === 0 ? "asc" : "desc"]
       ).filter((tournament) => {
         if (tournament.hidden) {
           return false;
         }
 
         const inTabFilter =
-          (tabValue === 0 && tournament.state === TournamentStatus.SCHEDULED) ||
-          (tabValue === 1 &&
+          (filters.tab === 0 &&
+            tournament.state === TournamentStatus.SCHEDULED) ||
+          (filters.tab === 1 &&
             user &&
             user.id &&
             tournament.brackets.some(
@@ -60,39 +54,40 @@ export const Tournaments = () => {
                 bracket.players.findIndex((player) => player.id === user.id) !==
                 -1
             )) ||
-          (tabValue === 2 && tournament.state === TournamentStatus.ONGOING) ||
-          (tabValue === 3 && tournament.state === TournamentStatus.FINISHED);
+          (filters.tab === 2 &&
+            tournament.state === TournamentStatus.ONGOING) ||
+          (filters.tab === 3 && tournament.state === TournamentStatus.FINISHED);
 
         const inTypeFilter =
-          !typeFilter || !typeFilter.length
+          !filters.type || !filters.type.length
             ? true
-            : typeFilter.includes(tournament.settings.type);
+            : filters.type.includes(tournament.settings.type);
 
         const inTimeControlFilter =
-          !timeControlFilter || !timeControlFilter.length
+          !filters.timeControl || !filters.timeControl.length
             ? true
-            : timeControlFilter.includes(tournament.settings.ratingCategory);
+            : filters.timeControl.includes(tournament.settings.ratingCategory);
 
         const inVariantFilter =
-          !variantFilter || !variantFilter.length
+          !filters.variant || !filters.variant.length
             ? true
-            : variantFilter.includes(tournament.settings.variant);
+            : filters.variant.includes(tournament.settings.variant);
 
         const inRatingFilter =
-          !ratingFilter || !ratingFilter.length
+          !filters.rating || !filters.rating.length
             ? true
-            : ratingFilter.includes(tournament.settings.ratingProvider);
+            : filters.rating.includes(tournament.settings.ratingProvider);
 
         const inRatedFilter =
-          !ratedFilter || !ratedFilter.length
+          !filters.rated || !filters.rated.length
             ? true
-            : ratedFilter.includes(
+            : filters.rated.includes(
                 tournament.settings.rated ? "rated" : "unrated"
               );
 
-        const inDateFromFilter = !dateFromFilter
+        const inDateFromFilter = !filters.dateFrom
           ? true
-          : tournament.start >= dateFromFilter;
+          : tournament.start >= filters.dateFrom;
 
         // const inDateToFilter = !dateToFilter
         //   ? true
@@ -109,23 +104,15 @@ export const Tournaments = () => {
           inRatedFilter
         );
       }),
-    [
-      tournamentList,
-      user,
-      tabValue,
-      typeFilter,
-      timeControlFilter,
-      variantFilter,
-      ratingFilter,
-      ratedFilter,
-      dateFromFilter,
-      // dateToFilter,
-    ]
+    [tournamentList, user, filters]
   );
 
-  const handleTabChange = useCallback((event, newValue) => {
-    setTabValue(newValue);
-  }, []);
+  const handleTabChange = useCallback(
+    (event, newValue) => {
+      dispatch(setFilters({ tab: newValue }));
+    },
+    [dispatch]
+  );
 
   const handleViewTounamentDetail = useCallback(
     (tournament) => {
@@ -155,6 +142,48 @@ export const Tournaments = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleSetTypeFilter = useCallback(
+    (type) => {
+      dispatch(setFilters({ type }));
+    },
+    [dispatch]
+  );
+
+  const handleSetTimeControlFilter = useCallback(
+    (timeControl) => {
+      dispatch(setFilters({ timeControl }));
+    },
+    [dispatch]
+  );
+
+  const handleSetVariantFilter = useCallback(
+    (variant) => {
+      dispatch(setFilters({ variant }));
+    },
+    [dispatch]
+  );
+
+  const handleSetRatingFilter = useCallback(
+    (rating) => {
+      dispatch(setFilters({ rating }));
+    },
+    [dispatch]
+  );
+
+  const handleSetDateFromFilter = useCallback(
+    (dateFrom) => {
+      dispatch(setFilters({ dateFrom }));
+    },
+    [dispatch]
+  );
+
+  const handleSetRatedFilter = useCallback(
+    (rated) => {
+      dispatch(setFilters({ rated }));
+    },
+    [dispatch]
+  );
+
   return (
     <Box
       width="100%"
@@ -165,7 +194,7 @@ export const Tournaments = () => {
       position="relative"
     >
       <CustomTabs
-        value={tabValue}
+        value={filters.tab}
         onChange={handleTabChange}
         aria-label="tournaments"
         indicatorColor="secondary"
@@ -196,20 +225,20 @@ export const Tournaments = () => {
 
       <Box p={5} bgcolor={theme.palette.background.paper} borderRadius="10px">
         <FilterBar
-          typeFilter={typeFilter}
-          timeControlFilter={timeControlFilter}
-          variantFilter={variantFilter}
-          ratingFilter={ratingFilter}
-          ratedFilter={ratedFilter}
-          dateFromFilter={dateFromFilter}
+          typeFilter={filters.type}
+          timeControlFilter={filters.timeControl}
+          variantFilter={filters.variant}
+          ratingFilter={filters.rating}
+          ratedFilter={filters.rated}
+          dateFromFilter={filters.dateFrom}
           // dateToFilter={dateToFilter}
-          setTypeFilter={setTypeFilter}
-          setTimeControlFilter={setTimeControlFilter}
-          setVariantFilter={setVariantFilter}
-          setRatingFilter={setRatingFilter}
-          setDateFromFilter={setDateFromFilter}
+          setTypeFilter={handleSetTypeFilter}
+          setTimeControlFilter={handleSetTimeControlFilter}
+          setVariantFilter={handleSetVariantFilter}
+          setRatingFilter={handleSetRatingFilter}
+          setDateFromFilter={handleSetDateFromFilter}
           // setDateToFilter={setDateToFilter}
-          setRatedFilter={setRatedFilter}
+          setRatedFilter={handleSetRatedFilter}
         />
         {filteredTournaments.map((tournament) => (
           <Box

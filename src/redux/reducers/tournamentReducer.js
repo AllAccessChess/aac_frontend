@@ -12,6 +12,15 @@ const initialState = {
   current: null,
   loading: false,
   byeSaving: false,
+  filters: {
+    tab: 0,
+    type: [],
+    timeControl: [],
+    variant: [],
+    rating: [],
+    rated: [],
+    dateFrom: null,
+  },
 };
 
 export const slice = createSlice({
@@ -49,6 +58,9 @@ export const slice = createSlice({
     setByeSaving: (state, action) => {
       state.byeSaving = action.payload;
     },
+    setFilters: (state, action) => {
+      state.filters = { ...state.filters, ...action.payload };
+    },
   },
 });
 
@@ -61,6 +73,7 @@ export const {
   insertToList,
   setPairings,
   setByeSaving,
+  setFilters,
 } = slice.actions;
 
 export const getTournamentList = () => async (dispatch) => {
