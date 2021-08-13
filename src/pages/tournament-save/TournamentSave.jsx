@@ -54,7 +54,10 @@ export const TournamentSave = () => {
               rounds: [],
               brackets: [[0]],
             },
-            restrictions: {},
+            restrictions: {
+              needUscfId: false,
+              whitelist: [],
+            },
             start: 0,
             hidden: false,
           },
@@ -179,7 +182,9 @@ export const TournamentSave = () => {
                   )
                   .min(1),
               }),
-              restrictions: Yup.object(),
+              restrictions: Yup.object().shape({
+                whitelist: Yup.array(),
+              }),
               hidden: Yup.boolean(),
             })}
             validate={(values) => {

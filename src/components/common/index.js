@@ -22,3 +22,4 @@ export { StepNumber } from "./step-number";
 export { SwitchField } from "./switch-field";
 export { TabPanel } from "./tab-panel";
 export { TournamentCard } from "./tournament-card";
+export { PrimaryTooltip } from "./primary-tooltip";

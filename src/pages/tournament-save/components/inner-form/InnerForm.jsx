@@ -2,7 +2,13 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import { Alert, Box, Button } from "components/material-ui";
-import { GeneralInformation, Rounds, Steps, Sections } from "./components";
+import {
+  GeneralInformation,
+  Rounds,
+  Steps,
+  Sections,
+  Restrictions,
+} from "./components";
 import { FitedForm } from "./styles";
 
 export const InnerForm = (props) => {
@@ -86,6 +92,13 @@ export const InnerForm = (props) => {
               verified={verified}
               onOpen={() => setActiveStep(2)}
               onVerify={(value) => handleSetVeified(2, value)}
+            />
+            <Restrictions
+              {...props}
+              active={activeStep === 3}
+              verified={verified}
+              onOpen={() => setActiveStep(3)}
+              onVerify={(value) => handleSetVeified(3, value)}
             />
             {verified[0] && verified[1] && verified[2] ? (
               <Button

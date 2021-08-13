@@ -18,6 +18,7 @@ export const Steps = (props) => {
     "General Information",
     "Tournament Settings",
     "Round and Match Settings",
+    "Restrictions",
   ];
 
   return (
