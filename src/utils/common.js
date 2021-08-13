@@ -461,8 +461,12 @@ export const getBracketPairings = (
     byes = [],
     players = [];
 
-  boards = tournament.brackets[bracketIndex].rounds[roundIndex].boards;
-  byes = tournament.brackets[bracketIndex].rounds[roundIndex].byes;
+  boards = tournament.brackets[bracketIndex].rounds[roundIndex]
+    ? tournament.brackets[bracketIndex].rounds[roundIndex].boards
+    : [];
+  byes = tournament.brackets[bracketIndex].rounds[roundIndex]
+    ? tournament.brackets[bracketIndex].rounds[roundIndex].byes
+    : [];
   players = tournament.brackets[bracketIndex].players;
 
   for (let index = bracketIndex - 1; index >= 0; index--) {
@@ -471,9 +475,16 @@ export const getBracketPairings = (
     if (bracket && bracket.merged) {
       boards = [
         ...boards,
-        ...tournament.brackets[index].rounds[roundIndex].boards,
+        ...(tournament.brackets[index].rounds[roundIndex]
+          ? tournament.brackets[index].rounds[roundIndex].boards
+          : []),
       ];
-      byes = [...byes, ...tournament.brackets[index].rounds[roundIndex].byes];
+      byes = [
+        ...byes,
+        ...(tournament.brackets[index].rounds[roundIndex]
+          ? tournament.brackets[index].rounds[roundIndex].byes
+          : []),
+      ];
       players = [...players, ...tournament.brackets[index].players];
     } else {
       break;

@@ -168,6 +168,7 @@ export const Match = () => {
   const chessContainerRef = createRef(null);
   const chessgroundRef = useRef();
   const pingRef = useRef(null);
+  const mountedRef = useRef(false);
 
   // const { zoomClient } = useZoomContext();
   const { jitsiClient } = useJitsiClient();
@@ -561,6 +562,14 @@ export const Match = () => {
   // }, [user]);
 
   useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     // const joinMeeting = async (id, password, userName, email) => {
     //   const meetingNumber = id;
     //   const passWord = password;
@@ -627,16 +636,18 @@ export const Match = () => {
 
       if (jitsiClient) {
         jitsiClient.initialize(() => {
-          jitsiClient.joinMeeting({
-            meetingId: currentMatch.meeting.id,
-            userName: isDirector
-              ? `${user.name || user.username}(Tournament Director)`
-              : getValidUserName(
-                  currentMatch,
-                  user.id,
-                  user.name || user.username
-                ),
-          });
+          if (mountedRef.current) {
+            jitsiClient.joinMeeting({
+              meetingId: currentMatch.meeting.id,
+              userName: isDirector
+                ? `${user.name || user.username}(Tournament Director)`
+                : getValidUserName(
+                    currentMatch,
+                    user.id,
+                    user.name || user.username
+                  ),
+            });
+          }
         });
       }
     }
