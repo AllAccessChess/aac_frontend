@@ -187,9 +187,6 @@ export const TournamentSave = () => {
               }),
               hidden: Yup.boolean(),
             })}
-            validate={(values) => {
-              console.log(values);
-            }}
             onSubmit={handleSubmit}
           >
             {(formProps) => (

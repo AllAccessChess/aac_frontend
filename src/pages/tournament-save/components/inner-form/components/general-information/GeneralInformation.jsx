@@ -13,8 +13,9 @@ import {
   SmallTextField,
   SmallHelpIcon,
   OutlinedKeyboardDatePicker,
+  TimePicker,
 } from "components/common";
-import { CustomAccordion, CustomAccordionDetails, TimeField } from "./styles";
+import { CustomAccordion, CustomAccordionDetails } from "./styles";
 
 export const GeneralInformation = (props) => {
   const {
@@ -32,9 +33,12 @@ export const GeneralInformation = (props) => {
   } = props;
 
   const handleChangeTime = useCallback(
-    (event) => {
+    (time) => {
+      if (!time) {
+        return;
+      }
+
       let date = moment(values.start > 0 ? values.start : new Date());
-      let time = moment(event.target.value, "HH:mm");
       date.set({
         hour: time.get("hour"),
         minute: time.get("minute"),
@@ -145,17 +149,13 @@ export const GeneralInformation = (props) => {
                   </Typography>
                   <SmallHelpIcon />
                 </Box>
-                <TimeField
-                  type="time"
-                  variant="outlined"
+                <TimePicker
                   placeholder="Select Time"
+                  variant="outlined"
+                  color="secondary"
+                  name="start"
                   fullWidth
-                  value={
-                    values.start > 0 ? moment(values.start).format("HH:mm") : ""
-                  }
-                  inputProps={{
-                    step: 300, // 5 min
-                  }}
+                  value={values.start}
                   error={Boolean(touched.start && errors.start)}
                   helperText={touched.start && errors.start}
                   onBlur={handleBlur}

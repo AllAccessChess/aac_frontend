@@ -13,8 +13,9 @@ import {
   StepNumber,
   SmallTextField,
   OutlinedDatePicker,
+  TimePicker,
 } from "components/common";
-import { CustomAccordion, CustomAccordionDetails, TimeField } from "./styles";
+import { CustomAccordion, CustomAccordionDetails } from "./styles";
 import { Add as AddIcon, Close as CloseIcon } from "@material-ui/icons";
 import { FieldArray } from "formik";
 import { getRatingCategory } from "utils/common";
@@ -34,9 +35,8 @@ export const Rounds = (props) => {
   } = props;
 
   const handleChangeTime = useCallback(
-    (event, round, index) => {
+    (time, round, index) => {
       let date = moment(round.start > 0 ? round.start : new Date());
-      let time = moment(event.target.value, "HH:mm");
       date.set({
         hour: time.get("hour"),
         minute: time.get("minute"),
@@ -128,21 +128,14 @@ export const Rounds = (props) => {
                       />
                     </Grid>
                     <Grid item sm={2}>
-                      <TimeField
-                        type="time"
+                      <TimePicker
                         variant="outlined"
                         placeholder="Select Time"
+                        color="secondary"
                         fullWidth
-                        value={
-                          round.start > 0
-                            ? moment(round.start).format("HH:mm")
-                            : ""
-                        }
-                        inputProps={{
-                          step: 300, // 5 min
-                        }}
-                        onChange={(event) =>
-                          handleChangeTime(event, round, index)
+                        value={round.start}
+                        onChange={(time) =>
+                          handleChangeTime(time, round, index)
                         }
                       />
                     </Grid>
@@ -212,7 +205,12 @@ export const Rounds = (props) => {
                     </Grid>
 
                     <Grid item sm={1}>
-                      <Box display="flex" alignItems="center">
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        height="100%"
+                      >
                         <Typography>
                           {getRatingCategory(round.startTime, round.increment)}
                         </Typography>
