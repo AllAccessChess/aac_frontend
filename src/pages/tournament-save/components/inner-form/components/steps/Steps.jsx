@@ -10,6 +10,7 @@ export const Steps = (props) => {
     width,
     right,
     top,
+    position,
     activeStep,
     verified,
   } = props;
@@ -20,7 +21,7 @@ export const Steps = (props) => {
   ];
 
   return (
-    <Box position="absolute" right={right} top={top} width={width}>
+    <Box position={position} right={right} top={top} width={width}>
       <Box
         border="2px solid rgba(255, 255, 255, 0.3)"
         borderRadius="10px"

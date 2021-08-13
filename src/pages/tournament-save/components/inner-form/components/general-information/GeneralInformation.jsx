@@ -30,7 +30,6 @@ export const GeneralInformation = (props) => {
     onOpen,
     onVerify,
   } = props;
-  console.log(errors);
 
   const handleChangeTime = useCallback(
     (event) => {
