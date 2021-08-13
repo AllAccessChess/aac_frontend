@@ -1,5 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 
+import "rc-time-picker/assets/index.css";
+
 export const AppGlobalStyle = createGlobalStyle`
   html,
   body,

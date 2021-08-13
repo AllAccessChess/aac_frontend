@@ -179,9 +179,6 @@ export const TournamentSave = () => {
               restrictions: Yup.object(),
               hidden: Yup.boolean(),
             })}
-            validate={(values) => {
-              console.log(values);
-            }}
             onSubmit={handleSubmit}
           >
             {(formProps) => (

@@ -209,14 +209,6 @@ export const RatingOptions = Object.freeze([
     label: "FIDE",
     value: RatingProviders.FIDE,
   },
-  {
-    label: "Lichess",
-    value: RatingProviders.LICHESS,
-  },
-  {
-    label: "AAC",
-    value: RatingProviders.AAC,
-  },
 ]);
 
 // Chat
