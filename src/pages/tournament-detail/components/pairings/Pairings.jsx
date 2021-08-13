@@ -325,9 +325,25 @@ export const Pairings = (props) => {
                                 )}
                               </Box>
                             ) : (
-                              <Typography variant="body1">
-                                {getRoundStateString(round.state)}
-                              </Typography>
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                              >
+                                <Typography variant="body1">
+                                  {getRoundStateString(round.state)}
+                                </Typography>
+                                <Typography>&nbsp;|&nbsp;</Typography>
+                                <Link
+                                  component={RouterLink}
+                                  color="primary"
+                                  to={`/analysis/${match.gameId}`}
+                                >
+                                  <Typography variant="body1">
+                                    Analyize
+                                  </Typography>
+                                </Link>
+                              </Box>
                             )}
                           </TableCell>
                           <TableCell align="center">

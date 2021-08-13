@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useTheme } from "@material-ui/core";
+import { lightGreen } from "@material-ui/core/colors";
 import {
   Add as AddIcon,
   Close as CloseIcon,
@@ -9,12 +10,14 @@ import {
 } from "@material-ui/icons";
 
 import { Box, Button, Grid, Typography } from "components/material-ui";
-import { redoPairing, reorderList } from "utils/common";
+import { clearEmptyPairing, redoPairing, reorderList } from "utils/common";
 
 import {
+  BoardContainer,
   BoardHeader,
   BoardSquare,
   Container,
+  DragFocus,
   DroppableBox,
   Header,
   Tree,
@@ -79,12 +82,24 @@ export const BracketPairing = (props) => {
       return;
     }
 
+    let newPairing;
     if (source.droppableId === destination.droppableId) {
       switch (source.droppableId) {
         case "white":
+          newPairing = clearEmptyPairing(
+            reorderList(white, source.index, destination.index),
+            black
+          );
+          setWhite(newPairing.white);
+          setBlack(newPairing.black);
+          break;
         case "black":
-          setWhite(reorderList(white, source.index, destination.index));
-          setBlack(reorderList(black, source.index, destination.index));
+          newPairing = clearEmptyPairing(
+            white,
+            reorderList(black, source.index, destination.index)
+          );
+          setWhite(newPairing.white);
+          setBlack(newPairing.black);
           break;
         case "unpaired":
           setUnpaired(reorderList(unpaired, source.index, destination.index));
@@ -96,7 +111,7 @@ export const BracketPairing = (props) => {
           break;
       }
     } else {
-      const rePairing = redoPairing(
+      newPairing = redoPairing(
         white,
         black,
         unpaired,
@@ -104,10 +119,10 @@ export const BracketPairing = (props) => {
         source,
         destination
       );
-      setWhite(rePairing.white);
-      setBlack(rePairing.black);
-      setByes(rePairing.byes);
-      setUnpaired(rePairing.unpaired);
+      setWhite(newPairing.white);
+      setBlack(newPairing.black);
+      setByes(newPairing.byes);
+      setUnpaired(newPairing.unpaired);
     }
   };
 
@@ -155,6 +170,7 @@ export const BracketPairing = (props) => {
                     }}
                     position="relative"
                   >
+                    <DragFocus dragging={snapshot.isDragging.toString()} />
                     <Box
                       flexGrow={1}
                       display="flex"
@@ -180,7 +196,12 @@ export const BracketPairing = (props) => {
                                 ? theme.palette.secondary.main
                                 : theme.palette.primary.light
                             }`}
-                            width={100}
+                            bgcolor={
+                              snapshot.isDraggingOver
+                                ? lightGreen[400]
+                                : "transparent"
+                            }
+                            width={60}
                             height={40}
                           >
                             {provided.placeholder}
@@ -230,7 +251,7 @@ export const BracketPairing = (props) => {
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
-                mr={5}
+                mr={15}
                 bgcolor={theme.palette.background.paper}
                 borderRadius={12}
                 p={5}
@@ -238,77 +259,83 @@ export const BracketPairing = (props) => {
                 <Box mb={5}>
                   <Typography variant="h3">Boards</Typography>
                 </Box>
-                <Box display="flex" position="relative">
-                  <Box>
-                    <Grid container spacing={3}>
-                      <Grid item md={12}>
-                        <Box mt="42px" p="1rem">
-                          {white.map((_item, index) => (
-                            <Box
-                              my="1.5rem"
-                              key={`bracket-${bracket.id}-round-${index}`}
-                            >
+                <BoardContainer>
+                  <Box display="flex" position="relative">
+                    <Box>
+                      <Grid container spacing={3}>
+                        <Grid item md={12}>
+                          <Box mt="28px" p="1rem">
+                            {white.map((_item, index) => (
                               <Box
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                                height={42}
+                                my="1.5rem"
+                                key={`bracket-${bracket.id}-round-${index}`}
                               >
-                                <Typography variant="body1">
-                                  {index + 1}.
-                                </Typography>
+                                <Box
+                                  display="flex"
+                                  alignItems="center"
+                                  justifyContent="center"
+                                  height={42}
+                                >
+                                  <Typography variant="body1">
+                                    {index + 1}.
+                                  </Typography>
+                                </Box>
+                                <BoardSquare />
                               </Box>
-                              <BoardSquare />
-                            </Box>
-                          ))}
-                        </Box>
+                            ))}
+                          </Box>
+                        </Grid>
                       </Grid>
-                    </Grid>
+                    </Box>
+                    <Box flexGrow={1}>
+                      <Grid container spacing={3}>
+                        <Grid item md={6}>
+                          <BoardHeader mb="-16px">
+                            <Typography variant="body1">White</Typography>
+                          </BoardHeader>
+                          {renderDroppableList("white", white)}
+                        </Grid>
+                        <Grid item md={6}>
+                          <BoardHeader mb="-16px">
+                            <Typography variant="body1">Black</Typography>
+                          </BoardHeader>
+                          {renderDroppableList("black", black)}
+                        </Grid>
+                      </Grid>
+                    </Box>
                   </Box>
-                  <Box flexGrow={1}>
-                    <Grid container spacing={3}>
-                      <Grid item md={6}>
-                        <BoardHeader>
-                          <Typography variant="body1">White</Typography>
-                        </BoardHeader>
-                        {renderDroppableList("white", white)}
-                      </Grid>
-                      <Grid item md={6}>
-                        <BoardHeader>
-                          <Typography variant="body1">Black</Typography>
-                        </BoardHeader>
-                        {renderDroppableList("black", black)}
-                      </Grid>
-                    </Grid>
+                </BoardContainer>
+              </Box>
+              <Box display="flex" flexDirection="column">
+                <Box
+                  width="100%"
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  bgcolor={theme.palette.background.paper}
+                  borderRadius={12}
+                  mb={5}
+                  p={5}
+                >
+                  <Box mb={5}>
+                    <Typography variant="h3">Unpaired</Typography>
                   </Box>
+                  {renderDroppableList("unpaired", unpaired)}
                 </Box>
-              </Box>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                bgcolor={theme.palette.background.paper}
-                borderRadius={12}
-                mr={5}
-                p={5}
-              >
-                <Box mb={5}>
-                  <Typography variant="h3">Unpaired</Typography>
+                <Box
+                  width="100%"
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  bgcolor={theme.palette.background.paper}
+                  borderRadius={12}
+                  p={5}
+                >
+                  <Box mb={5}>
+                    <Typography variant="h3">Byes</Typography>
+                  </Box>
+                  {renderDroppableList("byes", byes)}
                 </Box>
-                {renderDroppableList("unpaired", unpaired)}
-              </Box>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                bgcolor={theme.palette.background.paper}
-                borderRadius={12}
-                p={5}
-              >
-                <Box mb={5}>
-                  <Typography variant="h3">Byes</Typography>
-                </Box>
-                {renderDroppableList("byes", byes)}
               </Box>
             </DragDropContext>
           </Box>
