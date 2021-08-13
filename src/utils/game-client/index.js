@@ -65,10 +65,13 @@ export default class GameClient extends EventTarget {
   /***************************
    * WebSocket Communication *
    ***************************/
-  sendData = (data) => {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      // console.log(`-> SS: ${data}`);
-      this.ws.send(JSON.stringify(data));
+  sendData = (data, index = 0) => {
+    if (this.ws) {
+      if (this.ws.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify(data));
+      } else if (index < 3) {
+        setTimeout(() => this.sendData(data, index + 1), 1000);
+      }
     }
   };
 
