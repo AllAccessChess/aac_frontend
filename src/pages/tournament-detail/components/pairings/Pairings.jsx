@@ -340,7 +340,7 @@ export const Pairings = (props) => {
                                   to={`/analysis/${match.gameId}`}
                                 >
                                   <Typography variant="body1">
-                                    Analyize
+                                    Analyze
                                   </Typography>
                                 </Link>
                               </Box>
