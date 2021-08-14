@@ -20,7 +20,7 @@ export const PlayerAutoComplete = (props) => {
   }, []);
 
   useEffect(() => {
-    setUsers(props.users);
+    setUsers(props.users || []);
   }, [props.users]);
 
   useEffect(() => {
