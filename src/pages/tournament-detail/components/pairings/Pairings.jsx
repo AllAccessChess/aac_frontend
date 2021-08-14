@@ -105,7 +105,7 @@ export const Pairings = (props) => {
     );
   };
 
-  if (!currentBracket.rounds.length) return <></>;
+  if (!currentBracket) return <></>;
   return (
     <CustomPaper round="true" mb={5}>
       <Box p={3}>
