@@ -646,6 +646,10 @@ export const Match = () => {
                     user.id,
                     user.name || user.username
                   ),
+              settings: {
+                audio: true,
+                video: isDirector ? false : true,
+              },
             });
           }
         });

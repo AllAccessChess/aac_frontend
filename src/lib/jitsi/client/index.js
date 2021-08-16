@@ -27,6 +27,14 @@ export default class JitsiClient extends EventTarget {
     // Jitsi Configuration
     this.domain = domain;
 
+    // Meeting Configuration
+    this.meetingId = null;
+    this.userName = null;
+    this.settings = {
+      audio: true,
+      video: true,
+    };
+
     // Log Level
     this.logLevel = logLevel;
 
@@ -284,29 +292,38 @@ export default class JitsiClient extends EventTarget {
 
     this.conference.setDisplayName(this.userName);
 
-    this.JitsiMeetJS.createLocalTracks({ devices: ["audio", "video"] })
-      .then(this.onLocalTracks)
-      .catch((error) => {
-        throw error;
+    const devices = [];
+    if (this.settings.audio) {
+      devices.push("audio");
+    }
+    if (this.settings.video) {
+      devices.push("video");
+    }
+    if (devices.length) {
+      this.JitsiMeetJS.createLocalTracks({ devices })
+        .then(this.onLocalTracks)
+        .catch((error) => {
+          throw error;
+        });
+
+      this.conference.sendCommand("follow-me", {
+        attributes: {
+          tileViewEnabled: true,
+        },
       });
 
-    this.conference.sendCommand("follow-me", {
-      attributes: {
-        tileViewEnabled: true,
-      },
-    });
-
-    this.conference
-      .startRecording({
-        mode: "file",
-      })
-      .then(() => {
-        this.handleLog("Recording Started");
-      })
-      .catch((error) => {
-        this.handleError(error);
-        throw error;
-      });
+      this.conference
+        .startRecording({
+          mode: "file",
+        })
+        .then(() => {
+          this.handleLog(LogLevel.INFO, "Recording Started");
+        })
+        .catch((error) => {
+          this.handleError(error);
+          throw error;
+        });
+    }
   };
 
   /**
@@ -380,11 +397,23 @@ export default class JitsiClient extends EventTarget {
    * Join Meeting
    * @param {object} options
    */
-  joinMeeting = ({ meetingId, password, userName }) => {
+  joinMeeting = ({ meetingId, password, userName, settings }) => {
     this.meetingId = meetingId;
     // this.password = password;
     this.userName = userName;
+    this.settings = {
+      audio: !settings || settings.audio === undefined ? true : false,
+      video: !settings || settings.video === undefined ? true : false,
+    };
 
+    if (!this.meetingId) {
+      this.handleLog(LogLevel.WARN, "Meeting ID is empty.");
+      return;
+    }
+    if (!this.userName) {
+      this.handleLog(LogLevel.WARN, "User Name is empty.");
+      return;
+    }
     this.connect();
   };
 
