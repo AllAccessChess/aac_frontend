@@ -13,6 +13,7 @@ import {
   unRegisterTournament,
   startRound,
   setCurrent as setCurrentTournament,
+  clearCurrent,
   adjustGameResultInRound,
 } from "redux/reducers/tournamentReducer";
 import { downloadPGN } from "redux/reducers/matchReducer";
@@ -214,7 +215,7 @@ export const TournamentDetail = () => {
       dispatch(getTournament(params.id));
     }
     return () => {
-      dispatch(setCurrentTournament(null));
+      dispatch(clearCurrent());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
