@@ -19,7 +19,10 @@ import { ChessBoard } from "components/common";
 import { Box, IconButton, Switch, Typography } from "components/material-ui";
 import { useWindowSize } from "hooks";
 import { useStockFishClient } from "lib/stock-fish";
-import { getMatch } from "redux/reducers/matchReducer";
+import {
+  getMatch,
+  setCurrent as setCurrentMatch,
+} from "redux/reducers/matchReducer";
 import {
   addToMoveTree,
   findFromMoveTree,
@@ -96,6 +99,9 @@ export const Analysis = () => {
     if (params.id) {
       dispatch(getMatch(params.id));
     }
+    return () => {
+      dispatch(setCurrentMatch(null));
+    };
   }, [dispatch, params.id]);
 
   useEffect(() => {
