@@ -19,7 +19,7 @@ export const Standings = (props) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState("desc");
-  const [orderBy, setOrderBy] = useState("rating");
+  const [orderBy, setOrderBy] = useState("score");
   const theme = useTheme();
 
   const handleChangePage = (event, newPage) => {
