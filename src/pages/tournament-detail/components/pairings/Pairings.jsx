@@ -340,16 +340,20 @@ export const Pairings = (props) => {
                                     match.result
                                   )}
                                 </Typography>
-                                <Typography>&nbsp;|&nbsp;</Typography>
-                                <Link
-                                  component={RouterLink}
-                                  color="primary"
-                                  to={`/analysis/${match.gameId}`}
-                                >
-                                  <Typography variant="body1">
-                                    Analyze
-                                  </Typography>
-                                </Link>
+                                {round.state === RoundStatus.FINISHED && (
+                                  <React.Fragment>
+                                    <Typography>&nbsp;|&nbsp;</Typography>
+                                    <Link
+                                      component={RouterLink}
+                                      color="primary"
+                                      to={`/analysis/${match.gameId}`}
+                                    >
+                                      <Typography variant="body1">
+                                        Analyze
+                                      </Typography>
+                                    </Link>
+                                  </React.Fragment>
+                                )}
                               </Box>
                             )}
                           </TableCell>
