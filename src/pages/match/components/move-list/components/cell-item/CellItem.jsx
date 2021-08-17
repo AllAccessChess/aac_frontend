@@ -13,7 +13,7 @@ export const CellItem = ({ cell, active, onClick, ...props }) => {
 
   return (
     <HoveralbleCell ref={cellRef} {...props} active={active} onClick={onClick}>
-      {cell.action && cell.action === "move" ? cell.content.san : cell}
+      {cell.action && cell.action === "move" ? cell.content : cell}
     </HoveralbleCell>
   );
 };

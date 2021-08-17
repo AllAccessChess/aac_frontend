@@ -1,4 +1,3 @@
-import Chess from "chess.js";
 import React, {
   createRef,
   useEffect,
@@ -15,9 +14,13 @@ import { v4 as uuidv4 } from "uuid";
 import { useTheme } from "@material-ui/core";
 import { MyLocation as MyLocationIcon } from "@material-ui/icons";
 
+import { parseFen, makeFen } from "chessops/fen";
+import { Chess } from "chessops/chess";
+import { parseUci, parseSquare } from "chessops/util";
+
 import { ChessBoard } from "components/common";
 import { Box, IconButton, Switch, Typography } from "components/material-ui";
-import { useWindowSize } from "hooks";
+import { useStateRef, useWindowSize } from "hooks";
 import { useStockFishClient } from "lib/stock-fish";
 import {
   getMatch,
@@ -60,7 +63,7 @@ export const Analysis = () => {
   const [currentMoveId, setCurrentMoveId] = useState(null);
   const [moveVariation, setMoveVariation] = useState(null);
 
-  const chess = useRef(new Chess());
+  const [chess, setChess, chessRef] = useStateRef(Chess.default());
   const chessContainerRef = createRef(null);
   const threatEnabledRef = useRef(threatEnabled);
 
@@ -113,23 +116,25 @@ export const Analysis = () => {
       for (const move of currentMatch.moves) {
         const from = move.slice(0, 2);
         const to = move.slice(2, 4);
-        const promotion = move.slice(4) || "x";
+        // const promotion = move.slice(4) || "x";
 
-        const chessMove = chess.current.move({
-          from,
-          to,
-          promotion,
-        });
-        const fen = chess.current.fen();
+        const uciMove = parseUci(move);
+        const normalizedMove = chessRef.current.normalizeMove(uciMove); //This is because chessops uses UCI_960
 
-        const newMoveId = uuidv4();
-        moveTree = addToMoveTree(moveTree, moveId, newMoveId, chessMove, fen);
+        if (chessRef.current.isLegal(normalizedMove)) {
+          chessRef.current.play(normalizedMove);
 
-        setFen(fen);
-        setLastMove([from, to]);
+          const fen = makeFen(chessRef.current.toSetup());
 
-        currentPlayerColor = 1 - currentPlayerColor;
-        moveId = newMoveId;
+          const newMoveId = uuidv4();
+          moveTree = addToMoveTree(moveTree, moveId, newMoveId, move, fen);
+
+          setFen(fen);
+          setLastMove([from, to]);
+
+          currentPlayerColor = 1 - currentPlayerColor;
+          moveId = newMoveId;
+        }
       }
 
       setPlayerColor(currentPlayerColor);
@@ -143,11 +148,11 @@ export const Analysis = () => {
   useEffect(() => {
     if (stockFishEnabled && !engineInProgress) {
       const move = findFromMoveTree(moveVariation, currentMoveId);
-      let fen = move ? move.fen : chess.current.fen();
-      let turn = chess.current.turn();
+      let fen = move ? move.fen : makeFen(chessRef.current.toSetup());
+      let turn = chessRef.current.turn;
 
       if (threatEnabled) {
-        const opTurn = turn === "w" ? "b" : "w";
+        const opTurn = turn === "white" ? "b" : "w";
         fen = fen.replace(
           /(?<PiecePlacement>((?<RankItem>[pnbrqkPNBRQK1-8]{1,8})\/?){8})\s+(?<SideToMove>b|w)/,
           `$<PiecePlacement> ${opTurn}`
@@ -199,11 +204,17 @@ export const Analysis = () => {
 
   const handleMove = useCallback(
     (from, to, promot = "x") => {
-      const move = chess.current.move({ from, to, promotion: promot });
-      const fen = chess.current.fen();
+      const move = promot === "x" ? from + to : from + to + promot;
+      const uciMove = parseUci(move);
+      const normalizedMove = chessRef.current.normalizeMove(uciMove); //This is because chessops uses UCI_960
 
-      if (!move || !fen) return;
-      if (move.captured) {
+      if (!chessRef.current.isLegal(normalizedMove)) return;
+      chessRef.current.play(normalizedMove);
+      const fen = makeFen(chessRef.current.toSetup());
+
+      const toSquare = parseSquare(to);
+      const piece = chessRef.current.board.get(toSquare);
+      if (piece && piece.role) {
         playCapturedSound();
       } else {
         playMoveSound();
@@ -225,7 +236,7 @@ export const Analysis = () => {
       setLastMove([from, to]);
       setPlayerColor((playerColor) => 1 - playerColor);
     },
-    [currentMoveId, moveVariation, playCapturedSound, playMoveSound]
+    [currentMoveId, chessRef, moveVariation, playCapturedSound, playMoveSound]
   );
 
   const handleShowPast = useCallback(
@@ -235,14 +246,18 @@ export const Analysis = () => {
       const moveTree = findFromMoveTree(moveVariation, moveId);
 
       if (moveTree) {
-        chess.current.load(moveTree.fen);
+        const setup = parseFen(moveTree.fen).unwrap();
+        const pos = Chess.fromSetup(setup).unwrap();
+        setChess(pos);
 
         setFen(moveTree.fen);
-        setLastMove([moveTree.move.from, moveTree.move.to]);
+        const from = moveTree.move.slice(0, 2);
+        const to = moveTree.move.slice(2, 4);
+        setLastMove([from, to]);
         setPlayerColor(moveTree.level % 2);
       }
     },
-    [moveVariation, setLastMove, setFen]
+    [moveVariation, setChess, setLastMove, setFen]
   );
 
   const toggleStockFishEnabled = () => {
@@ -346,7 +361,7 @@ export const Analysis = () => {
           <ChessBoard
             width={chessBoardSize}
             height={chessBoardSize}
-            chess={chess.current}
+            chess={chess}
             fen={fen}
             playerColor={playerColor}
             isPlaying={true}

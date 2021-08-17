@@ -6,7 +6,6 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import Chess from "chess.js";
 import useSound from "use-sound";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -53,6 +52,11 @@ import { getTournament } from "redux/reducers/tournamentReducer";
 import { getValidUserName } from "utils/common";
 import { getAuthToken } from "utils/storage";
 import GameClient from "utils/game-client";
+
+import { parseFen, makeFen } from "chessops/fen";
+import { Chess } from "chessops/chess";
+import { parseUci, parseSquare } from "chessops/util";
+
 import { ChessBoard } from "components/common";
 import {
   Chat,
@@ -75,7 +79,7 @@ export const Match = () => {
   const params = useParams();
   const history = useHistory();
 
-  const [chess] = useState(new Chess());
+  const [chess, setChess, chessRef] = useStateRef(Chess.default());
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState();
   const [gameMessage, setGameMessage] = useState("");
@@ -135,25 +139,28 @@ export const Match = () => {
 
   const pieceDifference = useMemo(() => {
     const originalPieces = {
-      k: 1,
-      q: 1,
-      r: 2,
-      b: 2,
-      n: 2,
-      p: 8,
+      king: 1,
+      queen: 1,
+      rook: 2,
+      bishop: 2,
+      knight: 2,
+      pawn: 8,
     };
     let blackPieces = { ...originalPieces };
     let whitePieces = { ...originalPieces };
-    const board = chess.board();
-    for (let line of board) {
-      for (let piece of line) {
-        if (piece && piece.color === "b") blackPieces[piece.type]--;
-        if (piece && piece.color === "w") whitePieces[piece.type]--;
-      }
+
+    for (let square of chess.board.white) {
+      const piece = chess.board.get(square);
+      if (piece && piece.role) whitePieces[piece.role]--;
     }
+    for (let square of chess.board.black) {
+      const piece = chess.board.get(square);
+      if (piece && piece.role) blackPieces[piece.role]--;
+    }
+
     let difference = {};
     for (let index of Object.keys(originalPieces)) {
-      difference[index] = whitePieces[index] - blackPieces[index];
+      difference[index] = blackPieces[index] - whitePieces[index];
     }
 
     return difference;
@@ -239,10 +246,9 @@ export const Match = () => {
         setPastMoveIndex(index);
       }
       setFen(actionHistory[index].fen);
-      setLastMove([
-        actionHistory[index].content.from,
-        actionHistory[index].content.to,
-      ]);
+      const from = actionHistory[index].content.slice(0, 2);
+      const to = actionHistory[index].content.slice(2, 4);
+      setLastMove([from, to]);
     },
     [actionHistory, setPastMoveIndex, setLastMove, setFen, setPremove]
   );
@@ -288,57 +294,84 @@ export const Match = () => {
   }, [setGameStatus]);
 
   const addMoveStringToHistory = useCallback(
-    (move) => {
+    (move, shouldPlay = true) => {
       const from = move.slice(0, 2);
       const to = move.slice(2, 4);
-      const e = move.slice(4) || "x";
+      // const e = move.slice(4) || "x";
 
-      const chessMove = chess.move({ from, to, promotion: e });
-      console.log("chessMove: ", chessMove);
-      if (chessMove) {
-        dispatch(
-          addHistoryItem({
-            action: "move",
-            content: chessMove,
-            fen: chess.fen(),
-          })
-        );
-        setLastMove([from, to]);
+      const uciMove = parseUci(move);
+      const normalizedMove = chessRef.current.normalizeMove(uciMove); //This is because chessops uses UCI_960
+
+      if (shouldPlay && chessRef.current.isLegal(normalizedMove)) {
+        chessRef.current.play(normalizedMove);
+        setFen(makeFen(chessRef.current.toSetup()));
       }
+
+      dispatch(
+        addHistoryItem({
+          action: "move",
+          content: move,
+          fen: makeFen(chessRef.current.toSetup()),
+        })
+      );
+      setLastMove([from, to]);
     },
-    [dispatch, chess, setLastMove]
+    [dispatch, chessRef, setLastMove, setFen]
+  );
+
+  const initBoard = useCallback(
+    (fen) => {
+      const setup = parseFen(fen).unwrap();
+      const pos = Chess.fromSetup(setup).unwrap();
+      setChess(pos);
+      setPastMoveIndex(-1);
+      setFen(fen);
+    },
+    [setPastMoveIndex, setFen, setChess]
   );
 
   const handleMove = useCallback(
     (from, to, promot = "x") => {
+      const moveString = promot === "x" ? from + to : from + to + promot;
       if (chessgroundRef.current && chessgroundRef.current.cg)
         chessgroundRef.current.cg.cancelPremove();
       setPremove(null);
-      const move = chess.move({ from, to, promotion: promot });
-      if (!move) return;
-      if (move.captured) {
+      const uciMove = parseUci(moveString);
+      const normalizedMove = chessRef.current.normalizeMove(uciMove); //This is because chessops uses UCI_960
+
+      if (!chessRef.current.isLegal(normalizedMove)) return;
+
+      const toSquare = parseSquare(to);
+      const piece = chessRef.current.board.get(toSquare);
+      if (piece && piece.role) {
         playCapturedSound();
       } else {
         playMoveSound();
       }
+      chessRef.current.play(normalizedMove);
+
       dispatch(
-        addHistoryItem({ action: "move", content: move, fen: chess.fen() })
+        addHistoryItem({
+          action: "move",
+          content: moveString,
+          fen: makeFen(chessRef.current.toSetup()),
+        })
       );
-      setFen(chess.fen());
+      setFen(makeFen(chessRef.current.toSetup()));
       setLastMove([from, to]);
       setAskingDraw(false);
       gameClientRef.current.sendData({
         action: GameActions.MOVE,
         game: gameClientRef.current.gameId,
-        move: promot === "x" ? from + to : from + to + promot,
+        move: moveString,
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       dispatch,
-      chess,
+      chessRef,
       setFen,
       setLastMove,
+      setAskingDraw,
       setPremove,
       playMoveSound,
       playCapturedSound,
@@ -373,7 +406,6 @@ export const Match = () => {
           );
         }
         if (data.game.moves && data.game.moves.length > 0) {
-          console.log("Checking history: ", historyRef.current);
           if (historyRef.current.length) {
             const move = data.game.moves[data.game.moves.length - 1];
             if (
@@ -381,33 +413,32 @@ export const Match = () => {
               (data.game.turn === playerColorRef.current ||
                 isSpectatorRef.current)
             ) {
-              console.log("Opponent's move: ", move);
+              // Opponent's move
               addMoveStringToHistory(move);
             }
           } else {
-            console.log("Loading Previous Match: ", data.game.moves);
+            if (data.game.settings && data.game.settings.startPos) {
+              // Init Existing Board
+              initBoard(data.game.settings.startPos);
+            }
             for (let move of data.game.moves) {
               addMoveStringToHistory(move);
             }
           }
+        } else if (data.game.fen) {
+          // Init New Board
+          initBoard(data.game.fen);
         }
-        if (data.game.fen) {
-          console.log("***Setting Fen!");
-          setPastMoveIndex(-1);
-          setFen(data.game.fen);
-          chess.load(data.game.fen);
-        }
-        if (premoveRef.current) {
+        if (premoveRef.current && data.game.result === GameResults.ONGOING) {
+          console.log("Premove: ", premoveRef.current);
           handleMove(premoveRef.current[0], premoveRef.current[1]);
         }
       }
     },
     [
       dispatch,
-      chess,
+      initBoard,
       addMoveStringToHistory,
-      setFen,
-      setPastMoveIndex,
       setLegalMoves,
       setPlayers,
       setGameStatus,
@@ -428,7 +459,6 @@ export const Match = () => {
   );
   const onOfferedDraw = useCallback(
     (colorBy) => {
-      console.log(colorBy, " offered Draw");
       if (colorBy !== playerColorRef.current) {
         setAskingDraw(true);
       }
@@ -452,14 +482,7 @@ export const Match = () => {
   const onAuthenticatedSocket = useCallback(
     (data) => {
       console.log("Authenticated Socket: ", data);
-      // gameClientRef.current.sendData({
-      //   action: GameActions.STATUS,
-      // });
-      if (data.game) {
-        setGameStatus(GameStatus.PLAYING);
-        chess.load(data.game.fen);
-        setFen(data.game.fen);
-      } else if (isSpectator) {
+      if (isSpectator) {
         if (!gameClientRef.current.gameId && !params.id) {
           return;
         }
@@ -486,7 +509,7 @@ export const Match = () => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [isSpectator, params, setFen, chess, setGameStatus]
+    [isSpectator, params, setGameStatus]
   );
   const onPong = useCallback((data) => {
     setLatency(new Date().getTime() - pingRef.current.getTime());

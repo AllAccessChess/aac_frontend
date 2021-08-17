@@ -104,12 +104,12 @@ export const GameResults = Object.freeze({
 });
 
 export const PiecePoint = Object.freeze({
-  q: 9,
-  r: 5,
-  b: 3,
-  n: 3,
-  p: 1,
-  k: 0,
+  queen: 9,
+  rook: 5,
+  bishop: 3,
+  knight: 3,
+  pawn: 1,
+  king: 0,
 });
 
 // Tournament

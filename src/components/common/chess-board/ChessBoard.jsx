@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
 import Chessground from "react-chessground";
 import "react-chessground/dist/styles/chessground.css";
+import { chessgroundDests } from "chessops/compat";
+import { parseSquare } from "chessops/util";
 
 import { TransformPawnDialog } from "components/dialogs";
 
@@ -53,12 +55,8 @@ export const ChessBoard = (props) => {
     [pendingMove, setShowTransformPawn, onMove]
   );
 
-  const turnColor = useCallback(() => {
-    return chess.turn() === "w" ? "white" : "black";
-  }, [chess]);
-
   const calcMovable = useCallback(() => {
-    const dests = new Map();
+    let dests = new Map();
     if (isPlaying) {
       let legals = {};
       if (legalMoves && legalMoves.length) {
@@ -69,19 +67,12 @@ export const ChessBoard = (props) => {
           legals[from].push(to);
         }
       }
-      if (chess.turn() === playerColorName && legalMoves && legalMoves.length) {
+      if (chess.turn === playerColorName && legalMoves && legalMoves.length) {
         for (let from of Object.keys(legals)) {
           dests.set(from, legals[from]);
         }
       } else {
-        chess.SQUARES.forEach((s) => {
-          const ms = chess.moves({ square: s, verbose: true });
-          if (ms.length)
-            dests.set(
-              s,
-              ms.map((m) => m.to)
-            );
-        });
+        dests = chessgroundDests(chess);
       }
     }
 
@@ -94,16 +85,15 @@ export const ChessBoard = (props) => {
 
   const handleMove = useCallback(
     (from, to) => {
-      const moves = chess.moves({ verbose: true });
+      const fromSquare = parseSquare(from);
+      const piece = chess.board.get(fromSquare);
 
-      for (let i = 0, len = moves.length; i < len; i++) {
-        /* eslint-disable-line */
-        if (moves[i].flags.indexOf("p") !== -1 && moves[i].from === from) {
-          setPendingMove([from, to]);
-          setShowTransformPawn(true);
-          return;
-        }
+      if (piece && piece.role === "pawn" && (to[1] === "8" || to[1] === "1")) {
+        setPendingMove([from, to]);
+        setShowTransformPawn(true);
+        return;
       }
+
       onMove(from, to);
     },
     [chess, onMove, setPendingMove, setShowTransformPawn]
@@ -116,9 +106,9 @@ export const ChessBoard = (props) => {
         width={width}
         height={height}
         viewOnly={isSpectator || inPast}
-        turnColor={turnColor()}
+        turnColor={chess.turn}
         movable={calcMovable()}
-        check={chess.in_check() ? true : null}
+        check={chess.isCheck() ? true : null}
         lastMove={lastMove}
         fen={fen}
         orientation={disableOrientation ? "white" : playerColorName}

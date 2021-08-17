@@ -22,11 +22,14 @@ export default class GameClient extends EventTarget {
         if (msg.game) {
           if (!this.gameId) this.gameId = msg.game.id;
           if (msg.game.result !== GameResults.ONGOING) {
+            // Exiting Game
             this.triggerEvent(GameEvents.EXITGAME, msg.game);
           } else if (msg.game.drawOffer === 0 || msg.game.drawOffer === 1) {
             // Offering Draw
             this.triggerEvent(GameEvents.OFFEREDDRAW, msg.game.drawOffer);
           } else {
+            // Get Response For Game
+            console.log("GET_RESPONSE: ", msg);
             this.triggerEvent(GameEvents.GET_RESPONSE, msg);
           }
         } else if (msg.pong) {
@@ -68,6 +71,7 @@ export default class GameClient extends EventTarget {
   sendData = (data, index = 0) => {
     if (this.ws) {
       if (this.ws.readyState === WebSocket.OPEN) {
+        console.log("Sending Data: ", data);
         this.ws.send(JSON.stringify(data));
       } else if (index < 3) {
         setTimeout(() => this.sendData(data, index + 1), 1000);

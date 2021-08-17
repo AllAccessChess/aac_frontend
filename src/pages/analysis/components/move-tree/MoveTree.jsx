@@ -47,7 +47,7 @@ export const MoveTree = (props) => {
           key={currentTree.id}
           onClick={() => onShowPast(currentTreeId)}
         >
-          {currentTree.move.san}
+          {currentTree.move}
         </SubTreeCell>
       );
 
@@ -107,7 +107,7 @@ export const MoveTree = (props) => {
           className={tree.id === currentId ? "active" : ""}
           onClick={() => onShowPast(tree.id)}
         >
-          <span>{tree.move.san}</span>
+          <span>{tree.move}</span>
           <span>{!!tree.score ? tree.score : ""}</span>
         </MoveListCell>
       );
@@ -176,7 +176,7 @@ export const MoveTree = (props) => {
             className={firstSubTree.id === currentId ? "active" : ""}
             onClick={() => onShowPast(firstSubTree.id)}
           >
-            <span>{firstSubTree.move.san}</span>
+            <span>{firstSubTree.move}</span>
             <span>{!!firstSubTree.score ? firstSubTree.score : ""}</span>
           </MoveListCell>
         );

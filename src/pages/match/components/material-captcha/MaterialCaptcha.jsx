@@ -22,10 +22,10 @@ export const MaterialCaptcha = (props) => {
   }, [pieceDifference]);
 
   const getIcon = useCallback((piece) => {
-    if (piece === "q") return queenIcon;
-    if (piece === "r") return rockIcon;
-    if (piece === "b") return bishopIcon;
-    if (piece === "n") return knightIcon;
+    if (piece === "queen") return queenIcon;
+    if (piece === "rook") return rockIcon;
+    if (piece === "bishop") return bishopIcon;
+    if (piece === "kinght") return knightIcon;
     return pawnIcon;
   }, []);
 
