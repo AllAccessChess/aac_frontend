@@ -93,7 +93,7 @@ export const mainLayoutRoutes = [
     component: Prizes,
     guarded: true,
     redirectToSignIn: true,
-    sidebar: true,
+    sidebar: false,
   },
   {
     id: "Analysis",

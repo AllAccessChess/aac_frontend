@@ -13,7 +13,7 @@ import { InnerForm } from "./components";
 import { BackgroundWrapper, Logo } from "./styles";
 
 import logoImg from "assets/images/logo.png";
-import backgroundImg from "assets/images/auth_background.png";
+import backgroundImg from "assets/images/auth_background.jpg";
 
 import { signUp, setUser } from "redux/reducers/authReducer";
 import { setMessage } from "redux/reducers/messageReducer";
