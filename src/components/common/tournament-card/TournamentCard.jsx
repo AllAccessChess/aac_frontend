@@ -55,10 +55,13 @@ export const TournamentCard = (props) => {
     tournamentTimerCondition ? 1000 : null
   );
 
-  useInterval(() => {
-    if (roundTimerCondition)
-      setRemainTimeForRound(currentRound.start - new Date().getTime());
-  }, [roundTimerCondition ? 1000 : null]);
+  useInterval(
+    () => {
+      if (roundTimerCondition)
+        setRemainTimeForRound(currentRound.start - new Date().getTime());
+    },
+    roundTimerCondition ? 1000 : null
+  );
 
   return (
     <Box

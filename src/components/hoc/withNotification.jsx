@@ -43,11 +43,14 @@ const Notification = (props) => {
     [history]
   );
 
-  useInterval(() => {
-    if (user) {
-      dispatch(getMyNotifications());
-    }
-  }, [user ? 10000 : null]);
+  useInterval(
+    () => {
+      if (user) {
+        dispatch(getMyNotifications());
+      }
+    },
+    user ? 10000 : null
+  );
 
   useEffect(() => {
     if (user) {

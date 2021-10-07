@@ -151,12 +151,15 @@ export const TournamentDetail = () => {
     currentTournament,
   ]);
 
-  useInterval(() => {
-    if (pollingTournamentRoundCondition) {
-      console.log("Polling Tournament Round");
-      dispatch(getTournament(currentTournament.id));
-    }
-  }, [pollingTournamentRoundCondition ? 10000 : null]);
+  useInterval(
+    () => {
+      if (pollingTournamentRoundCondition) {
+        console.log("Polling Tournament Round");
+        dispatch(getTournament(currentTournament.id));
+      }
+    },
+    pollingTournamentRoundCondition ? 10000 : null
+  );
 
   const handleDownloadPGN = (gameID, roundTitle) => {
     dispatch(downloadPGN(gameID, roundTitle));
